@@ -15,7 +15,7 @@
 
 * [EmitterContract](../interfaces/_poppinss_events.emittercontract.md)
 * [EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md)
-* [TypedEmitter](../interfaces/_poppinss_events.typedemitter-1.md)
+* [TypedEmitterContract](../interfaces/_poppinss_events.typedemittercontract.md)
 
 ### Type aliases
 

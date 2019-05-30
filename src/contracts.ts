@@ -41,7 +41,7 @@ export interface EmitterTransportContract {
  * Typed emitter ensure that the emitted and consumed data
  * adheres to a type
  */
-export interface TypedEmitter<Data extends any> {
+export interface TypedEmitterContract<Data extends any> {
   eventName: string,
   emit (data: Data): Promise<void>
   on (handler: EventHandler): void
@@ -54,7 +54,7 @@ export interface TypedEmitter<Data extends any> {
 export interface EmitterContract<EventsMap extends any = any> {
   transport: EmitterTransportContract
 
-  for<EventName extends keyof EventsMap> (event: EventName): TypedEmitter<EventsMap[EventName]>
+  for<EventName extends keyof EventsMap> (event: EventName): TypedEmitterContract<EventsMap[EventName]>
 
   on (event: string, handler: EventHandler): this
   once (event: string, handler: EventHandler): this

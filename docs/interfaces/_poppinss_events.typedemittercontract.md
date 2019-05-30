@@ -1,6 +1,6 @@
-[@poppinss/events](../README.md) > [@poppinss/events](../modules/_poppinss_events.md) > [TypedEmitter](../interfaces/_poppinss_events.typedemitter-1.md)
+[@poppinss/events](../README.md) > [@poppinss/events](../modules/_poppinss_events.md) > [TypedEmitterContract](../interfaces/_poppinss_events.typedemittercontract.md)
 
-# Interface: TypedEmitter
+# Interface: TypedEmitterContract
 
 Typed emitter ensure that the emitted and consumed data adheres to a type
 
@@ -8,19 +8,23 @@ Typed emitter ensure that the emitted and consumed data adheres to a type
 #### Data :  `any`
 ## Hierarchy
 
-**TypedEmitter**
+**TypedEmitterContract**
+
+## Implemented by
+
+* [TypedEmitter](../classes/_poppinss_events.typedemitter.md)
 
 ## Index
 
 ### Properties
 
-* [eventName](_poppinss_events.typedemitter-1.md#eventname)
+* [eventName](_poppinss_events.typedemittercontract.md#eventname)
 
 ### Methods
 
-* [emit](_poppinss_events.typedemitter-1.md#emit)
-* [on](_poppinss_events.typedemitter-1.md#on)
-* [once](_poppinss_events.typedemitter-1.md#once)
+* [emit](_poppinss_events.typedemittercontract.md#emit)
+* [on](_poppinss_events.typedemittercontract.md#on)
+* [once](_poppinss_events.typedemittercontract.md#once)
 
 ---
 

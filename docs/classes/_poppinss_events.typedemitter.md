@@ -10,6 +10,10 @@ TypedEmitter implements a subset of [Emitter](_poppinss_events.emitter.md) metho
 
 **TypedEmitter**
 
+## Implements
+
+* [TypedEmitterContract](../interfaces/_poppinss_events.typedemittercontract.md)<`Data`>
+
 ## Index
 
 ### Constructors

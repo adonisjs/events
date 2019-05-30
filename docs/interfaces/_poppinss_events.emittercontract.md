@@ -100,7 +100,7 @@ ___
 
 ###  for
 
-▸ **for**<`EventName`>(event: *`EventName`*): [TypedEmitter](_poppinss_events.typedemitter-1.md)<`EventsMap[EventName]`>
+▸ **for**<`EventName`>(event: *`EventName`*): [TypedEmitterContract](_poppinss_events.typedemittercontract.md)<`EventsMap[EventName]`>
 
 **Type parameters:**
 
@@ -111,7 +111,7 @@ ___
 | ------ | ------ |
 | event | `EventName` |
 
-**Returns:** [TypedEmitter](_poppinss_events.typedemitter-1.md)<`EventsMap[EventName]`>
+**Returns:** [TypedEmitterContract](_poppinss_events.typedemittercontract.md)<`EventsMap[EventName]`>
 
 ___
 <a id="haslisteners"></a>

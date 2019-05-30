@@ -11,14 +11,14 @@
 * file that was distributed with this source code.
 */
 
-import { EmitterTransportContract, EventHandler } from '../contracts'
+import { EmitterTransportContract, EventHandler, TypedEmitterContract } from '../contracts'
 
 /**
  * TypedEmitter implements a subset of [[Emitter]] methods to emit
  * events only when the data satisfies pre-defined Typescript
  * types.
  */
-export class TypedEmitter<Data extends any> {
+export class TypedEmitter<Data extends any> implements TypedEmitterContract<Data> {
   constructor (public eventName: string, protected $transport: EmitterTransportContract) {}
 
   /**
