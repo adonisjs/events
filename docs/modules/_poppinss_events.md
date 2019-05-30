@@ -8,6 +8,7 @@
 
 * [Emitter](../classes/_poppinss_events.emitter.md)
 * [FakeEmitter](../classes/_poppinss_events.fakeemitter.md)
+* [IocResolver](../classes/_poppinss_events.iocresolver.md)
 * [MemoryTransport](../classes/_poppinss_events.memorytransport.md)
 * [TypedEmitter](../classes/_poppinss_events.typedemitter.md)
 

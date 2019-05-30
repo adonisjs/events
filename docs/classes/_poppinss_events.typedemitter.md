@@ -39,7 +39,7 @@ TypedEmitter implements a subset of [Emitter](_poppinss_events.emitter.md) metho
 
 ###  constructor
 
-⊕ **new TypedEmitter**(eventName: *`string`*, $transport: *[EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md)*, _iocResolver: *[IocResolver](_src_iocresolver_index_.iocresolver.md)*): [TypedEmitter](_poppinss_events.typedemitter.md)
+⊕ **new TypedEmitter**(eventName: *`string`*, $transport: *[EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md)*, _iocResolver: *[IocResolver](_poppinss_events.iocresolver.md)*): [TypedEmitter](_poppinss_events.typedemitter.md)
 
 **Parameters:**
 
@@ -47,7 +47,7 @@ TypedEmitter implements a subset of [Emitter](_poppinss_events.emitter.md) metho
 | ------ | ------ |
 | eventName | `string` |
 | $transport | [EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md) |
-| _iocResolver | [IocResolver](_src_iocresolver_index_.iocresolver.md) |
+| _iocResolver | [IocResolver](_poppinss_events.iocresolver.md) |
 
 **Returns:** [TypedEmitter](_poppinss_events.typedemitter.md)
 

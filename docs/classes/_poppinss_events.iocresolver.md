@@ -1,4 +1,4 @@
-[@poppinss/events](../README.md) > ["src/IocResolver/index"](../modules/_src_iocresolver_index_.md) > [IocResolver](../classes/_src_iocresolver_index_.iocresolver.md)
+[@poppinss/events](../README.md) > [@poppinss/events](../modules/_poppinss_events.md) > [IocResolver](../classes/_poppinss_events.iocresolver.md)
 
 # Class: IocResolver
 
@@ -12,11 +12,11 @@ Resolves string based event listeners from the IoC container. Also this method w
 
 ### Methods
 
-* [getAnyHandler](_src_iocresolver_index_.iocresolver.md#getanyhandler)
-* [getEventHandler](_src_iocresolver_index_.iocresolver.md#geteventhandler)
-* [namespace](_src_iocresolver_index_.iocresolver.md#namespace)
-* [removeAnyHandler](_src_iocresolver_index_.iocresolver.md#removeanyhandler)
-* [removeEventHandler](_src_iocresolver_index_.iocresolver.md#removeeventhandler)
+* [getAnyHandler](_poppinss_events.iocresolver.md#getanyhandler)
+* [getEventHandler](_poppinss_events.iocresolver.md#geteventhandler)
+* [namespace](_poppinss_events.iocresolver.md#namespace)
+* [removeAnyHandler](_poppinss_events.iocresolver.md#removeanyhandler)
+* [removeEventHandler](_poppinss_events.iocresolver.md#removeeventhandler)
 
 ---
 

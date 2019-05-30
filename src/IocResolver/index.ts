@@ -1,3 +1,7 @@
+/**
+ * @module @poppinss/events
+ */
+
 /*
 * @poppinss/events
 *
