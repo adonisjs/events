@@ -1,4 +1,4 @@
-[@poppinss/events](../README.md) > ["src/contracts"](../modules/_src_contracts_.md) > [EmitterTransportContract](../interfaces/_src_contracts_.emittertransportcontract.md)
+[@poppinss/events](../README.md) > [@poppinss/events](../modules/_poppinss_events.md) > [EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md)
 
 # Interface: EmitterTransportContract
 
@@ -10,20 +10,20 @@ The shape of emitter transport. This has to be same as `emittery`.
 
 ## Implemented by
 
-* [MemoryTransport](../classes/_src_transports_memory_.memorytransport.md)
+* [MemoryTransport](../classes/_poppinss_events.memorytransport.md)
 
 ## Index
 
 ### Methods
 
-* [clearListeners](_src_contracts_.emittertransportcontract.md#clearlisteners)
-* [emit](_src_contracts_.emittertransportcontract.md#emit)
-* [listenerCount](_src_contracts_.emittertransportcontract.md#listenercount)
-* [off](_src_contracts_.emittertransportcontract.md#off)
-* [offAny](_src_contracts_.emittertransportcontract.md#offany)
-* [on](_src_contracts_.emittertransportcontract.md#on)
-* [onAny](_src_contracts_.emittertransportcontract.md#onany)
-* [once](_src_contracts_.emittertransportcontract.md#once)
+* [clearListeners](_poppinss_events.emittertransportcontract.md#clearlisteners)
+* [emit](_poppinss_events.emittertransportcontract.md#emit)
+* [listenerCount](_poppinss_events.emittertransportcontract.md#listenercount)
+* [off](_poppinss_events.emittertransportcontract.md#off)
+* [offAny](_poppinss_events.emittertransportcontract.md#offany)
+* [on](_poppinss_events.emittertransportcontract.md#on)
+* [onAny](_poppinss_events.emittertransportcontract.md#onany)
+* [once](_poppinss_events.emittertransportcontract.md#once)
 
 ---
 
@@ -79,16 +79,16 @@ ___
 
 ###  off
 
-▸ **off**(event: *`string`*, handler: *[EventHandler](../modules/_src_contracts_.md#eventhandler)*): `void`
+▸ **off**(event: *`string`*, handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)*): `void`
 
-▸ **off**(event: *`string`*, handler: *[EventHandler](../modules/_src_contracts_.md#eventhandler)*): `void`
+▸ **off**(event: *`string`*, handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)*): `void`
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
 | event | `string` |
-| handler | [EventHandler](../modules/_src_contracts_.md#eventhandler) |
+| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
 
 **Returns:** `void`
 
@@ -97,7 +97,7 @@ ___
 | Name | Type |
 | ------ | ------ |
 | event | `string` |
-| handler | [EventHandler](../modules/_src_contracts_.md#eventhandler) |
+| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
 
 **Returns:** `void`
 
@@ -106,13 +106,13 @@ ___
 
 ###  offAny
 
-▸ **offAny**(handler: *[AnyHandler](../modules/_src_contracts_.md#anyhandler)*): `void`
+▸ **offAny**(handler: *[AnyHandler](../modules/_poppinss_events.md#anyhandler)*): `void`
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
-| handler | [AnyHandler](../modules/_src_contracts_.md#anyhandler) |
+| handler | [AnyHandler](../modules/_poppinss_events.md#anyhandler) |
 
 **Returns:** `void`
 
@@ -121,14 +121,14 @@ ___
 
 ###  on
 
-▸ **on**(event: *`string`*, handler: *[EventHandler](../modules/_src_contracts_.md#eventhandler)*): `void`
+▸ **on**(event: *`string`*, handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)*): `void`
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
 | event | `string` |
-| handler | [EventHandler](../modules/_src_contracts_.md#eventhandler) |
+| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
 
 **Returns:** `void`
 
@@ -137,13 +137,13 @@ ___
 
 ###  onAny
 
-▸ **onAny**(handler: *[AnyHandler](../modules/_src_contracts_.md#anyhandler)*): `void`
+▸ **onAny**(handler: *[AnyHandler](../modules/_poppinss_events.md#anyhandler)*): `void`
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
-| handler | [AnyHandler](../modules/_src_contracts_.md#anyhandler) |
+| handler | [AnyHandler](../modules/_poppinss_events.md#anyhandler) |
 
 **Returns:** `void`
 

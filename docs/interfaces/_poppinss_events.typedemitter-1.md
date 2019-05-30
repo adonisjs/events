@@ -1,4 +1,4 @@
-[@poppinss/events](../README.md) > ["src/contracts"](../modules/_src_contracts_.md) > [TypedEmitter](../interfaces/_src_contracts_.typedemitter.md)
+[@poppinss/events](../README.md) > [@poppinss/events](../modules/_poppinss_events.md) > [TypedEmitter](../interfaces/_poppinss_events.typedemitter-1.md)
 
 # Interface: TypedEmitter
 
@@ -14,13 +14,13 @@ Typed emitter ensure that the emitted and consumed data adheres to a type
 
 ### Properties
 
-* [eventName](_src_contracts_.typedemitter.md#eventname)
+* [eventName](_poppinss_events.typedemitter-1.md#eventname)
 
 ### Methods
 
-* [emit](_src_contracts_.typedemitter.md#emit)
-* [on](_src_contracts_.typedemitter.md#on)
-* [once](_src_contracts_.typedemitter.md#once)
+* [emit](_poppinss_events.typedemitter-1.md#emit)
+* [on](_poppinss_events.typedemitter-1.md#on)
+* [once](_poppinss_events.typedemitter-1.md#once)
 
 ---
 
@@ -55,13 +55,13 @@ ___
 
 ###  on
 
-▸ **on**(handler: *[EventHandler](../modules/_src_contracts_.md#eventhandler)*): `void`
+▸ **on**(handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)*): `void`
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
-| handler | [EventHandler](../modules/_src_contracts_.md#eventhandler) |
+| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
 
 **Returns:** `void`
 
@@ -70,13 +70,13 @@ ___
 
 ###  once
 
-▸ **once**(handler: *[EventHandler](../modules/_src_contracts_.md#eventhandler)*): `void`
+▸ **once**(handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)*): `void`
 
 **Parameters:**
 
 | Name | Type |
 | ------ | ------ |
-| handler | [EventHandler](../modules/_src_contracts_.md#eventhandler) |
+| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
 
 **Returns:** `void`
 

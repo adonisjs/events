@@ -1,4 +1,4 @@
-[@poppinss/events](../README.md) > ["src/Emitter/index"](../modules/_src_emitter_index_.md) > [Emitter](../classes/_src_emitter_index_.emitter.md)
+[@poppinss/events](../README.md) > [@poppinss/events](../modules/_poppinss_events.md) > [Emitter](../classes/_poppinss_events.emitter.md)
 
 # Class: Emitter
 
@@ -10,32 +10,32 @@ Emitter class exposes the API for async event emitter built on top of Emittery. 
 
 **Emitter**
 
-↳  [FakeEmitter](_src_fakeemitter_index_.fakeemitter.md)
+↳  [FakeEmitter](_poppinss_events.fakeemitter.md)
 
 ## Implements
 
-* [EmitterContract](../interfaces/_src_contracts_.emittercontract.md)<`EventsMap`>
+* [EmitterContract](../interfaces/_poppinss_events.emittercontract.md)<`EventsMap`>
 
 ## Index
 
 ### Properties
 
-* [transport](_src_emitter_index_.emitter.md#transport)
+* [transport](_poppinss_events.emitter.md#transport)
 
 ### Methods
 
-* [clearAllListeners](_src_emitter_index_.emitter.md#clearalllisteners)
-* [clearListener](_src_emitter_index_.emitter.md#clearlistener)
-* [clearListeners](_src_emitter_index_.emitter.md#clearlisteners)
-* [emit](_src_emitter_index_.emitter.md#emit)
-* [for](_src_emitter_index_.emitter.md#for)
-* [hasListeners](_src_emitter_index_.emitter.md#haslisteners)
-* [listenerCount](_src_emitter_index_.emitter.md#listenercount)
-* [off](_src_emitter_index_.emitter.md#off)
-* [offAny](_src_emitter_index_.emitter.md#offany)
-* [on](_src_emitter_index_.emitter.md#on)
-* [onAny](_src_emitter_index_.emitter.md#onany)
-* [once](_src_emitter_index_.emitter.md#once)
+* [clearAllListeners](_poppinss_events.emitter.md#clearalllisteners)
+* [clearListener](_poppinss_events.emitter.md#clearlistener)
+* [clearListeners](_poppinss_events.emitter.md#clearlisteners)
+* [emit](_poppinss_events.emitter.md#emit)
+* [for](_poppinss_events.emitter.md#for)
+* [hasListeners](_poppinss_events.emitter.md#haslisteners)
+* [listenerCount](_poppinss_events.emitter.md#listenercount)
+* [off](_poppinss_events.emitter.md#off)
+* [offAny](_poppinss_events.emitter.md#offany)
+* [on](_poppinss_events.emitter.md#on)
+* [onAny](_poppinss_events.emitter.md#onany)
+* [once](_poppinss_events.emitter.md#once)
 
 ---
 
@@ -45,7 +45,7 @@ Emitter class exposes the API for async event emitter built on top of Emittery. 
 
 ###  transport
 
-**● transport**: *[EmitterTransportContract](../interfaces/_src_contracts_.emittertransportcontract.md)* =  new Emittery()
+**● transport**: *[EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md)* =  new Emittery()
 
 ___
 
@@ -66,7 +66,7 @@ ___
 
 ###  clearListener
 
-▸ **clearListener**(event: *`string`*, handler: *[EventHandler](../modules/_src_contracts_.md#eventhandler)*): `void`
+▸ **clearListener**(event: *`string`*, handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)*): `void`
 
 Remove existing event listener.
 
@@ -77,7 +77,7 @@ Remove existing event listener.
 | Name | Type |
 | ------ | ------ |
 | event | `string` |
-| handler | [EventHandler](../modules/_src_contracts_.md#eventhandler) |
+| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
 
 **Returns:** `void`
 
@@ -121,7 +121,7 @@ ___
 
 ###  for
 
-▸ **for**<`EventName`>(event: *`EventName`*): [TypedEmitter](_src_emitter_typedemitter_.typedemitter.md)<`EventsMap[EventName]`>
+▸ **for**<`EventName`>(event: *`EventName`*): [TypedEmitter](_poppinss_events.typedemitter.md)<`EventsMap[EventName]`>
 
 Returns instance of a typed emitter. Make sure the event name is already pre-defined inside `EventsMap` type.
 
@@ -134,7 +134,7 @@ Returns instance of a typed emitter. Make sure the event name is already pre-def
 | ------ | ------ |
 | event | `EventName` |
 
-**Returns:** [TypedEmitter](_src_emitter_typedemitter_.typedemitter.md)<`EventsMap[EventName]`>
+**Returns:** [TypedEmitter](_poppinss_events.typedemitter.md)<`EventsMap[EventName]`>
 
 ___
 <a id="haslisteners"></a>
@@ -175,7 +175,7 @@ ___
 
 ###  off
 
-▸ **off**(event: *`string`*, handler: *[EventHandler](../modules/_src_contracts_.md#eventhandler)*): `void`
+▸ **off**(event: *`string`*, handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)*): `void`
 
 Remove existing event listener
 
@@ -184,7 +184,7 @@ Remove existing event listener
 | Name | Type |
 | ------ | ------ |
 | event | `string` |
-| handler | [EventHandler](../modules/_src_contracts_.md#eventhandler) |
+| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
 
 **Returns:** `void`
 
@@ -193,7 +193,7 @@ ___
 
 ###  offAny
 
-▸ **offAny**(handler: *[AnyHandler](../modules/_src_contracts_.md#anyhandler)*): `void`
+▸ **offAny**(handler: *[AnyHandler](../modules/_poppinss_events.md#anyhandler)*): `void`
 
 Remove existing event listener for catch all handler
 
@@ -201,7 +201,7 @@ Remove existing event listener for catch all handler
 
 | Name | Type |
 | ------ | ------ |
-| handler | [AnyHandler](../modules/_src_contracts_.md#anyhandler) |
+| handler | [AnyHandler](../modules/_poppinss_events.md#anyhandler) |
 
 **Returns:** `void`
 
@@ -210,7 +210,7 @@ ___
 
 ###  on
 
-▸ **on**(event: *`string`*, handler: *[EventHandler](../modules/_src_contracts_.md#eventhandler)*): `this`
+▸ **on**(event: *`string`*, handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)*): `this`
 
 Define event handler for a given event
 
@@ -219,7 +219,7 @@ Define event handler for a given event
 | Name | Type |
 | ------ | ------ |
 | event | `string` |
-| handler | [EventHandler](../modules/_src_contracts_.md#eventhandler) |
+| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
 
 **Returns:** `this`
 
@@ -228,7 +228,7 @@ ___
 
 ###  onAny
 
-▸ **onAny**(handler: *[AnyHandler](../modules/_src_contracts_.md#anyhandler)*): `this`
+▸ **onAny**(handler: *[AnyHandler](../modules/_poppinss_events.md#anyhandler)*): `this`
 
 Define catch all event handler to listen for all events.
 
@@ -236,7 +236,7 @@ Define catch all event handler to listen for all events.
 
 | Name | Type |
 | ------ | ------ |
-| handler | [AnyHandler](../modules/_src_contracts_.md#anyhandler) |
+| handler | [AnyHandler](../modules/_poppinss_events.md#anyhandler) |
 
 **Returns:** `this`
 
@@ -245,7 +245,7 @@ ___
 
 ###  once
 
-▸ **once**(event: *`string`*, handler: *[EventHandler](../modules/_src_contracts_.md#eventhandler)*): `this`
+▸ **once**(event: *`string`*, handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)*): `this`
 
 Define event handler for a given event and to be called only once.
 
@@ -254,7 +254,7 @@ Define event handler for a given event and to be called only once.
 | Name | Type |
 | ------ | ------ |
 | event | `string` |
-| handler | [EventHandler](../modules/_src_contracts_.md#eventhandler) |
+| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
 
 **Returns:** `this`
 
