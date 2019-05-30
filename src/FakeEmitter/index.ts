@@ -18,7 +18,7 @@ import { MemoryTransport } from '../Transports/Memory'
  * Fake emitter with memory transport to be used
  * during testing.
  */
-export class FakeEmitter extends Emitter {
+export class FakeEmitter<T extends any> extends Emitter<T> {
   public transport = new MemoryTransport()
 
   /**

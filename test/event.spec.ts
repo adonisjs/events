@@ -158,29 +158,32 @@ test.group('Events', () => {
       assert.deepEqual(data, { id: 1 })
     })
 
-    await event.for('new:user').emit({ id: 1 })
+    await event.emit('new:user', { id: 1 })
     assert.equal(event.listenerCount(), 1)
   })
 
-  test('listen via typed emitter', async (assert) => {
+  test('listen typed events', async (assert) => {
     assert.plan(2)
 
     const event = new Emitter<{ 'new:user': { id: number } }>()
-    event.for('new:user').on((data) => {
+    event.on('new:user', (data) => {
       assert.deepEqual(data, { id: 1 })
     })
 
-    await event.for('new:user').emit({ id: 1 })
+    await event.emit('new:user', { id: 1 })
     assert.equal(event.listenerCount(), 1)
   })
+})
 
+test.group('Fake Emitter', () => {
   test('collect events within memory with fake emitter', async (assert) => {
-    const emitter = new FakeEmitter()
+    const emitter = new FakeEmitter<{ 'new:user': { id: number } }>()
     await emitter.emit('new:user', { id: 1 })
-
     assert.deepEqual(emitter.transport.events, [{ event: 'new:user', data: { id: 1 } }])
   })
+})
 
+test.group('Emitter IoC reference', () => {
   test('define string based event listener', async (assert) => {
     assert.plan(3)
     class MyListeners {
@@ -398,35 +401,8 @@ test.group('Events', () => {
     })
 
     const event = new Emitter<{'new:user': { id: number }}>()
-    event.for('new:user').on('MyListeners.newUser')
-    event.for('new:user').emit({ id: 1 })
-
-    assert.equal(event['_iocResolver']['_eventHandlers'].get('new:user')!.size, 1)
-    assert.equal(event.listenerCount(), 1)
-  })
-
-  test('typed and untyped listeners on same event must result in single listener', async (assert) => {
-    assert.plan(3)
-
-    class MyListeners {
-      public newUser (data: any) {
-        assert.deepEqual(data, { id: 1 })
-      }
-    }
-
-    const ioc = new Ioc()
-    global[Symbol.for('ioc.use')] = ioc.use.bind(ioc)
-    global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
-    global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
-
-    ioc.bind('App/Listeners/MyListeners', () => {
-      return new MyListeners()
-    })
-
-    const event = new Emitter<{'new:user': { id: number }}>()
-    event.for('new:user').on('MyListeners.newUser')
     event.on('new:user', 'MyListeners.newUser')
-    event.for('new:user').emit({ id: 1 })
+    event.emit('new:user', { id: 1 })
 
     assert.equal(event['_iocResolver']['_eventHandlers'].get('new:user')!.size, 1)
     assert.equal(event.listenerCount(), 1)

@@ -68,19 +68,19 @@ type EventsMap = {
 
 const emitter = new Emitter<EventsMap>()
 
-emitter.for('new:user').emit({ id: 1 }) // works
-emitter.for('new:user').emit(1) // fails
+emitter.emit('new:user', { id: 1 }) // works
+emitter.emit('new:user', 1) // compiler error
 ```
 
-Just like the `emit` method, you can also chain `on` and `once` method to the typed emitter.
+Just like the `emit` method, all other methods enforce types on typed events.
 
 ```ts
 const emitter = new Emitter<EventsMap>()
 
-emitter.for('new:user').on((user) => {
+emitter.on('new:user', (user) => {
 })
 
-emitter.for('new:user').once((user) => {
+emitter.once('new:user', (user) => {
 })
 ```
 

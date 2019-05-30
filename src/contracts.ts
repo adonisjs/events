@@ -38,37 +38,45 @@ export interface EmitterTransportContract {
 }
 
 /**
- * Typed emitter ensure that the emitted and consumed data
- * adheres to a type
- */
-export interface TypedEmitterContract<Data extends any> {
-  eventName: string,
-  emit (data: Data): Promise<void>
-  on (handler: EventHandler): void
-  once (handler: EventHandler): void
-}
-
-/**
  * Shape of Event emitter
  */
-export interface EmitterContract<EventsMap extends any = any> {
+export interface EmitterContract<T extends any = any> {
   transport: EmitterTransportContract
-
-  for<EventName extends keyof EventsMap> (event: EventName): TypedEmitterContract<EventsMap[EventName]>
-
   namespace (namespace: string): this
 
-  on (event: string, handler: EventHandler): this
-  once (event: string, handler: EventHandler): this
+  on<K extends keyof T> (event: K, handler: EventHandler<T[K]> | string): this
+  on<K extends string> (event: K, handler: EventHandler<T[K]> | string): this
+  on<K extends keyof T | string> (event: K, handler: EventHandler<T[K]> | string): this
+
+  once<K extends keyof T> (event: K, handler: EventHandler<T[K]> | string): this
+  once<K extends string> (event: K, handler: EventHandler<T[K]> | string): this
+  once<K extends keyof T | string> (event: K, handler: EventHandler<T[K]> | string): this
+
   onAny (handler: AnyHandler): this
 
-  emit (event: string, data: any): Promise<void>
+  emit<K extends keyof T> (event: K, data: T[K]): Promise<void>
+  emit<K extends string> (event: K, data: T[K]): Promise<void>
+  emit<K extends keyof T | string> (event: K, data: T[K]): Promise<void>
 
-  off (event: string, handler: EventHandler): void
+  off<K extends keyof T> (event: K, handler: EventHandler | string): void
+  off<K extends string> (event: K, handler: EventHandler | string): void
+  off<K extends keyof T | string> (event: K, handler: EventHandler | string): void
+
   offAny (handler: AnyHandler): void
-  clearListener (event: string, handler: EventHandler): void
-  clearListeners (event: string): void
 
-  listenerCount (event: string): number
-  hasListeners (event: string): boolean
+  clearListener<K extends keyof T> (event: K, handler: EventHandler | string): void
+  clearListener<K extends string> (event: K, handler: EventHandler | string): void
+  clearListener<K extends keyof T | string> (event: K, handler: EventHandler | string): void
+
+  clearListeners<K extends keyof T> (event: K): void
+  clearListeners<K extends string> (event: K): void
+  clearListeners<K extends keyof T | string> (event: K): void
+
+  listenerCount<K extends keyof T> (event?: K): number
+  listenerCount<K extends string> (event?: K): number
+  listenerCount<K extends keyof T | string> (event?: K): number
+
+  hasListeners<K extends keyof T> (event?: K): boolean
+  hasListeners<K extends string> (event?: K): boolean
+  hasListeners<K extends keyof T | string> (event?: K): boolean
 }

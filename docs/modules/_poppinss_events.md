@@ -10,13 +10,11 @@
 * [FakeEmitter](../classes/_poppinss_events.fakeemitter.md)
 * [IocResolver](../classes/_poppinss_events.iocresolver.md)
 * [MemoryTransport](../classes/_poppinss_events.memorytransport.md)
-* [TypedEmitter](../classes/_poppinss_events.typedemitter.md)
 
 ### Interfaces
 
 * [EmitterContract](../interfaces/_poppinss_events.emittercontract.md)
 * [EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md)
-* [TypedEmitterContract](../interfaces/_poppinss_events.typedemittercontract.md)
 
 ### Type aliases
 
