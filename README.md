@@ -1,20 +1,3 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-## Table of contents
-
-- [Event emitter](#event-emitter)
-  - [Features](#features)
-  - [Usage](#usage)
-  - [Asynchronous](#asynchronous)
-  - [Typed events](#typed-events)
-  - [Fake emitter](#fake-emitter)
-      - [Application code](#application-code)
-      - [Test](#test)
-  - [API](#api)
-  - [Maintainers](#maintainers)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 <div align="center">
   <img src="https://res.cloudinary.com/adonisjs/image/upload/q_100/v1557762307/poppinss_iftxlt.jpg" width="600px">
 </div>
@@ -30,6 +13,21 @@ This module is extracted from [AdonisJs](https://adonisjs.com). It is an Async e
 - Asynchronous
 - Support for Typed events (when using Typescript)
 - Comes with fake emitter for testing
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+## Table of contents
+
+- [Usage](#usage)
+- [Asynchronous](#asynchronous)
+- [Typed events](#typed-events)
+- [Fake emitter](#fake-emitter)
+    - [Application code](#application-code)
+    - [Test](#test)
+- [API](#api)
+- [Maintainers](#maintainers)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Usage
 Install the package from npm registry as follows:
