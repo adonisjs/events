@@ -22,10 +22,10 @@
   "license": "MIT",
   "devDependencies": {
     "@adonisjs/mrm-preset": "^2.0.3",
-    "@types/node": "^12.0.2",
+    "@types/node": "^12.0.3",
     "commitizen": "^3.1.1",
     "cz-conventional-changelog": "^2.1.0",
-    "del-cli": "^1.1.0",
+    "del-cli": "^2.0.0",
     "doctoc": "^1.4.0",
     "husky": "^2.3.0",
     "japa": "^2.0.10",
@@ -37,7 +37,7 @@
     "typedoc": "^0.14.2",
     "typedoc-plugin-external-module-name": "^2.1.0",
     "typedoc-plugin-markdown": "^1.2.1",
-    "typescript": "^3.4.5"
+    "typescript": "^3.5.1"
   },
   "nyc": {
     "exclude": [
