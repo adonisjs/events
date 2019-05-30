@@ -29,6 +29,7 @@ Shape of Event emitter
 * [for](_poppinss_events.emittercontract.md#for)
 * [hasListeners](_poppinss_events.emittercontract.md#haslisteners)
 * [listenerCount](_poppinss_events.emittercontract.md#listenercount)
+* [namespace](_poppinss_events.emittercontract.md#namespace)
 * [off](_poppinss_events.emittercontract.md#off)
 * [offAny](_poppinss_events.emittercontract.md#offany)
 * [on](_poppinss_events.emittercontract.md#on)
@@ -142,6 +143,21 @@ ___
 | event | `string` |
 
 **Returns:** `number`
+
+___
+<a id="namespace"></a>
+
+###  namespace
+
+▸ **namespace**(namespace: *`string`*): `this`
+
+**Parameters:**
+
+| Name | Type |
+| ------ | ------ |
+| namespace | `string` |
+
+**Returns:** `this`
 
 ___
 <a id="off"></a>

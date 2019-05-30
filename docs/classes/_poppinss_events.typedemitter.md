@@ -39,7 +39,7 @@ TypedEmitter implements a subset of [Emitter](_poppinss_events.emitter.md) metho
 
 ###  constructor
 
-⊕ **new TypedEmitter**(eventName: *`string`*, $transport: *[EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md)*): [TypedEmitter](_poppinss_events.typedemitter.md)
+⊕ **new TypedEmitter**(eventName: *`string`*, $transport: *[EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md)*, _iocResolver: *[IocResolver](_src_iocresolver_index_.iocresolver.md)*): [TypedEmitter](_poppinss_events.typedemitter.md)
 
 **Parameters:**
 
@@ -47,6 +47,7 @@ TypedEmitter implements a subset of [Emitter](_poppinss_events.emitter.md) metho
 | ------ | ------ |
 | eventName | `string` |
 | $transport | [EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md) |
+| _iocResolver | [IocResolver](_src_iocresolver_index_.iocresolver.md) |
 
 **Returns:** [TypedEmitter](_poppinss_events.typedemitter.md)
 
@@ -92,7 +93,7 @@ ___
 
 ###  on
 
-▸ **on**(handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)<`Data`>*): `void`
+▸ **on**(handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)<`Data`> \| `string`*): `void`
 
 Define event handler for the given event
 
@@ -100,7 +101,7 @@ Define event handler for the given event
 
 | Name | Type |
 | ------ | ------ |
-| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler)<`Data`> |
+| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler)<`Data`> \| `string` |
 
 **Returns:** `void`
 
@@ -109,7 +110,7 @@ ___
 
 ###  once
 
-▸ **once**(handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)<`Data`>*): `void`
+▸ **once**(handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)<`Data`> \| `string`*): `void`
 
 Define event handler for the given event only once.
 
@@ -117,7 +118,7 @@ Define event handler for the given event only once.
 
 | Name | Type |
 | ------ | ------ |
-| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler)<`Data`> |
+| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler)<`Data`> \| `string` |
 
 **Returns:** `void`
 

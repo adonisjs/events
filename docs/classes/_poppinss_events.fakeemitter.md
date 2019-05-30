@@ -36,6 +36,7 @@ Fake emitter with memory transport to be used during testing.
 * [for](_poppinss_events.fakeemitter.md#for)
 * [hasListeners](_poppinss_events.fakeemitter.md#haslisteners)
 * [listenerCount](_poppinss_events.fakeemitter.md#listenercount)
+* [namespace](_poppinss_events.fakeemitter.md#namespace)
 * [off](_poppinss_events.fakeemitter.md#off)
 * [offAny](_poppinss_events.fakeemitter.md#offany)
 * [on](_poppinss_events.fakeemitter.md#on)
@@ -96,7 +97,7 @@ ___
 
 ###  clearListener
 
-▸ **clearListener**(event: *`string`*, handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)*): `void`
+▸ **clearListener**(event: *`string`*, handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler) \| `string`*): `void`
 
 Remove existing event listener.
 
@@ -107,7 +108,7 @@ Remove existing event listener.
 | Name | Type |
 | ------ | ------ |
 | event | `string` |
-| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
+| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) \| `string` |
 
 **Returns:** `void`
 
@@ -201,11 +202,28 @@ Returns count of listeners for a given event or all events.
 **Returns:** `number`
 
 ___
+<a id="namespace"></a>
+
+###  namespace
+
+▸ **namespace**(namespace: *`string`*): `this`
+
+Define custom namespace for event listeners. It is set to `App/Listeners` by default.
+
+**Parameters:**
+
+| Name | Type |
+| ------ | ------ |
+| namespace | `string` |
+
+**Returns:** `this`
+
+___
 <a id="off"></a>
 
 ###  off
 
-▸ **off**(event: *`string`*, handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)*): `void`
+▸ **off**(event: *`string`*, handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler) \| `string`*): `void`
 
 Remove existing event listener
 
@@ -214,7 +232,7 @@ Remove existing event listener
 | Name | Type |
 | ------ | ------ |
 | event | `string` |
-| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
+| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) \| `string` |
 
 **Returns:** `void`
 
@@ -223,7 +241,7 @@ ___
 
 ###  offAny
 
-▸ **offAny**(handler: *[AnyHandler](../modules/_poppinss_events.md#anyhandler)*): `void`
+▸ **offAny**(handler: *[AnyHandler](../modules/_poppinss_events.md#anyhandler) \| `string`*): `void`
 
 Remove existing event listener for catch all handler
 
@@ -231,7 +249,7 @@ Remove existing event listener for catch all handler
 
 | Name | Type |
 | ------ | ------ |
-| handler | [AnyHandler](../modules/_poppinss_events.md#anyhandler) |
+| handler | [AnyHandler](../modules/_poppinss_events.md#anyhandler) \| `string` |
 
 **Returns:** `void`
 
@@ -240,7 +258,7 @@ ___
 
 ###  on
 
-▸ **on**(event: *`string`*, handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)*): `this`
+▸ **on**(event: *`string`*, handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler) \| `string`*): `this`
 
 Define event handler for a given event
 
@@ -249,7 +267,7 @@ Define event handler for a given event
 | Name | Type |
 | ------ | ------ |
 | event | `string` |
-| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
+| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) \| `string` |
 
 **Returns:** `this`
 
@@ -258,7 +276,7 @@ ___
 
 ###  onAny
 
-▸ **onAny**(handler: *[AnyHandler](../modules/_poppinss_events.md#anyhandler)*): `this`
+▸ **onAny**(handler: *[AnyHandler](../modules/_poppinss_events.md#anyhandler) \| `string`*): `this`
 
 Define catch all event handler to listen for all events.
 
@@ -266,7 +284,7 @@ Define catch all event handler to listen for all events.
 
 | Name | Type |
 | ------ | ------ |
-| handler | [AnyHandler](../modules/_poppinss_events.md#anyhandler) |
+| handler | [AnyHandler](../modules/_poppinss_events.md#anyhandler) \| `string` |
 
 **Returns:** `this`
 
@@ -275,7 +293,7 @@ ___
 
 ###  once
 
-▸ **once**(event: *`string`*, handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)*): `this`
+▸ **once**(event: *`string`*, handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler) \| `string`*): `this`
 
 Define event handler for a given event and to be called only once.
 
@@ -284,7 +302,7 @@ Define event handler for a given event and to be called only once.
 | Name | Type |
 | ------ | ------ |
 | event | `string` |
-| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
+| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) \| `string` |
 
 **Returns:** `this`
 
