@@ -56,6 +56,8 @@ export interface EmitterContract<EventsMap extends any = any> {
 
   for<EventName extends keyof EventsMap> (event: EventName): TypedEmitterContract<EventsMap[EventName]>
 
+  namespace (namespace: string): this
+
   on (event: string, handler: EventHandler): this
   once (event: string, handler: EventHandler): this
   onAny (handler: AnyHandler): this

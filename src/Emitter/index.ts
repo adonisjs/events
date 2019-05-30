@@ -153,4 +153,13 @@ export class Emitter<EventsMap extends any = any> implements EmitterContract<Eve
   public hasListeners (event?: string): boolean {
     return this.transport.listenerCount(event) > 0
   }
+
+  /**
+   * Define custom namespace for event listeners. It is set to `App/Listeners`
+   * by default.
+   */
+  public namespace (namespace: string): this {
+    this._iocResolver.namespace(namespace)
+    return this
+  }
 }

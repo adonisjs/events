@@ -17,8 +17,8 @@ import { AnyHandler, EventHandler } from '../contracts'
  *
  * Also the return unique function is used to remove event listeners.
  */
-function getReferenceListener (handler: string): EventHandler | AnyHandler {
-  const parsed = parseIocReference(handler)
+function getReferenceListener (handler: string, namespace?: string): EventHandler | AnyHandler {
+  const parsed = parseIocReference(handler, namespace)
   return function dynamicEventHandler (...args: any[]) {
     const instance = global[Symbol.for('ioc.make')](parsed.namespace)
     return global[Symbol.for('ioc.call')](instance, parsed.method, args)
@@ -33,6 +33,14 @@ function getReferenceListener (handler: string): EventHandler | AnyHandler {
 export class IocResolver {
   private _eventHandlers: Map<string, Map<string, EventHandler>> = new Map()
   private _anyHandlers: Map<string, AnyHandler> = new Map()
+  private _listenerNamespace: string = 'App/Listeners'
+
+  /**
+   * Define custom namespace for Event listeners
+   */
+  public namespace (namespace: string) {
+    this._listenerNamespace = namespace
+  }
 
   /**
    * Returns all handlers for a given event.
@@ -63,7 +71,7 @@ export class IocResolver {
       return handlers.get(handler)!
     }
 
-    const eventHandler = getReferenceListener(handler) as EventHandler
+    const eventHandler = getReferenceListener(handler, this._listenerNamespace) as EventHandler
 
     /**
      * Store reference to the handler, so that we can clean it off
@@ -99,7 +107,7 @@ export class IocResolver {
       return this._anyHandlers.get(handler)!
     }
 
-    const eventHandler = getReferenceListener(handler) as AnyHandler
+    const eventHandler = getReferenceListener(handler, this._listenerNamespace) as AnyHandler
     this._anyHandlers.set(handler, eventHandler)
     return eventHandler
   }

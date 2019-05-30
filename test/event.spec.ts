@@ -194,7 +194,7 @@ test.group('Events', () => {
     global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
     global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
 
-    ioc.bind('MyListeners', () => {
+    ioc.bind('App/Listeners/MyListeners', () => {
       return new MyListeners()
     })
 
@@ -226,7 +226,7 @@ test.group('Events', () => {
     global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
     global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
 
-    ioc.bind('MyListeners', () => {
+    ioc.bind('App/Listeners/MyListeners', () => {
       return new MyListeners()
     })
 
@@ -252,7 +252,7 @@ test.group('Events', () => {
     global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
     global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
 
-    ioc.bind('MyListeners', () => {
+    ioc.bind('App/Listeners/MyListeners', () => {
       return new MyListeners()
     })
 
@@ -280,7 +280,7 @@ test.group('Events', () => {
     global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
     global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
 
-    ioc.bind('MyListeners', () => {
+    ioc.bind('App/Listeners/MyListeners', () => {
       return new MyListeners()
     })
 
@@ -307,7 +307,7 @@ test.group('Events', () => {
     global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
     global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
 
-    ioc.bind('MyListeners', () => {
+    ioc.bind('App/Listeners/MyListeners', () => {
       return new MyListeners()
     })
 
@@ -334,7 +334,7 @@ test.group('Events', () => {
     global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
     global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
 
-    ioc.bind('MyListeners', () => {
+    ioc.bind('App/Listeners/MyListeners', () => {
       return new MyListeners()
     })
 
@@ -365,7 +365,7 @@ test.group('Events', () => {
     global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
     global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
 
-    ioc.bind('MyListeners', () => {
+    ioc.bind('App/Listeners/MyListeners', () => {
       return new MyListeners()
     })
 
@@ -393,7 +393,7 @@ test.group('Events', () => {
     global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
     global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
 
-    ioc.bind('MyListeners', () => {
+    ioc.bind('App/Listeners/MyListeners', () => {
       return new MyListeners()
     })
 
@@ -419,7 +419,7 @@ test.group('Events', () => {
     global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
     global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
 
-    ioc.bind('MyListeners', () => {
+    ioc.bind('App/Listeners/MyListeners', () => {
       return new MyListeners()
     })
 
