@@ -13,7 +13,14 @@
 
 import * as Emittery from 'emittery'
 import { TypedEmitter } from './TypedEmitter'
-import { AnyHandler, EventHandler, EmitterContract, EmitterTransportContract } from '../contracts'
+import { IocResolver } from '../IocResolver'
+
+import {
+  AnyHandler,
+  EventHandler,
+  EmitterContract,
+  EmitterTransportContract,
+} from '../contracts'
 
 /**
  * Emitter class exposes the API for async event emitter built on top of
@@ -22,19 +29,24 @@ import { AnyHandler, EventHandler, EmitterContract, EmitterTransportContract } f
  */
 export class Emitter<EventsMap extends any = any> implements EmitterContract<EventsMap> {
   public transport: EmitterTransportContract = new Emittery()
+  private _iocResolver = new IocResolver()
 
   /**
    * Returns instance of a typed emitter. Make sure the event name
    * is already pre-defined inside `EventsMap` type.
    */
   public for<EventName extends keyof EventsMap> (event: EventName): TypedEmitter<EventsMap[EventName]> {
-    return new TypedEmitter(event as string, this.transport)
+    return new TypedEmitter(event as string, this.transport, this._iocResolver)
   }
 
   /**
    * Define event handler for a given event
    */
-  public on (event: string, handler: EventHandler): this {
+  public on (event: string, handler: EventHandler | string): this {
+    if (typeof (handler) === 'string') {
+      handler = this._iocResolver.getEventHandler(event, handler)
+    }
+
     this.transport.on(event, handler)
     return this
   }
@@ -43,15 +55,26 @@ export class Emitter<EventsMap extends any = any> implements EmitterContract<Eve
    * Define event handler for a given event and to be called
    * only once.
    */
-  public once (event: string, handler: EventHandler): this {
-    this.transport.once(event).then(handler)
+  public once (event: string, handler: EventHandler | string): this {
+    this.transport.once(event).then((data) => {
+      if (typeof (handler) === 'string') {
+        this._iocResolver.getEventHandler(event, handler)(data)
+        this._iocResolver.removeEventHandler(event, handler)
+      } else {
+        handler(data)
+      }
+    })
     return this
   }
 
   /**
    * Define catch all event handler to listen for all events.
    */
-  public onAny (handler: AnyHandler): this {
+  public onAny (handler: AnyHandler | string): this {
+    if (typeof (handler) === 'string') {
+      handler = this._iocResolver.getAnyHandler(handler)
+    }
+
     this.transport.onAny(handler)
     return this
   }
@@ -66,14 +89,30 @@ export class Emitter<EventsMap extends any = any> implements EmitterContract<Eve
   /**
    * Remove existing event listener
    */
-  public off (event: string, handler: EventHandler): void {
+  public off (event: string, handler: EventHandler | string): void {
+    if (typeof (handler) === 'string') {
+      const offHandler = this._iocResolver.removeEventHandler(event, handler)
+      if (offHandler) {
+        this.transport.off(event, offHandler)
+      }
+      return
+    }
+
     this.transport.off(event, handler)
   }
 
   /**
    * Remove existing event listener for catch all handler
    */
-  public offAny (handler: AnyHandler): void {
+  public offAny (handler: AnyHandler | string): void {
+    if (typeof (handler) === 'string') {
+      const offHandler = this._iocResolver.removeAnyHandler(handler)
+      if (offHandler) {
+        this.transport.offAny(offHandler)
+      }
+      return
+    }
+
     this.transport.offAny(handler)
   }
 
@@ -81,7 +120,7 @@ export class Emitter<EventsMap extends any = any> implements EmitterContract<Eve
    * Remove existing event listener.
    * @alias off
    */
-  public clearListener (event: string, handler: EventHandler): void {
+  public clearListener (event: string, handler: EventHandler | string): void {
     this.off(event, handler)
   }
 

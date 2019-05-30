@@ -8,6 +8,7 @@
 */
 
 import * as test from 'japa'
+import { Ioc } from '@adonisjs/fold'
 import { Emitter } from '../src/Emitter'
 import { FakeEmitter } from '../src/FakeEmitter'
 
@@ -178,5 +179,256 @@ test.group('Events', () => {
     await emitter.emit('new:user', { id: 1 })
 
     assert.deepEqual(emitter.transport.events, [{ event: 'new:user', data: { id: 1 } }])
+  })
+
+  test('define string based event listener', async (assert) => {
+    assert.plan(3)
+    class MyListeners {
+      public newUser (data) {
+        assert.deepEqual(data, { id: 1 })
+      }
+    }
+
+    const ioc = new Ioc()
+    global[Symbol.for('ioc.use')] = ioc.use.bind(ioc)
+    global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
+    global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
+
+    ioc.bind('MyListeners', () => {
+      return new MyListeners()
+    })
+
+    const event = new Emitter()
+    event.on('new:user', 'MyListeners.newUser')
+    await event.emit('new:user', { id: 1 })
+
+    assert.equal(event['_iocResolver']['_eventHandlers'].get('new:user')!.size, 1)
+    assert.equal(event.listenerCount(), 1)
+  })
+
+  test('remove string based event listener', async (assert) => {
+    assert.plan(3)
+    class MyListeners {
+      public newUser (data) {
+        assert.deepEqual(data, { id: 1 })
+
+        /**
+         * Make sure multiple off calls is a noop
+         */
+        event.off('new:user', 'MyListeners.newUser')
+        event.off('new:user', 'MyListeners.newUser')
+        event.off('new:user', 'MyListeners.newUser')
+      }
+    }
+
+    const ioc = new Ioc()
+    global[Symbol.for('ioc.use')] = ioc.use.bind(ioc)
+    global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
+    global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
+
+    ioc.bind('MyListeners', () => {
+      return new MyListeners()
+    })
+
+    const event = new Emitter()
+    event.on('new:user', 'MyListeners.newUser')
+    await event.emit('new:user', { id: 1 })
+    await event.emit('new:user', { id: 1 })
+
+    assert.equal(event['_iocResolver']['_eventHandlers'].get('new:user')!.size, 0)
+    assert.equal(event.listenerCount(), 0)
+  })
+
+  test('multiple same event listeners must result in a noop', async (assert) => {
+    assert.plan(3)
+    class MyListeners {
+      public newUser (data) {
+        assert.deepEqual(data, { id: 1 })
+      }
+    }
+
+    const ioc = new Ioc()
+    global[Symbol.for('ioc.use')] = ioc.use.bind(ioc)
+    global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
+    global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
+
+    ioc.bind('MyListeners', () => {
+      return new MyListeners()
+    })
+
+    const event = new Emitter()
+    event.on('new:user', 'MyListeners.newUser')
+    event.on('new:user', 'MyListeners.newUser')
+    event.on('new:user', 'MyListeners.newUser')
+    await event.emit('new:user', { id: 1 })
+
+    assert.equal(event['_iocResolver']['_eventHandlers'].get('new:user')!.size, 1)
+    assert.equal(event.listenerCount(), 1)
+  })
+
+  test('define string based one time event listener', async (assert) => {
+    assert.plan(3)
+
+    class MyListeners {
+      public newUser (data) {
+        assert.deepEqual(data, { id: 1 })
+      }
+    }
+
+    const ioc = new Ioc()
+    global[Symbol.for('ioc.use')] = ioc.use.bind(ioc)
+    global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
+    global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
+
+    ioc.bind('MyListeners', () => {
+      return new MyListeners()
+    })
+
+    const event = new Emitter()
+    event.once('new:user', 'MyListeners.newUser')
+    await event.emit('new:user', { id: 1 })
+
+    assert.equal(event['_iocResolver']['_eventHandlers'].get('new:user')!.size, 0)
+    assert.equal(event.listenerCount(), 0)
+  })
+
+  test('define string based wildcard event listener', async (assert) => {
+    assert.plan(4)
+
+    class MyListeners {
+      public newUser (event: string, data: any) {
+        assert.equal(event, 'new:user')
+        assert.deepEqual(data, { id: 1 })
+      }
+    }
+
+    const ioc = new Ioc()
+    global[Symbol.for('ioc.use')] = ioc.use.bind(ioc)
+    global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
+    global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
+
+    ioc.bind('MyListeners', () => {
+      return new MyListeners()
+    })
+
+    const event = new Emitter()
+    event.onAny('MyListeners.newUser')
+    await event.emit('new:user', { id: 1 })
+
+    assert.equal(event['_iocResolver']['_anyHandlers'].size, 1)
+    assert.equal(event.listenerCount(), 1)
+  })
+
+  test('multiple string based wildcard event listeners must result in a noop', async (assert) => {
+    assert.plan(4)
+
+    class MyListeners {
+      public newUser (event: string, data: any) {
+        assert.equal(event, 'new:user')
+        assert.deepEqual(data, { id: 1 })
+      }
+    }
+
+    const ioc = new Ioc()
+    global[Symbol.for('ioc.use')] = ioc.use.bind(ioc)
+    global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
+    global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
+
+    ioc.bind('MyListeners', () => {
+      return new MyListeners()
+    })
+
+    const event = new Emitter()
+    event.onAny('MyListeners.newUser')
+    event.onAny('MyListeners.newUser')
+    event.onAny('MyListeners.newUser')
+
+    await event.emit('new:user', { id: 1 })
+
+    assert.equal(event['_iocResolver']['_anyHandlers'].size, 1)
+    assert.equal(event.listenerCount(), 1)
+  })
+
+  test('remove string based wildcard event listener', async (assert) => {
+    assert.plan(4)
+
+    class MyListeners {
+      public newUser (eventName: string, data: any) {
+        assert.equal(eventName, 'new:user')
+        assert.deepEqual(data, { id: 1 })
+        event.offAny('MyListeners.newUser')
+      }
+    }
+
+    const ioc = new Ioc()
+    global[Symbol.for('ioc.use')] = ioc.use.bind(ioc)
+    global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
+    global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
+
+    ioc.bind('MyListeners', () => {
+      return new MyListeners()
+    })
+
+    const event = new Emitter()
+    event.onAny('MyListeners.newUser')
+    await event.emit('new:user', { id: 1 })
+    await event.emit('new:user', { id: 1 })
+    await event.emit('new:user', { id: 1 })
+
+    assert.equal(event['_iocResolver']['_anyHandlers'].size, 0)
+    assert.equal(event.listenerCount(), 0)
+  })
+
+  test('define string based typed event listener', async (assert) => {
+    assert.plan(3)
+
+    class MyListeners {
+      public newUser (data: any) {
+        assert.deepEqual(data, { id: 1 })
+      }
+    }
+
+    const ioc = new Ioc()
+    global[Symbol.for('ioc.use')] = ioc.use.bind(ioc)
+    global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
+    global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
+
+    ioc.bind('MyListeners', () => {
+      return new MyListeners()
+    })
+
+    const event = new Emitter<{'new:user': { id: number }}>()
+    event.for('new:user').on('MyListeners.newUser')
+    event.for('new:user').emit({ id: 1 })
+
+    assert.equal(event['_iocResolver']['_eventHandlers'].get('new:user')!.size, 1)
+    assert.equal(event.listenerCount(), 1)
+  })
+
+  test('typed and untyped listeners on same event must result in single listener', async (assert) => {
+    assert.plan(3)
+
+    class MyListeners {
+      public newUser (data: any) {
+        assert.deepEqual(data, { id: 1 })
+      }
+    }
+
+    const ioc = new Ioc()
+    global[Symbol.for('ioc.use')] = ioc.use.bind(ioc)
+    global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
+    global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
+
+    ioc.bind('MyListeners', () => {
+      return new MyListeners()
+    })
+
+    const event = new Emitter<{'new:user': { id: number }}>()
+    event.for('new:user').on('MyListeners.newUser')
+    event.on('new:user', 'MyListeners.newUser')
+    event.for('new:user').emit({ id: 1 })
+
+    assert.equal(event['_iocResolver']['_eventHandlers'].get('new:user')!.size, 1)
+    assert.equal(event.listenerCount(), 1)
   })
 })

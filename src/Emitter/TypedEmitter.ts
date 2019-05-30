@@ -11,7 +11,12 @@
 * file that was distributed with this source code.
 */
 
-import { EmitterTransportContract, EventHandler, TypedEmitterContract } from '../contracts'
+import {
+  EmitterTransportContract,
+  EventHandler,
+  TypedEmitterContract,
+} from '../contracts'
+import { IocResolver } from '../IocResolver'
 
 /**
  * TypedEmitter implements a subset of [[Emitter]] methods to emit
@@ -19,7 +24,11 @@ import { EmitterTransportContract, EventHandler, TypedEmitterContract } from '..
  * types.
  */
 export class TypedEmitter<Data extends any> implements TypedEmitterContract<Data> {
-  constructor (public eventName: string, protected $transport: EmitterTransportContract) {}
+  constructor (
+    public eventName: string,
+    protected $transport: EmitterTransportContract,
+    private _iocResolver: IocResolver,
+  ) {}
 
   /**
    * Emit data
@@ -31,7 +40,11 @@ export class TypedEmitter<Data extends any> implements TypedEmitterContract<Data
   /**
    * Define event handler for the given event
    */
-  public on (handler: EventHandler<Data>) {
+  public on (handler: EventHandler<Data> | string) {
+    if (typeof (handler) === 'string') {
+      handler = this._iocResolver.getEventHandler(this.eventName, handler)
+    }
+
     this.$transport.on(this.eventName, handler)
   }
 
@@ -39,7 +52,14 @@ export class TypedEmitter<Data extends any> implements TypedEmitterContract<Data
    * Define event handler for the given event
    * only once.
    */
-  public once (handler: EventHandler<Data>) {
-    this.$transport.once(this.eventName).then(handler)
+  public once (handler: EventHandler<Data> | string) {
+    this.$transport.once(this.eventName).then((data: Data) => {
+      if (typeof (handler) === 'string') {
+        this._iocResolver.getEventHandler(this.eventName, handler)(data)
+        this._iocResolver.removeEventHandler(this.eventName, handler)
+      } else {
+        handler(data)
+      }
+    })
   }
 }
