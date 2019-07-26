@@ -11,7 +11,7 @@
 * file that was distributed with this source code.
 */
 
-import { parseIocReference } from '@poppinss/utils'
+import { parseIocReference, callIocReference } from '@poppinss/utils'
 import { AnyHandler, EventHandler } from '../contracts'
 
 /**
@@ -24,8 +24,7 @@ import { AnyHandler, EventHandler } from '../contracts'
 function getReferenceListener (handler: string, namespace?: string): EventHandler | AnyHandler {
   const parsed = parseIocReference(handler, namespace)
   return function dynamicEventHandler (...args: any[]) {
-    const instance = global[Symbol.for('ioc.make')](parsed.namespace)
-    return global[Symbol.for('ioc.call')](instance, parsed.method, args)
+    return callIocReference(parsed, args)
   }
 }
 
