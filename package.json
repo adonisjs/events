@@ -72,5 +72,17 @@
   "dependencies": {
     "@poppinss/utils": "^1.0.4",
     "emittery": "^0.4.1"
-  }
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/poppinss/events.git"
+  },
+  "bugs": {
+    "url": "https://github.com/poppinss/events/issues"
+  },
+  "homepage": "https://github.com/poppinss/events#readme"
 }
