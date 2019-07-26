@@ -1,16 +1,19 @@
-[@poppinss/events](../README.md) > [@poppinss/events](../modules/_poppinss_events.md) > [EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md)
+> **[@poppinss/events](../README.md)**
+
+[Globals](../README.md) / [@poppinss/events](../modules/_poppinss_events.md) / [EmitterTransportContract](_poppinss_events.emittertransportcontract.md) /
 
 # Interface: EmitterTransportContract
 
-The shape of emitter transport. This has to be same as `emittery`.
+The shape of emitter transport. This has to be same as
+`emittery`.
 
 ## Hierarchy
 
-**EmitterTransportContract**
+* **EmitterTransportContract**
 
 ## Implemented by
 
-* [MemoryTransport](../classes/_poppinss_events.memorytransport.md)
+* [MemoryTransport](../classes/_src_transports_memory_.memorytransport.md)
 
 ## Index
 
@@ -25,142 +28,128 @@ The shape of emitter transport. This has to be same as `emittery`.
 * [onAny](_poppinss_events.emittertransportcontract.md#onany)
 * [once](_poppinss_events.emittertransportcontract.md#once)
 
----
-
 ## Methods
-
-<a id="clearlisteners"></a>
 
 ###  clearListeners
 
-▸ **clearListeners**(event?: *`undefined` \| `string`*): `void`
+▸ **clearListeners**(`event?`: undefined | string): *void*
 
 **Parameters:**
 
-| Name | Type |
-| ------ | ------ |
-| `Optional` event | `undefined` \| `string` |
+Name | Type |
+------ | ------ |
+`event?` | undefined \| string |
 
-**Returns:** `void`
+**Returns:** *void*
 
 ___
-<a id="emit"></a>
 
 ###  emit
 
-▸ **emit**(event: *`string`*, data: *`any`*): `Promise`<`void`>
+▸ **emit**(`event`: string, `data`: any): *`Promise<void>`*
 
 **Parameters:**
 
-| Name | Type |
-| ------ | ------ |
-| event | `string` |
-| data | `any` |
+Name | Type |
+------ | ------ |
+`event` | string |
+`data` | any |
 
-**Returns:** `Promise`<`void`>
+**Returns:** *`Promise<void>`*
 
 ___
-<a id="listenercount"></a>
 
 ###  listenerCount
 
-▸ **listenerCount**(event?: *`undefined` \| `string`*): `number`
+▸ **listenerCount**(`event?`: undefined | string): *number*
 
 **Parameters:**
 
-| Name | Type |
-| ------ | ------ |
-| `Optional` event | `undefined` \| `string` |
+Name | Type |
+------ | ------ |
+`event?` | undefined \| string |
 
-**Returns:** `number`
+**Returns:** *number*
 
 ___
-<a id="off"></a>
 
 ###  off
 
-▸ **off**(event: *`string`*, handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)*): `void`
-
-▸ **off**(event: *`string`*, handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)*): `void`
+▸ **off**(`event`: string, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler)): *void*
 
 **Parameters:**
 
-| Name | Type |
-| ------ | ------ |
-| event | `string` |
-| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
+Name | Type |
+------ | ------ |
+`event` | string |
+`handler` | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
 
-**Returns:** `void`
+**Returns:** *void*
+
+▸ **off**(`event`: string, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler)): *void*
 
 **Parameters:**
 
-| Name | Type |
-| ------ | ------ |
-| event | `string` |
-| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
+Name | Type |
+------ | ------ |
+`event` | string |
+`handler` | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
 
-**Returns:** `void`
+**Returns:** *void*
 
 ___
-<a id="offany"></a>
 
 ###  offAny
 
-▸ **offAny**(handler: *[AnyHandler](../modules/_poppinss_events.md#anyhandler)*): `void`
+▸ **offAny**(`handler`: [AnyHandler](../modules/_poppinss_events.md#anyhandler)): *void*
 
 **Parameters:**
 
-| Name | Type |
-| ------ | ------ |
-| handler | [AnyHandler](../modules/_poppinss_events.md#anyhandler) |
+Name | Type |
+------ | ------ |
+`handler` | [AnyHandler](../modules/_poppinss_events.md#anyhandler) |
 
-**Returns:** `void`
+**Returns:** *void*
 
 ___
-<a id="on"></a>
 
 ###  on
 
-▸ **on**(event: *`string`*, handler: *[EventHandler](../modules/_poppinss_events.md#eventhandler)*): `void`
+▸ **on**(`event`: string, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler)): *void*
 
 **Parameters:**
 
-| Name | Type |
-| ------ | ------ |
-| event | `string` |
-| handler | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
+Name | Type |
+------ | ------ |
+`event` | string |
+`handler` | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
 
-**Returns:** `void`
+**Returns:** *void*
 
 ___
-<a id="onany"></a>
 
 ###  onAny
 
-▸ **onAny**(handler: *[AnyHandler](../modules/_poppinss_events.md#anyhandler)*): `void`
+▸ **onAny**(`handler`: [AnyHandler](../modules/_poppinss_events.md#anyhandler)): *void*
 
 **Parameters:**
 
-| Name | Type |
-| ------ | ------ |
-| handler | [AnyHandler](../modules/_poppinss_events.md#anyhandler) |
+Name | Type |
+------ | ------ |
+`handler` | [AnyHandler](../modules/_poppinss_events.md#anyhandler) |
 
-**Returns:** `void`
+**Returns:** *void*
 
 ___
-<a id="once"></a>
 
 ###  once
 
-▸ **once**(event: *`string`*): `Promise`<`any`>
+▸ **once**(`event`: string): *`Promise<any>`*
 
 **Parameters:**
 
-| Name | Type |
-| ------ | ------ |
-| event | `string` |
+Name | Type |
+------ | ------ |
+`event` | string |
 
-**Returns:** `Promise`<`any`>
-
-___
-
+**Returns:** *`Promise<any>`*

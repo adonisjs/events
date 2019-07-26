@@ -1,6 +1,6 @@
 {
   "name": "@poppinss/events",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Event emitter with asynchronous events",
   "scripts": {
     "mrm": "mrm --preset=@adonisjs/mrm-preset",
