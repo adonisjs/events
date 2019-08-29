@@ -1,6 +1,6 @@
-> **[@poppinss/events](../README.md)**
+**[@poppinss/events](../README.md)**
 
-[Globals](../README.md) / ["src/IocResolver/index"](../modules/_src_iocresolver_index_.md) / [IocResolver](_src_iocresolver_index_.iocresolver.md) /
+[Globals](../README.md) › ["src/IocResolver/index"](../modules/_src_iocresolver_index_.md) › [IocResolver](_src_iocresolver_index_.iocresolver.md)
 
 # Class: IocResolver
 

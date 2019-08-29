@@ -1,6 +1,6 @@
-> **[@poppinss/events](../README.md)**
+**[@poppinss/events](../README.md)**
 
-[Globals](../README.md) / ["src/FakeEmitter/index"](../modules/_src_fakeemitter_index_.md) / [FakeEmitter](_src_fakeemitter_index_.fakeemitter.md) /
+[Globals](../README.md) › ["src/FakeEmitter/index"](../modules/_src_fakeemitter_index_.md) › [FakeEmitter](_src_fakeemitter_index_.fakeemitter.md)
 
 # Class: FakeEmitter <**T**>
 
@@ -13,13 +13,13 @@ during testing.
 
 ## Hierarchy
 
-* [Emitter](_src_emitter_index_.emitter.md)‹*`T`*›
+* [Emitter](_src_emitter_index_.emitter.md)‹T›
 
   * **FakeEmitter**
 
 ## Implements
 
-* [EmitterContract](../interfaces/_poppinss_events.emittercontract.md)‹*`T`*›
+* [EmitterContract](../interfaces/_poppinss_events.emittercontract.md)‹T›
 
 ## Index
 
@@ -93,7 +93,7 @@ ___
 
 ###  clearListener
 
-▸ **clearListener**<**K**>(`event`: `K`, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler) | string): *void*
+▸ **clearListener**<**K**>(`event`: K, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler) | string): *void*
 
 *Implementation of [EmitterContract](../interfaces/_poppinss_events.emittercontract.md)*
 
@@ -111,12 +111,12 @@ Remove existing event listener.
 
 Name | Type |
 ------ | ------ |
-`event` | `K` |
+`event` | K |
 `handler` | [EventHandler](../modules/_poppinss_events.md#eventhandler) \| string |
 
 **Returns:** *void*
 
-▸ **clearListener**<**K**>(`event`: `K`, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler) | string): *void*
+▸ **clearListener**<**K**>(`event`: K, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler) | string): *void*
 
 *Implementation of [EmitterContract](../interfaces/_poppinss_events.emittercontract.md)*
 
@@ -130,7 +130,7 @@ Name | Type |
 
 Name | Type |
 ------ | ------ |
-`event` | `K` |
+`event` | K |
 `handler` | [EventHandler](../modules/_poppinss_events.md#eventhandler) \| string |
 
 **Returns:** *void*
@@ -139,7 +139,7 @@ ___
 
 ###  clearListeners
 
-▸ **clearListeners**<**K**>(`event`: `K`): *void*
+▸ **clearListeners**<**K**>(`event`: K): *void*
 
 *Implementation of [EmitterContract](../interfaces/_poppinss_events.emittercontract.md)*
 
@@ -155,11 +155,11 @@ Clear all listeners for a given event
 
 Name | Type |
 ------ | ------ |
-`event` | `K` |
+`event` | K |
 
 **Returns:** *void*
 
-▸ **clearListeners**<**K**>(`event`: `K`): *void*
+▸ **clearListeners**<**K**>(`event`: K): *void*
 
 *Implementation of [EmitterContract](../interfaces/_poppinss_events.emittercontract.md)*
 
@@ -173,7 +173,7 @@ Name | Type |
 
 Name | Type |
 ------ | ------ |
-`event` | `K` |
+`event` | K |
 
 **Returns:** *void*
 
@@ -181,7 +181,7 @@ ___
 
 ###  emit
 
-▸ **emit**<**K**>(`event`: `K`, `data`: `T[K]`): *`Promise<void>`*
+▸ **emit**<**K**>(`event`: K, `data`: T[K]): *Promise‹void›*
 
 *Implementation of [EmitterContract](../interfaces/_poppinss_events.emittercontract.md)*
 
@@ -197,12 +197,12 @@ Emit event
 
 Name | Type |
 ------ | ------ |
-`event` | `K` |
-`data` | `T[K]` |
+`event` | K |
+`data` | T[K] |
 
-**Returns:** *`Promise<void>`*
+**Returns:** *Promise‹void›*
 
-▸ **emit**<**K**>(`event`: `K`, `data`: `T[K]`): *`Promise<void>`*
+▸ **emit**<**K**>(`event`: K, `data`: T[K]): *Promise‹void›*
 
 *Implementation of [EmitterContract](../interfaces/_poppinss_events.emittercontract.md)*
 
@@ -216,10 +216,10 @@ Name | Type |
 
 Name | Type |
 ------ | ------ |
-`event` | `K` |
-`data` | `T[K]` |
+`event` | K |
+`data` | T[K] |
 
-**Returns:** *`Promise<void>`*
+**Returns:** *Promise‹void›*
 
 ___
 
@@ -332,7 +332,7 @@ ___
 
 ###  off
 
-▸ **off**<**K**>(`event`: `K`, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler) | string): *void*
+▸ **off**<**K**>(`event`: K, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler) | string): *void*
 
 *Implementation of [EmitterContract](../interfaces/_poppinss_events.emittercontract.md)*
 
@@ -348,12 +348,12 @@ Remove existing event listener
 
 Name | Type |
 ------ | ------ |
-`event` | `K` |
+`event` | K |
 `handler` | [EventHandler](../modules/_poppinss_events.md#eventhandler) \| string |
 
 **Returns:** *void*
 
-▸ **off**<**K**>(`event`: `K`, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler) | string): *void*
+▸ **off**<**K**>(`event`: K, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler) | string): *void*
 
 *Implementation of [EmitterContract](../interfaces/_poppinss_events.emittercontract.md)*
 
@@ -367,7 +367,7 @@ Name | Type |
 
 Name | Type |
 ------ | ------ |
-`event` | `K` |
+`event` | K |
 `handler` | [EventHandler](../modules/_poppinss_events.md#eventhandler) \| string |
 
 **Returns:** *void*
@@ -394,7 +394,7 @@ ___
 
 ###  on
 
-▸ **on**<**K**>(`event`: `K`, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler)‹*`T[K]`*› | string): *this*
+▸ **on**<**K**>(`event`: K, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler)‹T[K]› | string): *this*
 
 *Implementation of [EmitterContract](../interfaces/_poppinss_events.emittercontract.md)*
 
@@ -410,12 +410,12 @@ Define event handler for a given event
 
 Name | Type |
 ------ | ------ |
-`event` | `K` |
-`handler` | [EventHandler](../modules/_poppinss_events.md#eventhandler)‹*`T[K]`*› \| string |
+`event` | K |
+`handler` | [EventHandler](../modules/_poppinss_events.md#eventhandler)‹T[K]› \| string |
 
 **Returns:** *this*
 
-▸ **on**<**K**>(`event`: `K`, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler)‹*`T[K]`*› | string): *this*
+▸ **on**<**K**>(`event`: K, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler)‹T[K]› | string): *this*
 
 *Implementation of [EmitterContract](../interfaces/_poppinss_events.emittercontract.md)*
 
@@ -429,8 +429,8 @@ Name | Type |
 
 Name | Type |
 ------ | ------ |
-`event` | `K` |
-`handler` | [EventHandler](../modules/_poppinss_events.md#eventhandler)‹*`T[K]`*› \| string |
+`event` | K |
+`handler` | [EventHandler](../modules/_poppinss_events.md#eventhandler)‹T[K]› \| string |
 
 **Returns:** *this*
 
@@ -456,7 +456,7 @@ ___
 
 ###  once
 
-▸ **once**<**K**>(`event`: `K`, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler)‹*`T[K]`*› | string): *this*
+▸ **once**<**K**>(`event`: K, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler)‹T[K]› | string): *this*
 
 *Implementation of [EmitterContract](../interfaces/_poppinss_events.emittercontract.md)*
 
@@ -473,12 +473,12 @@ only once.
 
 Name | Type |
 ------ | ------ |
-`event` | `K` |
-`handler` | [EventHandler](../modules/_poppinss_events.md#eventhandler)‹*`T[K]`*› \| string |
+`event` | K |
+`handler` | [EventHandler](../modules/_poppinss_events.md#eventhandler)‹T[K]› \| string |
 
 **Returns:** *this*
 
-▸ **once**<**K**>(`event`: `K`, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler)‹*`T[K]`*› | string): *this*
+▸ **once**<**K**>(`event`: K, `handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler)‹T[K]› | string): *this*
 
 *Implementation of [EmitterContract](../interfaces/_poppinss_events.emittercontract.md)*
 
@@ -492,7 +492,7 @@ Name | Type |
 
 Name | Type |
 ------ | ------ |
-`event` | `K` |
-`handler` | [EventHandler](../modules/_poppinss_events.md#eventhandler)‹*`T[K]`*› \| string |
+`event` | K |
+`handler` | [EventHandler](../modules/_poppinss_events.md#eventhandler)‹T[K]› \| string |
 
 **Returns:** *this*

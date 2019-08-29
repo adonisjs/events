@@ -1,6 +1,6 @@
-> **[@poppinss/events](../README.md)**
+**[@poppinss/events](../README.md)**
 
-[Globals](../README.md) / ["src/FakeEmitter/index"](_src_fakeemitter_index_.md) /
+[Globals](../README.md) › ["src/FakeEmitter/index"](_src_fakeemitter_index_.md)
 
 # External module: "src/FakeEmitter/index"
 

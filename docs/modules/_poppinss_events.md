@@ -1,6 +1,6 @@
-> **[@poppinss/events](../README.md)**
+**[@poppinss/events](../README.md)**
 
-[Globals](../README.md) / [@poppinss/events](_poppinss_events.md) /
+[Globals](../README.md) › [@poppinss/events](_poppinss_events.md)
 
 # External module: @poppinss/events
 
@@ -26,14 +26,14 @@ Shape of catch all events handler
 
 #### Type declaration:
 
-▸ (`event`: string, `data`: `T`): *`Promise<void>` | void*
+▸ (`event`: string, `data`: T): *Promise‹void› | void*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
 `event` | string |
-`data` | `T` |
+`data` | T |
 
 ___
 
@@ -45,10 +45,10 @@ Shape of event handler
 
 #### Type declaration:
 
-▸ (`data`: `T`): *`Promise<void>` | void*
+▸ (`data`: T): *Promise‹void› | void*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`data` | `T` |
+`data` | T |

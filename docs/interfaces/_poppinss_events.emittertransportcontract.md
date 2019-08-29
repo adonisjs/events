@@ -1,6 +1,6 @@
-> **[@poppinss/events](../README.md)**
+**[@poppinss/events](../README.md)**
 
-[Globals](../README.md) / [@poppinss/events](../modules/_poppinss_events.md) / [EmitterTransportContract](_poppinss_events.emittertransportcontract.md) /
+[Globals](../README.md) › [@poppinss/events](../modules/_poppinss_events.md) › [EmitterTransportContract](_poppinss_events.emittertransportcontract.md)
 
 # Interface: EmitterTransportContract
 
@@ -46,7 +46,7 @@ ___
 
 ###  emit
 
-▸ **emit**(`event`: string, `data`: any): *`Promise<void>`*
+▸ **emit**(`event`: string, `data`: any): *Promise‹void›*
 
 **Parameters:**
 
@@ -55,7 +55,7 @@ Name | Type |
 `event` | string |
 `data` | any |
 
-**Returns:** *`Promise<void>`*
+**Returns:** *Promise‹void›*
 
 ___
 
@@ -144,7 +144,7 @@ ___
 
 ###  once
 
-▸ **once**(`event`: string): *`Promise<any>`*
+▸ **once**(`event`: string): *Promise‹any›*
 
 **Parameters:**
 
@@ -152,4 +152,4 @@ Name | Type |
 ------ | ------ |
 `event` | string |
 
-**Returns:** *`Promise<any>`*
+**Returns:** *Promise‹any›*

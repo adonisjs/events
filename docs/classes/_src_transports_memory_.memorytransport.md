@@ -1,6 +1,6 @@
-> **[@poppinss/events](../README.md)**
+**[@poppinss/events](../README.md)**
 
-[Globals](../README.md) / ["src/Transports/Memory"](../modules/_src_transports_memory_.md) / [MemoryTransport](_src_transports_memory_.memorytransport.md) /
+[Globals](../README.md) › ["src/Transports/Memory"](../modules/_src_transports_memory_.md) › [MemoryTransport](_src_transports_memory_.memorytransport.md)
 
 # Class: MemoryTransport
 
@@ -72,7 +72,7 @@ ___
 
 ###  emit
 
-▸ **emit**(`event`: string, `data`: any): *`Promise<void>`*
+▸ **emit**(`event`: string, `data`: any): *Promise‹void›*
 
 *Implementation of [EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md)*
 
@@ -83,7 +83,7 @@ Name | Type |
 `event` | string |
 `data` | any |
 
-**Returns:** *`Promise<void>`*
+**Returns:** *Promise‹void›*
 
 ___
 
@@ -169,7 +169,7 @@ ___
 
 ###  once
 
-▸ **once**(`_event`: string): *`Promise<void>`*
+▸ **once**(`_event`: string): *Promise‹void›*
 
 *Implementation of [EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md)*
 
@@ -179,4 +179,4 @@ Name | Type |
 ------ | ------ |
 `_event` | string |
 
-**Returns:** *`Promise<void>`*
+**Returns:** *Promise‹void›*

@@ -11,7 +11,7 @@
 * file that was distributed with this source code.
 */
 
-import * as Emittery from 'emittery'
+import Emittery from 'emittery'
 import { IocResolver } from '../IocResolver'
 
 import {

@@ -7,7 +7,7 @@
 * file that was distributed with this source code.
 */
 
-import * as test from 'japa'
+import test from 'japa'
 import { Ioc } from '@adonisjs/fold'
 import { Emitter } from '../src/Emitter'
 import { FakeEmitter } from '../src/FakeEmitter'
