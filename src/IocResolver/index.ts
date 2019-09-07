@@ -13,22 +13,9 @@
 
 /// <reference path="../../adonis-typings/events.ts" />
 
-import { parseIocReference, callIocReference } from '@poppinss/utils'
+import { IocContract } from '@adonisjs/fold'
+import { IoCResolver as BaseResolver } from '@poppinss/utils'
 import { AnyHandler, EventHandler } from '@ioc:Adonis/Core/Event'
-
-/**
- * Returns a callback that encapsulate the logic of making an
- * IoC container binding and calling the defined method
- * on it.
- *
- * Also the return unique function is used to remove event listeners.
- */
-function getReferenceListener (handler: string, namespace?: string): EventHandler | AnyHandler {
-  const parsed = parseIocReference(handler, namespace)
-  return function dynamicEventHandler (...args: any[]) {
-    return callIocReference(parsed, args)
-  }
-}
 
 /**
  * Resolves string based event listeners from the IoC container. Also this method wraps
@@ -38,13 +25,26 @@ function getReferenceListener (handler: string, namespace?: string): EventHandle
 export class IocResolver {
   private _eventHandlers: Map<string, Map<string, EventHandler>> = new Map()
   private _anyHandlers: Map<string, AnyHandler> = new Map()
-  private _listenerNamespace: string = 'App/Listeners'
+  private _resolver: BaseResolver
+
+  constructor (container: IocContract) {
+    this._resolver = new BaseResolver(container, 'eventListeners', 'App/Listeners')
+  }
+
+  /**
+   * Returns the listener by resolving the namespace from the IoC container
+   */
+  private _getReferenceListener (handler: string) {
+    return function dynamicEventHandler (...args: any[]) {
+      return this._resolver.call(handler, args)
+    }.bind(this)
+  }
 
   /**
    * Define custom namespace for Event listeners
    */
   public namespace (namespace: string) {
-    this._listenerNamespace = namespace
+    this._resolver['_fallbackNamespace'] = namespace
   }
 
   /**
@@ -76,7 +76,7 @@ export class IocResolver {
       return handlers.get(handler)!
     }
 
-    const eventHandler = getReferenceListener(handler, this._listenerNamespace) as EventHandler
+    const eventHandler = this._getReferenceListener(handler) as EventHandler
 
     /**
      * Store reference to the handler, so that we can clean it off
@@ -112,7 +112,7 @@ export class IocResolver {
       return this._anyHandlers.get(handler)!
     }
 
-    const eventHandler = getReferenceListener(handler, this._listenerNamespace) as AnyHandler
+    const eventHandler = this._getReferenceListener(handler) as AnyHandler
     this._anyHandlers.set(handler, eventHandler)
     return eventHandler
   }

@@ -14,6 +14,7 @@
 /// <reference path="../../adonis-typings/events.ts" />
 
 import Emittery from 'emittery'
+import { IocContract } from '@adonisjs/fold'
 import { IocResolver } from '../IocResolver'
 
 import {
@@ -30,7 +31,11 @@ import {
  */
 export class Emitter<T extends any = any> implements EmitterContract<T> {
   public transport: EmitterTransportContract = new Emittery()
-  private _iocResolver = new IocResolver()
+  private _iocResolver: IocResolver
+
+  constructor (container: IocContract) {
+    this._iocResolver = new IocResolver(container)
+  }
 
   /**
    * Define event handler for a given event

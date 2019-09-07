@@ -16,7 +16,7 @@ test.group('Events', () => {
   test('listen for an event', async (assert) => {
     assert.plan(2)
 
-    const event = new Emitter()
+    const event = new Emitter(new Ioc())
     event.on('new:user', (data) => {
       assert.deepEqual(data, { id: 1 })
     })
@@ -30,7 +30,7 @@ test.group('Events', () => {
   test('listen for an event only once', async (assert) => {
     assert.plan(1)
 
-    const event = new Emitter()
+    const event = new Emitter(new Ioc())
     event.once('new:user', (data) => {
       assert.deepEqual(data, { id: 1 })
     })
@@ -44,7 +44,7 @@ test.group('Events', () => {
   test('listen for any events', async (assert) => {
     assert.plan(5)
 
-    const event = new Emitter()
+    const event = new Emitter(new Ioc())
     event.once('new:user', (data) => {
       assert.deepEqual(data, { id: 1 })
     })
@@ -63,7 +63,7 @@ test.group('Events', () => {
   test('remove event listener', async (assert) => {
     assert.plan(1)
 
-    const event = new Emitter()
+    const event = new Emitter(new Ioc())
 
     function listener (data) {
       event.off('new:user', listener)
@@ -81,7 +81,7 @@ test.group('Events', () => {
   test('remove all event listeners for a given event', async (assert) => {
     assert.plan(1)
 
-    const event = new Emitter()
+    const event = new Emitter(new Ioc())
 
     event.once('new:user', (data) => {
       event.clearListeners('new:user')
@@ -97,7 +97,7 @@ test.group('Events', () => {
   test('remove listeners for all events', async (assert) => {
     assert.plan(3)
 
-    const event = new Emitter()
+    const event = new Emitter(new Ioc())
 
     event.once('new:user', (data) => {
       event.clearAllListeners()
@@ -114,7 +114,7 @@ test.group('Events', () => {
   })
 
   test('get listener counts', async (assert) => {
-    const event = new Emitter()
+    const event = new Emitter(new Ioc())
     event.onAny(() => {
     })
 
@@ -130,7 +130,7 @@ test.group('Events', () => {
   })
 
   test('remove any listener', async (assert) => {
-    const event = new Emitter()
+    const event = new Emitter(new Ioc())
     function anyListener () {}
     event.onAny(anyListener)
 
@@ -153,7 +153,7 @@ test.group('Events', () => {
   test('emit via typed emitter', async (assert) => {
     assert.plan(2)
 
-    const event = new Emitter<{ 'new:user': { id: number } }>()
+    const event = new Emitter<{ 'new:user': { id: number } }>(new Ioc())
     event.on('new:user', (data) => {
       assert.deepEqual(data, { id: 1 })
     })
@@ -165,7 +165,7 @@ test.group('Events', () => {
   test('listen typed events', async (assert) => {
     assert.plan(2)
 
-    const event = new Emitter<{ 'new:user': { id: number } }>()
+    const event = new Emitter<{ 'new:user': { id: number } }>(new Ioc())
     event.on('new:user', (data) => {
       assert.deepEqual(data, { id: 1 })
     })
@@ -177,7 +177,7 @@ test.group('Events', () => {
 
 test.group('Fake Emitter', () => {
   test('collect events within memory with fake emitter', async (assert) => {
-    const emitter = new FakeEmitter<{ 'new:user': { id: number } }>()
+    const emitter = new FakeEmitter<{ 'new:user': { id: number } }>(new Ioc())
     await emitter.emit('new:user', { id: 1 })
     assert.deepEqual(emitter.transport.events, [{ event: 'new:user', data: { id: 1 } }])
   })
@@ -193,15 +193,11 @@ test.group('Emitter IoC reference', () => {
     }
 
     const ioc = new Ioc()
-    global[Symbol.for('ioc.use')] = ioc.use.bind(ioc)
-    global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
-    global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
-
     ioc.bind('App/Listeners/MyListeners', () => {
       return new MyListeners()
     })
 
-    const event = new Emitter()
+    const event = new Emitter(ioc)
     event.on('new:user', 'MyListeners.newUser')
     await event.emit('new:user', { id: 1 })
 
@@ -225,15 +221,11 @@ test.group('Emitter IoC reference', () => {
     }
 
     const ioc = new Ioc()
-    global[Symbol.for('ioc.use')] = ioc.use.bind(ioc)
-    global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
-    global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
-
     ioc.bind('App/Listeners/MyListeners', () => {
       return new MyListeners()
     })
 
-    const event = new Emitter()
+    const event = new Emitter(ioc)
     event.on('new:user', 'MyListeners.newUser')
     await event.emit('new:user', { id: 1 })
     await event.emit('new:user', { id: 1 })
@@ -251,15 +243,11 @@ test.group('Emitter IoC reference', () => {
     }
 
     const ioc = new Ioc()
-    global[Symbol.for('ioc.use')] = ioc.use.bind(ioc)
-    global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
-    global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
-
     ioc.bind('App/Listeners/MyListeners', () => {
       return new MyListeners()
     })
 
-    const event = new Emitter()
+    const event = new Emitter(ioc)
     event.on('new:user', 'MyListeners.newUser')
     event.on('new:user', 'MyListeners.newUser')
     event.on('new:user', 'MyListeners.newUser')
@@ -279,15 +267,11 @@ test.group('Emitter IoC reference', () => {
     }
 
     const ioc = new Ioc()
-    global[Symbol.for('ioc.use')] = ioc.use.bind(ioc)
-    global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
-    global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
-
     ioc.bind('App/Listeners/MyListeners', () => {
       return new MyListeners()
     })
 
-    const event = new Emitter()
+    const event = new Emitter(ioc)
     event.once('new:user', 'MyListeners.newUser')
     await event.emit('new:user', { id: 1 })
 
@@ -306,15 +290,11 @@ test.group('Emitter IoC reference', () => {
     }
 
     const ioc = new Ioc()
-    global[Symbol.for('ioc.use')] = ioc.use.bind(ioc)
-    global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
-    global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
-
     ioc.bind('App/Listeners/MyListeners', () => {
       return new MyListeners()
     })
 
-    const event = new Emitter()
+    const event = new Emitter(ioc)
     event.onAny('MyListeners.newUser')
     await event.emit('new:user', { id: 1 })
 
@@ -333,15 +313,11 @@ test.group('Emitter IoC reference', () => {
     }
 
     const ioc = new Ioc()
-    global[Symbol.for('ioc.use')] = ioc.use.bind(ioc)
-    global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
-    global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
-
     ioc.bind('App/Listeners/MyListeners', () => {
       return new MyListeners()
     })
 
-    const event = new Emitter()
+    const event = new Emitter(ioc)
     event.onAny('MyListeners.newUser')
     event.onAny('MyListeners.newUser')
     event.onAny('MyListeners.newUser')
@@ -364,15 +340,12 @@ test.group('Emitter IoC reference', () => {
     }
 
     const ioc = new Ioc()
-    global[Symbol.for('ioc.use')] = ioc.use.bind(ioc)
-    global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
-    global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
 
     ioc.bind('App/Listeners/MyListeners', () => {
       return new MyListeners()
     })
 
-    const event = new Emitter()
+    const event = new Emitter(ioc)
     event.onAny('MyListeners.newUser')
     await event.emit('new:user', { id: 1 })
     await event.emit('new:user', { id: 1 })
@@ -392,15 +365,11 @@ test.group('Emitter IoC reference', () => {
     }
 
     const ioc = new Ioc()
-    global[Symbol.for('ioc.use')] = ioc.use.bind(ioc)
-    global[Symbol.for('ioc.make')] = ioc.make.bind(ioc)
-    global[Symbol.for('ioc.call')] = ioc.call.bind(ioc)
-
     ioc.bind('App/Listeners/MyListeners', () => {
       return new MyListeners()
     })
 
-    const event = new Emitter<{'new:user': { id: number }}>()
+    const event = new Emitter<{'new:user': { id: number }}>(ioc)
     event.on('new:user', 'MyListeners.newUser')
     event.emit('new:user', { id: 1 })
 

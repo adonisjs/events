@@ -22,7 +22,7 @@ export default class Event {
    */
   protected $registerEmitter () {
     this.$container.singleton('Adonis/Core/Event', () => {
-      return new Emitter()
+      return new Emitter(this.$container)
     })
   }
 }
