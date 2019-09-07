@@ -1,7 +1,14 @@
 {
-  "name": "@poppinss/events",
+  "name": "@adonisjs/events",
   "version": "1.0.2",
   "description": "Event emitter with asynchronous events",
+  "files": [
+    "build/adonis-typings",
+    "build/providers",
+    "build/src",
+    "build/standalone.d.ts",
+    "build/standalone.js"
+  ],
   "scripts": {
     "mrm": "mrm --preset=@adonisjs/mrm-preset",
     "pretest": "npm run lint",
@@ -9,7 +16,7 @@
     "lint": "tslint --project tsconfig.json",
     "clean": "del build",
     "compile": "npm run lint && npm run clean && tsc",
-    "build": "npm run compile && typedoc --theme markdown --excludePrivate --mdHideSources && git add docs",
+    "build": "npm run compile && typedoc --theme markdown --excludePrivate --HideSources && git add docs",
     "commit": "git-cz",
     "release": "np",
     "version": "npm run build"
@@ -18,7 +25,7 @@
     "emitter",
     "events"
   ],
-  "author": "virk,poppinss",
+  "author": "virk,adonisjs",
   "license": "MIT",
   "devDependencies": {
     "@adonisjs/fold": "^6.1.6",
@@ -48,12 +55,6 @@
       ".ts"
     ]
   },
-  "main": "build/index.js",
-  "files": [
-    "build/src",
-    "build/index.d.ts",
-    "build/index.js"
-  ],
   "husky": {
     "hooks": {
       "pre-commit": "doctoc README.md --title='## Table of contents' && git add README.md",
@@ -79,10 +80,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/poppinss/events.git"
+    "url": "git+https://github.com/adonisjs/events.git"
   },
   "bugs": {
-    "url": "https://github.com/poppinss/events/issues"
+    "url": "https://github.com/adonisjs/events/issues"
   },
-  "homepage": "https://github.com/poppinss/events#readme"
+  "homepage": "https://github.com/adonisjs/events#readme"
 }

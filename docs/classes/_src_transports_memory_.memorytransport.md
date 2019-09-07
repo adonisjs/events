@@ -1,10 +1,10 @@
-**[@poppinss/events](../README.md)**
+**[@adonisjs/events](../README.md)**
 
 [Globals](../README.md) › ["src/Transports/Memory"](../modules/_src_transports_memory_.md) › [MemoryTransport](_src_transports_memory_.memorytransport.md)
 
 # Class: MemoryTransport
 
-Memory transparent adheres to the [EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md) to keep
+Memory transparent adheres to the [[EmitterTransportContract]] to keep
 emitted events with memory, that can be used later for tests assertions.
 
 ## Hierarchy
@@ -13,7 +13,7 @@ emitted events with memory, that can be used later for tests assertions.
 
 ## Implements
 
-* [EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md)
+* EmitterTransportContract
 
 ## Index
 
@@ -43,14 +43,14 @@ emitted events with memory, that can be used later for tests assertions.
 
 ###  _off
 
-▸ **_off**(`_event`: string, `_handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler)): *void*
+▸ **_off**(`_event`: string, `_handler`: EventHandler): *void*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
 `_event` | string |
-`_handler` | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
+`_handler` | EventHandler |
 
 **Returns:** *void*
 
@@ -73,8 +73,6 @@ ___
 ###  emit
 
 ▸ **emit**(`event`: string, `data`: any): *Promise‹void›*
-
-*Implementation of [EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md)*
 
 **Parameters:**
 
@@ -103,16 +101,14 @@ ___
 
 ###  off
 
-▸ **off**(`_event`: string, `_handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler)): *void*
-
-*Implementation of [EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md)*
+▸ **off**(`_event`: string, `_handler`: EventHandler): *void*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
 `_event` | string |
-`_handler` | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
+`_handler` | EventHandler |
 
 **Returns:** *void*
 
@@ -120,15 +116,13 @@ ___
 
 ###  offAny
 
-▸ **offAny**(`_handler`: [AnyHandler](../modules/_poppinss_events.md#anyhandler)): *void*
-
-*Implementation of [EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md)*
+▸ **offAny**(`_handler`: AnyHandler): *void*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`_handler` | [AnyHandler](../modules/_poppinss_events.md#anyhandler) |
+`_handler` | AnyHandler |
 
 **Returns:** *void*
 
@@ -136,16 +130,14 @@ ___
 
 ###  on
 
-▸ **on**(`_event`: string, `_handler`: [EventHandler](../modules/_poppinss_events.md#eventhandler)): *void*
-
-*Implementation of [EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md)*
+▸ **on**(`_event`: string, `_handler`: EventHandler): *void*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
 `_event` | string |
-`_handler` | [EventHandler](../modules/_poppinss_events.md#eventhandler) |
+`_handler` | EventHandler |
 
 **Returns:** *void*
 
@@ -153,15 +145,13 @@ ___
 
 ###  onAny
 
-▸ **onAny**(`_handler`: [AnyHandler](../modules/_poppinss_events.md#anyhandler)): *void*
-
-*Implementation of [EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md)*
+▸ **onAny**(`_handler`: AnyHandler): *void*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`_handler` | [AnyHandler](../modules/_poppinss_events.md#anyhandler) |
+`_handler` | AnyHandler |
 
 **Returns:** *void*
 
@@ -170,8 +160,6 @@ ___
 ###  once
 
 ▸ **once**(`_event`: string): *Promise‹void›*
-
-*Implementation of [EmitterTransportContract](../interfaces/_poppinss_events.emittertransportcontract.md)*
 
 **Parameters:**
 

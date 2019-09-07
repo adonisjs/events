@@ -1,4 +1,4 @@
-**[@poppinss/events](../README.md)**
+**[@adonisjs/events](../README.md)**
 
 [Globals](../README.md) › ["src/FakeEmitter/index"](_src_fakeemitter_index_.md)
 

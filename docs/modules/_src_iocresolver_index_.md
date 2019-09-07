@@ -1,4 +1,4 @@
-**[@poppinss/events](../README.md)**
+**[@adonisjs/events](../README.md)**
 
 [Globals](../README.md) › ["src/IocResolver/index"](_src_iocresolver_index_.md)
 

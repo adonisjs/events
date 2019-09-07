@@ -1,9 +1,9 @@
 /**
- * @module @poppinss/events
+ * @module @adonisjs/events
  */
 
 /*
-* @poppinss/events
+* @adonisjs/events
 *
 * (c) Harminder Virk <virk@adonisjs.com>
 *
@@ -11,7 +11,9 @@
 * file that was distributed with this source code.
 */
 
-import { EmitterTransportContract, EventHandler, AnyHandler } from '../contracts'
+/// <reference path="../../adonis-typings/events.ts" />
+
+import { EmitterTransportContract, EventHandler, AnyHandler } from '@ioc:Adonis/Core/Event'
 
 /**
  * Memory transparent adheres to the [[EmitterTransportContract]] to keep

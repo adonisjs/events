@@ -1,9 +1,9 @@
 /**
- * @module @poppinss/events
+ * @module @adonisjs/events
  */
 
 /*
-* @poppinss/events
+* @adonisjs/events
 *
 * (c) Harminder Virk <virk@adonisjs.com>
 *

@@ -1,4 +1,4 @@
-**[@poppinss/events](../README.md)**
+**[@adonisjs/events](../README.md)**
 
 [Globals](../README.md) › ["src/IocResolver/index"](../modules/_src_iocresolver_index_.md) › [IocResolver](_src_iocresolver_index_.iocresolver.md)
 
@@ -26,7 +26,7 @@ the event listeners properly.
 
 ###  getAnyHandler
 
-▸ **getAnyHandler**(`handler`: string): *[AnyHandler](../modules/_poppinss_events.md#anyhandler)*
+▸ **getAnyHandler**(`handler`: string): *AnyHandler*
 
 Returns Event handler for wildcard events. Adding the same
 handler for multiple times is a noop.
@@ -37,13 +37,13 @@ Name | Type |
 ------ | ------ |
 `handler` | string |
 
-**Returns:** *[AnyHandler](../modules/_poppinss_events.md#anyhandler)*
+**Returns:** *AnyHandler*
 
 ___
 
 ###  getEventHandler
 
-▸ **getEventHandler**(`event`: string, `handler`: string): *[EventHandler](../modules/_poppinss_events.md#eventhandler)*
+▸ **getEventHandler**(`event`: string, `handler`: string): *EventHandler*
 
 Returns event handler callback for an IoC container string reference.
 Adding same handler for the same event is noop.
@@ -55,7 +55,7 @@ Name | Type |
 `event` | string |
 `handler` | string |
 
-**Returns:** *[EventHandler](../modules/_poppinss_events.md#eventhandler)*
+**Returns:** *EventHandler*
 
 ___
 
@@ -77,7 +77,7 @@ ___
 
 ###  removeAnyHandler
 
-▸ **removeAnyHandler**(`handler`: string): *[AnyHandler](../modules/_poppinss_events.md#anyhandler) | null*
+▸ **removeAnyHandler**(`handler`: string): *AnyHandler | null*
 
 Removes and returns the handler for a string reference.
 
@@ -87,13 +87,13 @@ Name | Type |
 ------ | ------ |
 `handler` | string |
 
-**Returns:** *[AnyHandler](../modules/_poppinss_events.md#anyhandler) | null*
+**Returns:** *AnyHandler | null*
 
 ___
 
 ###  removeEventHandler
 
-▸ **removeEventHandler**(`event`: string, `handler`: string): *[EventHandler](../modules/_poppinss_events.md#eventhandler) | null*
+▸ **removeEventHandler**(`event`: string, `handler`: string): *EventHandler | null*
 
 Removes the event handler from the tracked list and also returns
 it back.
@@ -105,4 +105,4 @@ Name | Type |
 `event` | string |
 `handler` | string |
 
-**Returns:** *[EventHandler](../modules/_poppinss_events.md#eventhandler) | null*
+**Returns:** *EventHandler | null*

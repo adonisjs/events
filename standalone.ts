@@ -1,9 +1,9 @@
 /**
- * @module @poppinss/events
+ * @module @adonisjs/events
  */
 
 /*
-* @poppinss/events
+* @adonisjs/events
 *
 * (c) Harminder Virk <virk@adonisjs.com>
 *
@@ -13,4 +13,3 @@
 
 export { Emitter } from './src/Emitter'
 export { FakeEmitter } from './src/FakeEmitter'
-export { EmitterContract, AnyHandler, EventHandler } from './src/contracts'

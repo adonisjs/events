@@ -1,9 +1,9 @@
 /**
- * @module @poppinss/events
+ * @module @adonisjs/events
  */
 
 /*
-* @poppinss/events
+* @adonisjs/events
 *
 * (c) Harminder Virk <virk@adonisjs.com>
 *
@@ -11,8 +11,10 @@
 * file that was distributed with this source code.
 */
 
+/// <reference path="../../adonis-typings/events.ts" />
+
 import { parseIocReference, callIocReference } from '@poppinss/utils'
-import { AnyHandler, EventHandler } from '../contracts'
+import { AnyHandler, EventHandler } from '@ioc:Adonis/Core/Event'
 
 /**
  * Returns a callback that encapsulate the logic of making an

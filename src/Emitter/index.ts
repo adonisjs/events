@@ -1,15 +1,17 @@
 /**
- * @module @poppinss/events
+ * @module @adonisjs/events
  */
 
 /*
-* @poppinss/events
+* @adonisjs/events
 *
 * (c) Harminder Virk <virk@adonisjs.com>
 *
 * For the full copyright and license information, please view the LICENSE
 * file that was distributed with this source code.
 */
+
+/// <reference path="../../adonis-typings/events.ts" />
 
 import Emittery from 'emittery'
 import { IocResolver } from '../IocResolver'
@@ -19,7 +21,7 @@ import {
   EventHandler,
   EmitterContract,
   EmitterTransportContract,
-} from '../contracts'
+} from '@ioc:Adonis/Core/Event'
 
 /**
  * Emitter class exposes the API for async event emitter built on top of
