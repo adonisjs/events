@@ -14,6 +14,10 @@ the event listeners properly.
 
 ## Index
 
+### Constructors
+
+* [constructor](_src_iocresolver_index_.iocresolver.md#constructor)
+
 ### Methods
 
 * [getAnyHandler](_src_iocresolver_index_.iocresolver.md#getanyhandler)
@@ -21,6 +25,20 @@ the event listeners properly.
 * [namespace](_src_iocresolver_index_.iocresolver.md#namespace)
 * [removeAnyHandler](_src_iocresolver_index_.iocresolver.md#removeanyhandler)
 * [removeEventHandler](_src_iocresolver_index_.iocresolver.md#removeeventhandler)
+
+## Constructors
+
+###  constructor
+
+\+ **new IocResolver**(`container`: IocContract): *[IocResolver](_src_iocresolver_index_.iocresolver.md)*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`container` | IocContract |
+
+**Returns:** *[IocResolver](_src_iocresolver_index_.iocresolver.md)*
 
 ## Methods
 

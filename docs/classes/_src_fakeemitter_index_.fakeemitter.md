@@ -23,6 +23,10 @@ during testing.
 
 ## Index
 
+### Constructors
+
+* [constructor](_src_fakeemitter_index_.fakeemitter.md#constructor)
+
 ### Properties
 
 * [transport](_src_fakeemitter_index_.fakeemitter.md#transport)
@@ -46,6 +50,22 @@ during testing.
 * [on](_src_fakeemitter_index_.fakeemitter.md#on)
 * [onAny](_src_fakeemitter_index_.fakeemitter.md#onany)
 * [once](_src_fakeemitter_index_.fakeemitter.md#once)
+
+## Constructors
+
+###  constructor
+
+\+ **new FakeEmitter**(`container`: IocContract): *[FakeEmitter](_src_fakeemitter_index_.fakeemitter.md)*
+
+*Inherited from [Emitter](_src_emitter_index_.emitter.md).[constructor](_src_emitter_index_.emitter.md#constructor)*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`container` | IocContract |
+
+**Returns:** *[FakeEmitter](_src_fakeemitter_index_.fakeemitter.md)*
 
 ## Properties
 

@@ -24,6 +24,10 @@ for different events.
 
 ## Index
 
+### Constructors
+
+* [constructor](_src_emitter_index_.emitter.md#constructor)
+
 ### Properties
 
 * [transport](_src_emitter_index_.emitter.md#transport)
@@ -42,6 +46,20 @@ for different events.
 * [on](_src_emitter_index_.emitter.md#on)
 * [onAny](_src_emitter_index_.emitter.md#onany)
 * [once](_src_emitter_index_.emitter.md#once)
+
+## Constructors
+
+###  constructor
+
+\+ **new Emitter**(`container`: IocContract): *[Emitter](_src_emitter_index_.emitter.md)*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`container` | IocContract |
+
+**Returns:** *[Emitter](_src_emitter_index_.emitter.md)*
 
 ## Properties
 
