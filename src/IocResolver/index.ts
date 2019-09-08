@@ -26,6 +26,7 @@ export class IocResolver {
   private _eventHandlers: Map<string, Map<string, EventHandler>> = new Map()
   private _anyHandlers: Map<string, AnyHandler> = new Map()
   private _resolver: BaseResolver
+  private _namespace?: string
 
   constructor (container: IocContract) {
     this._resolver = new BaseResolver(container, 'eventListeners', 'App/Listeners')
@@ -35,16 +36,9 @@ export class IocResolver {
    * Returns the listener by resolving the namespace from the IoC container
    */
   private _getReferenceListener (handler: string) {
-    return function dynamicEventHandler (...args: any[]) {
-      return this._resolver.call(handler, args)
-    }.bind(this)
-  }
-
-  /**
-   * Define custom namespace for Event listeners
-   */
-  public namespace (namespace: string) {
-    this._resolver['_fallbackNamespace'] = namespace
+    return (...args: any[]) => {
+      return (this._resolver as BaseResolver).call(handler, this._namespace, args)
+    }
   }
 
   /**
@@ -56,6 +50,13 @@ export class IocResolver {
     }
 
     return this._eventHandlers.get(event)!
+  }
+
+  /**
+   * Define custom namespace for Event listeners
+   */
+  public namespace (namespace: string) {
+    this._namespace = namespace
   }
 
   /**
