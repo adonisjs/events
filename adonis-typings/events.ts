@@ -82,6 +82,11 @@ declare module '@ioc:Adonis/Core/Event' {
     hasListeners<K extends keyof T | string> (event?: K): boolean
   }
 
-  const Event: EmitterContract
+  /**
+   * An interface to define typed events
+   */
+  export interface EventsList {}
+
+  const Event: EmitterContract<EventsList>
   export default Event
 }
