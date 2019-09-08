@@ -71,7 +71,7 @@
     "anyBranch": false
   },
   "dependencies": {
-    "@poppinss/utils": "^1.0.6",
+    "@poppinss/utils": "^1.0.7",
     "emittery": "^0.4.1"
   },
   "directories": {

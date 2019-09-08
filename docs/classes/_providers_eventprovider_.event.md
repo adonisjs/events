@@ -20,7 +20,7 @@
 
 ### Methods
 
-* [$registerEmitter](_providers_eventprovider_.event.md#protected-$registeremitter)
+* [register](_providers_eventprovider_.event.md#register)
 
 ## Constructors
 
@@ -44,9 +44,9 @@ Name | Type |
 
 ## Methods
 
-### `Protected` $registerEmitter
+###  register
 
-▸ **$registerEmitter**(): *void*
+▸ **register**(): *void*
 
 Register `Event emitter` to the container.
 
