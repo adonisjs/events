@@ -8,4 +8,4 @@
 
 ### Classes
 
-* [Event](../classes/_providers_eventprovider_.event.md)
+* [EventProvider](../classes/_providers_eventprovider_.eventprovider.md)
