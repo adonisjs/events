@@ -1,6 +1,6 @@
 **[@adonisjs/events](../README.md)**
 
-[Globals](../README.md) › ["src/Transports/Memory"](_src_transports_memory_.md)
+[Globals](../README.md) › [&quot;src/Transports/Memory&quot;](_src_transports_memory_.md)
 
 # External module: "src/Transports/Memory"
 

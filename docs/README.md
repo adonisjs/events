@@ -2,6 +2,8 @@
 
 [Globals](README.md)
 
+# @adonisjs/events
+
 ## Index
 
 ### External modules

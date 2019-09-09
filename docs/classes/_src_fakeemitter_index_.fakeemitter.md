@@ -1,6 +1,6 @@
 **[@adonisjs/events](../README.md)**
 
-[Globals](../README.md) › ["src/FakeEmitter/index"](../modules/_src_fakeemitter_index_.md) › [FakeEmitter](_src_fakeemitter_index_.fakeemitter.md)
+[Globals](../README.md) › [&quot;src/FakeEmitter/index&quot;](../modules/_src_fakeemitter_index_.md) › [FakeEmitter](_src_fakeemitter_index_.fakeemitter.md)
 
 # Class: FakeEmitter <**T**>
 
@@ -128,7 +128,7 @@ Remove existing event listener.
 Name | Type |
 ------ | ------ |
 `event` | K |
-`handler` | EventHandler \| string |
+`handler` | EventHandler &#124; string |
 
 **Returns:** *void*
 
@@ -145,7 +145,7 @@ Name | Type |
 Name | Type |
 ------ | ------ |
 `event` | K |
-`handler` | EventHandler \| string |
+`handler` | EventHandler &#124; string |
 
 **Returns:** *void*
 
@@ -343,7 +343,7 @@ Remove existing event listener
 Name | Type |
 ------ | ------ |
 `event` | K |
-`handler` | EventHandler \| string |
+`handler` | EventHandler &#124; string |
 
 **Returns:** *void*
 
@@ -360,7 +360,7 @@ Name | Type |
 Name | Type |
 ------ | ------ |
 `event` | K |
-`handler` | EventHandler \| string |
+`handler` | EventHandler &#124; string |
 
 **Returns:** *void*
 
@@ -378,7 +378,7 @@ Remove existing event listener for catch all handler
 
 Name | Type |
 ------ | ------ |
-`handler` | AnyHandler \| string |
+`handler` | AnyHandler &#124; string |
 
 **Returns:** *void*
 
@@ -401,7 +401,7 @@ Define event handler for a given event
 Name | Type |
 ------ | ------ |
 `event` | K |
-`handler` | EventHandler‹T[K]› \| string |
+`handler` | EventHandler‹T[K]› &#124; string |
 
 **Returns:** *this*
 
@@ -418,7 +418,7 @@ Name | Type |
 Name | Type |
 ------ | ------ |
 `event` | K |
-`handler` | EventHandler‹T[K]› \| string |
+`handler` | EventHandler‹T[K]› &#124; string |
 
 **Returns:** *this*
 
@@ -436,7 +436,7 @@ Define catch all event handler to listen for all events.
 
 Name | Type |
 ------ | ------ |
-`handler` | AnyHandler \| string |
+`handler` | AnyHandler &#124; string |
 
 **Returns:** *this*
 
@@ -460,7 +460,7 @@ only once.
 Name | Type |
 ------ | ------ |
 `event` | K |
-`handler` | EventHandler‹T[K]› \| string |
+`handler` | EventHandler‹T[K]› &#124; string |
 
 **Returns:** *this*
 
@@ -477,6 +477,6 @@ Name | Type |
 Name | Type |
 ------ | ------ |
 `event` | K |
-`handler` | EventHandler‹T[K]› \| string |
+`handler` | EventHandler‹T[K]› &#124; string |
 
 **Returns:** *this*

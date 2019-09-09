@@ -1,6 +1,6 @@
 **[@adonisjs/events](../README.md)**
 
-[Globals](../README.md) › ["providers/EventProvider"](_providers_eventprovider_.md)
+[Globals](../README.md) › [&quot;providers/EventProvider&quot;](_providers_eventprovider_.md)
 
 # External module: "providers/EventProvider"
 

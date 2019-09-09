@@ -1,6 +1,6 @@
 **[@adonisjs/events](../README.md)**
 
-[Globals](../README.md) › ["src/Transports/Memory"](../modules/_src_transports_memory_.md) › [MemoryTransport](_src_transports_memory_.memorytransport.md)
+[Globals](../README.md) › [&quot;src/Transports/Memory&quot;](../modules/_src_transports_memory_.md) › [MemoryTransport](_src_transports_memory_.memorytransport.md)
 
 # Class: MemoryTransport
 
