@@ -13,8 +13,7 @@
 
 /// <reference path="../../adonis-typings/events.ts" />
 
-import { IocContract } from '@adonisjs/fold'
-import { IoCResolver as BaseResolver } from '@poppinss/utils'
+import { IocContract, IocResolverContract } from '@adonisjs/fold'
 import { AnyHandler, EventHandler } from '@ioc:Adonis/Core/Event'
 
 /**
@@ -25,11 +24,11 @@ import { AnyHandler, EventHandler } from '@ioc:Adonis/Core/Event'
 export class IocResolver {
   private _eventHandlers: Map<string, Map<string, EventHandler>> = new Map()
   private _anyHandlers: Map<string, AnyHandler> = new Map()
-  private _resolver: BaseResolver
+  private _resolver: IocResolverContract
   private _namespace?: string
 
   constructor (container: IocContract) {
-    this._resolver = new BaseResolver(container, 'eventListeners', 'App/Listeners')
+    this._resolver = container.getResolver(undefined ,'eventListeners', 'App/Listeners')
   }
 
   /**
@@ -37,7 +36,7 @@ export class IocResolver {
    */
   private _getReferenceListener (handler: string) {
     return (...args: any[]) => {
-      return (this._resolver as BaseResolver).call(handler, this._namespace, args)
+      return (this._resolver as IocResolverContract).call(handler, this._namespace, args)
     }
   }
 
