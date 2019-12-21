@@ -49,8 +49,8 @@ test.group('Events', () => {
       assert.deepEqual(data, { id: 1 })
     })
 
-    event.onAny((event, data) => {
-      assert.equal(event, 'new:user')
+    event.onAny((name, data) => {
+      assert.equal(name, 'new:user')
       assert.deepEqual(data, { id: 1 })
     })
 
@@ -104,8 +104,8 @@ test.group('Events', () => {
       assert.deepEqual(data, { id: 1 })
     })
 
-    event.onAny((event, data) => {
-      assert.equal(event, 'new:user')
+    event.onAny((name, data) => {
+      assert.equal(name, 'new:user')
       assert.deepEqual(data, { id: 1 })
     })
 
