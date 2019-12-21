@@ -1,7 +1,3 @@
-/**
- * @module @adonisjs/events
- */
-
 /*
 * @adonisjs/events
 *
