@@ -201,7 +201,7 @@ test.group('Emitter IoC reference', () => {
     event.on('new:user', 'MyListeners.newUser')
     await event.emit('new:user', { id: 1 })
 
-    assert.equal(event['_iocResolver']['_eventHandlers'].get('new:user')!.size, 1)
+    assert.equal(event['iocResolver']['eventHandlers'].get('new:user')!.size, 1)
     assert.equal(event.listenerCount(), 1)
   })
 
@@ -230,7 +230,7 @@ test.group('Emitter IoC reference', () => {
     await event.emit('new:user', { id: 1 })
     await event.emit('new:user', { id: 1 })
 
-    assert.equal(event['_iocResolver']['_eventHandlers'].get('new:user')!.size, 0)
+    assert.equal(event['iocResolver']['eventHandlers'].get('new:user')!.size, 0)
     assert.equal(event.listenerCount(), 0)
   })
 
@@ -253,7 +253,7 @@ test.group('Emitter IoC reference', () => {
     event.on('new:user', 'MyListeners.newUser')
     await event.emit('new:user', { id: 1 })
 
-    assert.equal(event['_iocResolver']['_eventHandlers'].get('new:user')!.size, 1)
+    assert.equal(event['iocResolver']['eventHandlers'].get('new:user')!.size, 1)
     assert.equal(event.listenerCount(), 1)
   })
 
@@ -275,7 +275,7 @@ test.group('Emitter IoC reference', () => {
     event.once('new:user', 'MyListeners.newUser')
     await event.emit('new:user', { id: 1 })
 
-    assert.equal(event['_iocResolver']['_eventHandlers'].get('new:user')!.size, 0)
+    assert.equal(event['iocResolver']['eventHandlers'].get('new:user')!.size, 0)
     assert.equal(event.listenerCount(), 0)
   })
 
@@ -298,7 +298,7 @@ test.group('Emitter IoC reference', () => {
     event.onAny('MyListeners.newUser')
     await event.emit('new:user', { id: 1 })
 
-    assert.equal(event['_iocResolver']['_anyHandlers'].size, 1)
+    assert.equal(event['iocResolver']['anyHandlers'].size, 1)
     assert.equal(event.listenerCount(), 1)
   })
 
@@ -324,7 +324,7 @@ test.group('Emitter IoC reference', () => {
 
     await event.emit('new:user', { id: 1 })
 
-    assert.equal(event['_iocResolver']['_anyHandlers'].size, 1)
+    assert.equal(event['iocResolver']['anyHandlers'].size, 1)
     assert.equal(event.listenerCount(), 1)
   })
 
@@ -351,7 +351,7 @@ test.group('Emitter IoC reference', () => {
     await event.emit('new:user', { id: 1 })
     await event.emit('new:user', { id: 1 })
 
-    assert.equal(event['_iocResolver']['_anyHandlers'].size, 0)
+    assert.equal(event['iocResolver']['anyHandlers'].size, 0)
     assert.equal(event.listenerCount(), 0)
   })
 
@@ -373,7 +373,7 @@ test.group('Emitter IoC reference', () => {
     event.on('new:user', 'MyListeners.newUser')
     event.emit('new:user', { id: 1 })
 
-    assert.equal(event['_iocResolver']['_eventHandlers'].get('new:user')!.size, 1)
+    assert.equal(event['iocResolver']['eventHandlers'].get('new:user')!.size, 1)
     assert.equal(event.listenerCount(), 1)
   })
 })

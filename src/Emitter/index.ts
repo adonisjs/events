@@ -31,10 +31,10 @@ import {
  */
 export class Emitter<T extends any = any> implements EmitterContract<T> {
   public transport: EmitterTransportContract = new Emittery()
-  private _iocResolver: IocResolver
+  private iocResolver: IocResolver
 
   constructor (container: IocContract) {
-    this._iocResolver = new IocResolver(container)
+    this.iocResolver = new IocResolver(container)
   }
 
   /**
@@ -44,7 +44,7 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
   public on<K extends string> (event: K, handler: EventHandler<T[K]> | string): this
   public on<K extends keyof T | string> (event: K, handler: EventHandler<T[K]> | string): this {
     if (typeof (handler) === 'string') {
-      handler = this._iocResolver.getEventHandler(event as string, handler)
+      handler = this.iocResolver.getEventHandler(event as string, handler)
     }
 
     this.transport.on(event as string, handler)
@@ -60,8 +60,8 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
   public once<K extends keyof T | string> (event: K, handler: EventHandler<T[K]> | string): this {
     this.transport.once(event as string).then((data) => {
       if (typeof (handler) === 'string') {
-        this._iocResolver.getEventHandler(event as string, handler)(data)
-        this._iocResolver.removeEventHandler(event as string, handler)
+        this.iocResolver.getEventHandler(event as string, handler)(data)
+        this.iocResolver.removeEventHandler(event as string, handler)
       } else {
         handler(data)
       }
@@ -74,7 +74,7 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
    */
   public onAny (handler: AnyHandler | string): this {
     if (typeof (handler) === 'string') {
-      handler = this._iocResolver.getAnyHandler(handler)
+      handler = this.iocResolver.getAnyHandler(handler)
     }
 
     this.transport.onAny(handler)
@@ -97,7 +97,7 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
   public off<K extends string> (event: K, handler: EventHandler | string): void
   public off<K extends keyof T | string> (event: K, handler: EventHandler | string): void {
     if (typeof (handler) === 'string') {
-      const offHandler = this._iocResolver.removeEventHandler(event as string, handler)
+      const offHandler = this.iocResolver.removeEventHandler(event as string, handler)
       if (offHandler) {
         this.transport.off(event as string, offHandler)
       }
@@ -112,7 +112,7 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
    */
   public offAny (handler: AnyHandler | string): void {
     if (typeof (handler) === 'string') {
-      const offHandler = this._iocResolver.removeAnyHandler(handler)
+      const offHandler = this.iocResolver.removeAnyHandler(handler)
       if (offHandler) {
         this.transport.offAny(offHandler)
       }
@@ -173,7 +173,7 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
    * by default.
    */
   public namespace (namespace: string): this {
-    this._iocResolver.namespace(namespace)
+    this.iocResolver.namespace(namespace)
     return this
   }
 }

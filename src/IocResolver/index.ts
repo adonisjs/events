@@ -22,40 +22,40 @@ import { AnyHandler, EventHandler } from '@ioc:Adonis/Core/Event'
  * the event listeners properly.
  */
 export class IocResolver {
-  private _eventHandlers: Map<string, Map<string, EventHandler>> = new Map()
-  private _anyHandlers: Map<string, AnyHandler> = new Map()
-  private _resolver: IocResolverContract
-  private _namespace?: string
+  private eventHandlers: Map<string, Map<string, EventHandler>> = new Map()
+  private anyHandlers: Map<string, AnyHandler> = new Map()
+  private containerResolver: IocResolverContract
+  private listenersBaseNamespace?: string
 
   constructor (container: IocContract) {
-    this._resolver = container.getResolver(undefined ,'eventListeners', 'App/Listeners')
+    this.containerResolver = container.getResolver(undefined ,'eventListeners', 'App/Listeners')
   }
 
   /**
    * Returns the listener by resolving the namespace from the IoC container
    */
-  private _getReferenceListener (handler: string) {
+  private getReferenceListener (handler: string) {
     return (...args: any[]) => {
-      return (this._resolver as IocResolverContract).call(handler, this._namespace, args)
+      return (this.containerResolver as IocResolverContract).call(handler, this.listenersBaseNamespace, args)
     }
   }
 
   /**
    * Returns all handlers for a given event.
    */
-  private _getHandlersFor (event: string) {
-    if (!this._eventHandlers.has(event)) {
-      this._eventHandlers.set(event, new Map())
+  private getHandlersFor (event: string) {
+    if (!this.eventHandlers.has(event)) {
+      this.eventHandlers.set(event, new Map())
     }
 
-    return this._eventHandlers.get(event)!
+    return this.eventHandlers.get(event)!
   }
 
   /**
    * Define custom namespace for Event listeners
    */
   public namespace (namespace: string) {
-    this._namespace = namespace
+    this.listenersBaseNamespace = namespace
   }
 
   /**
@@ -63,7 +63,7 @@ export class IocResolver {
    * Adding same handler for the same event is noop.
    */
   public getEventHandler (event: string, handler: string): EventHandler {
-    const handlers = this._getHandlersFor(event)
+    const handlers = this.getHandlersFor(event)
 
     /**
      * Return the existing handler when same handler for the
@@ -76,7 +76,7 @@ export class IocResolver {
       return handlers.get(handler)!
     }
 
-    const eventHandler = this._getReferenceListener(handler) as EventHandler
+    const eventHandler = this.getReferenceListener(handler) as EventHandler
 
     /**
      * Store reference to the handler, so that we can clean it off
@@ -92,7 +92,7 @@ export class IocResolver {
    * it back.
    */
   public removeEventHandler (event: string, handler: string): EventHandler | null {
-    const handlers = this._getHandlersFor(event)
+    const handlers = this.getHandlersFor(event)
 
     const eventHandler = handlers.get(handler)
     if (eventHandler) {
@@ -108,12 +108,12 @@ export class IocResolver {
    * handler for multiple times is a noop.
    */
   public getAnyHandler (handler: string): AnyHandler {
-    if (this._anyHandlers.has(handler)) {
-      return this._anyHandlers.get(handler)!
+    if (this.anyHandlers.has(handler)) {
+      return this.anyHandlers.get(handler)!
     }
 
-    const eventHandler = this._getReferenceListener(handler) as AnyHandler
-    this._anyHandlers.set(handler, eventHandler)
+    const eventHandler = this.getReferenceListener(handler) as AnyHandler
+    this.anyHandlers.set(handler, eventHandler)
     return eventHandler
   }
 
@@ -121,9 +121,9 @@ export class IocResolver {
    * Removes and returns the handler for a string reference.
    */
   public removeAnyHandler (handler: string): AnyHandler | null {
-    const anyHandler = this._anyHandlers.get(handler)
+    const anyHandler = this.anyHandlers.get(handler)
     if (anyHandler) {
-      this._anyHandlers.delete(handler)
+      this.anyHandlers.delete(handler)
       return anyHandler
     }
 
