@@ -39,42 +39,141 @@ declare module '@ioc:Adonis/Core/Event' {
    */
   export interface EmitterContract<T extends any = any> {
     transport: EmitterTransportContract
+
+    /**
+     * Define a custom Ioc Container base namespace for resolving
+     * the listener bindings.
+     */
     namespace (namespace: string): this
 
+    /**
+     * Listen for an event
+     */
     on<K extends keyof T> (event: K, handler: EventHandler<T[K]> | string): this
+
+    /**
+     * Listen for an event
+     */
     on<K extends string> (event: K, handler: EventHandler<T[K]> | string): this
+
+    /**
+     * Listen for an event
+     */
     on<K extends keyof T | string> (event: K, handler: EventHandler<T[K]> | string): this
 
+    /**
+     * Listen for an event only once
+     */
     once<K extends keyof T> (event: K, handler: EventHandler<T[K]> | string): this
+
+    /**
+     * Listen for an event only once
+     */
     once<K extends string> (event: K, handler: EventHandler<T[K]> | string): this
+
+    /**
+     * Listen for an event only once
+     */
     once<K extends keyof T | string> (event: K, handler: EventHandler<T[K]> | string): this
 
+    /**
+     * Listen for all events
+     */
     onAny (handler: AnyHandler): this
 
+    /**
+     * Emit an event
+     */
     emit<K extends keyof T> (event: K, data: T[K]): Promise<void>
+
+    /**
+     * Emit an event
+     */
     emit<K extends string> (event: K, data: T[K]): Promise<void>
+
+    /**
+     * Emit an event
+     */
     emit<K extends keyof T | string> (event: K, data: T[K]): Promise<void>
 
+    /**
+     * Remove event listener
+     */
     off<K extends keyof T> (event: K, handler: EventHandler | string): void
+
+    /**
+     * Remove event listener
+     */
     off<K extends string> (event: K, handler: EventHandler | string): void
+
+    /**
+     * Remove event listener
+     */
     off<K extends keyof T | string> (event: K, handler: EventHandler | string): void
 
+    /**
+     * Remove event listener listening for all events
+     */
     offAny (handler: AnyHandler): void
 
+    /**
+     * Clear a given listener for a given event
+     */
     clearListener<K extends keyof T> (event: K, handler: EventHandler | string): void
+
+    /**
+     * Clear a given listener for a given event
+     */
     clearListener<K extends string> (event: K, handler: EventHandler | string): void
+
+    /**
+     * Clear a given listener for a given event
+     */
     clearListener<K extends keyof T | string> (event: K, handler: EventHandler | string): void
 
+    /**
+     * Clear all listeners for a given event
+     */
     clearListeners<K extends keyof T> (event: K): void
+
+    /**
+     * Clear all listeners for a given event
+     */
     clearListeners<K extends string> (event: K): void
+
+    /**
+     * Clear all listeners for a given event
+     */
     clearListeners<K extends keyof T | string> (event: K): void
 
+    /**
+     * Returns count of listeners listening for a given event
+     */
     listenerCount<K extends keyof T> (event?: K): number
+
+    /**
+     * Returns count of listeners listening for a given event
+     */
     listenerCount<K extends string> (event?: K): number
+
+    /**
+     * Returns count of listeners listening for a given event
+     */
     listenerCount<K extends keyof T | string> (event?: K): number
 
+    /**
+     * Returns true when an event has one or more listeners
+     */
     hasListeners<K extends keyof T> (event?: K): boolean
+
+    /**
+     * Returns true when an event has one or more listeners
+     */
     hasListeners<K extends string> (event?: K): boolean
+
+    /**
+     * Returns true when an event has one or more listeners
+     */
     hasListeners<K extends keyof T | string> (event?: K): boolean
   }
 
