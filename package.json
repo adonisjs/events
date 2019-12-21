@@ -4,9 +4,10 @@
   "description": "Event emitter with asynchronous events",
   "main": "build/providers/EventProvider.js",
   "files": [
-    "build/adonis-typings",
-    "build/providers",
     "build/src",
+    "build/providers",
+    "build/templates",
+    "build/adonis-typings",
     "build/standalone.d.ts",
     "build/standalone.js"
   ],
@@ -17,7 +18,8 @@
     "lint": "eslint . --ext=.ts",
     "clean": "del build",
     "compile": "npm run lint && npm run clean && tsc",
-    "build": "npm run compile && typedoc --theme markdown --excludePrivate --HideSources && git add docs",
+    "copyfiles": "copyfiles \"templates/**/*.txt\" build",
+    "build": "npm run compile && npm run copyfiles && typedoc --theme markdown --excludePrivate --hideSources && git add docs",
     "commit": "git-cz",
     "release": "np",
     "version": "npm run build"
@@ -33,6 +35,7 @@
     "@adonisjs/mrm-preset": "^2.2.3",
     "@types/node": "^12.12.21",
     "commitizen": "^4.0.3",
+    "copyfiles": "^2.1.1",
     "cz-conventional-changelog": "^3.0.2",
     "del-cli": "^3.0.0",
     "doctoc": "^1.4.0",
@@ -86,5 +89,15 @@
   "bugs": {
     "url": "https://github.com/adonisjs/events/issues"
   },
-  "homepage": "https://github.com/adonisjs/events#readme"
+  "homepage": "https://github.com/adonisjs/events#readme",
+  "adonisjs": {
+    "templates": {
+      "contracts": [
+        {
+          "src": "contracts/events.txt",
+          "dest": "events"
+        }
+      ]
+    }
+  }
 }

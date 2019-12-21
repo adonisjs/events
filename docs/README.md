@@ -1,6 +1,4 @@
-**[@adonisjs/events](README.md)**
-
-[Globals](README.md)
+[@adonisjs/events](README.md)
 
 # @adonisjs/events
 

@@ -1,6 +1,4 @@
-**[@adonisjs/events](../README.md)**
-
-[Globals](../README.md) › [&quot;src/FakeEmitter/index&quot;](../modules/_src_fakeemitter_index_.md) › [FakeEmitter](_src_fakeemitter_index_.fakeemitter.md)
+[@adonisjs/events](../README.md) › ["src/FakeEmitter/index"](../modules/_src_fakeemitter_index_.md) › [FakeEmitter](_src_fakeemitter_index_.fakeemitter.md)
 
 # Class: FakeEmitter <**T**>
 
@@ -15,7 +13,7 @@ during testing.
 
 * [Emitter](_src_emitter_index_.emitter.md)‹T›
 
-  * **FakeEmitter**
+  ↳ **FakeEmitter**
 
 ## Implements
 
@@ -71,7 +69,7 @@ Name | Type |
 
 ###  transport
 
-• **transport**: *[MemoryTransport](_src_transports_memory_.memorytransport.md)* =  new MemoryTransport()
+• **transport**: *[MemoryTransport](_src_transports_memory_.memorytransport.md)‹›* =  new MemoryTransport()
 
 *Overrides [Emitter](_src_emitter_index_.emitter.md).[transport](_src_emitter_index_.emitter.md#transport)*
 
@@ -231,7 +229,7 @@ ___
 
 ###  hasListeners
 
-▸ **hasListeners**<**K**>(`event?`: [K](undefined)): *boolean*
+▸ **hasListeners**<**K**>(`event?`: K): *boolean*
 
 *Inherited from [Emitter](_src_emitter_index_.emitter.md).[hasListeners](_src_emitter_index_.emitter.md#haslisteners)*
 
@@ -246,11 +244,11 @@ event or all events is greater than 0 or not.
 
 Name | Type |
 ------ | ------ |
-`event?` | [K](undefined) |
+`event?` | K |
 
 **Returns:** *boolean*
 
-▸ **hasListeners**<**K**>(`event?`: [K](undefined)): *boolean*
+▸ **hasListeners**<**K**>(`event?`: K): *boolean*
 
 *Inherited from [Emitter](_src_emitter_index_.emitter.md).[hasListeners](_src_emitter_index_.emitter.md#haslisteners)*
 
@@ -262,7 +260,7 @@ Name | Type |
 
 Name | Type |
 ------ | ------ |
-`event?` | [K](undefined) |
+`event?` | K |
 
 **Returns:** *boolean*
 
@@ -270,7 +268,7 @@ ___
 
 ###  listenerCount
 
-▸ **listenerCount**<**K**>(`event?`: [K](undefined)): *number*
+▸ **listenerCount**<**K**>(`event?`: K): *number*
 
 *Inherited from [Emitter](_src_emitter_index_.emitter.md).[listenerCount](_src_emitter_index_.emitter.md#listenercount)*
 
@@ -285,11 +283,11 @@ events.
 
 Name | Type |
 ------ | ------ |
-`event?` | [K](undefined) |
+`event?` | K |
 
 **Returns:** *number*
 
-▸ **listenerCount**<**K**>(`event?`: [K](undefined)): *number*
+▸ **listenerCount**<**K**>(`event?`: K): *number*
 
 *Inherited from [Emitter](_src_emitter_index_.emitter.md).[listenerCount](_src_emitter_index_.emitter.md#listenercount)*
 
@@ -301,7 +299,7 @@ Name | Type |
 
 Name | Type |
 ------ | ------ |
-`event?` | [K](undefined) |
+`event?` | K |
 
 **Returns:** *number*
 

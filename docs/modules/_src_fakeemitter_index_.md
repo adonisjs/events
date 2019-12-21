@@ -1,6 +1,4 @@
-**[@adonisjs/events](../README.md)**
-
-[Globals](../README.md) › [&quot;src/FakeEmitter/index&quot;](_src_fakeemitter_index_.md)
+[@adonisjs/events](../README.md) › ["src/FakeEmitter/index"](_src_fakeemitter_index_.md)
 
 # External module: "src/FakeEmitter/index"
 

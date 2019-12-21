@@ -1,6 +1,4 @@
-**[@adonisjs/events](../README.md)**
-
-[Globals](../README.md) › [&quot;src/Emitter/index&quot;](../modules/_src_emitter_index_.md) › [Emitter](_src_emitter_index_.emitter.md)
+[@adonisjs/events](../README.md) › ["src/Emitter/index"](../modules/_src_emitter_index_.md) › [Emitter](_src_emitter_index_.emitter.md)
 
 # Class: Emitter <**T**>
 
@@ -16,7 +14,7 @@ for different events.
 
 * **Emitter**
 
-  * [FakeEmitter](_src_fakeemitter_index_.fakeemitter.md)
+  ↳ [FakeEmitter](_src_fakeemitter_index_.fakeemitter.md)
 
 ## Implements
 
@@ -189,7 +187,7 @@ ___
 
 ###  hasListeners
 
-▸ **hasListeners**<**K**>(`event?`: [K](undefined)): *boolean*
+▸ **hasListeners**<**K**>(`event?`: K): *boolean*
 
 Returns a boolean telling if listeners count for a given
 event or all events is greater than 0 or not.
@@ -202,11 +200,11 @@ event or all events is greater than 0 or not.
 
 Name | Type |
 ------ | ------ |
-`event?` | [K](undefined) |
+`event?` | K |
 
 **Returns:** *boolean*
 
-▸ **hasListeners**<**K**>(`event?`: [K](undefined)): *boolean*
+▸ **hasListeners**<**K**>(`event?`: K): *boolean*
 
 **Type parameters:**
 
@@ -216,7 +214,7 @@ Name | Type |
 
 Name | Type |
 ------ | ------ |
-`event?` | [K](undefined) |
+`event?` | K |
 
 **Returns:** *boolean*
 
@@ -224,7 +222,7 @@ ___
 
 ###  listenerCount
 
-▸ **listenerCount**<**K**>(`event?`: [K](undefined)): *number*
+▸ **listenerCount**<**K**>(`event?`: K): *number*
 
 Returns count of listeners for a given event or all
 events.
@@ -237,11 +235,11 @@ events.
 
 Name | Type |
 ------ | ------ |
-`event?` | [K](undefined) |
+`event?` | K |
 
 **Returns:** *number*
 
-▸ **listenerCount**<**K**>(`event?`: [K](undefined)): *number*
+▸ **listenerCount**<**K**>(`event?`: K): *number*
 
 **Type parameters:**
 
@@ -251,7 +249,7 @@ Name | Type |
 
 Name | Type |
 ------ | ------ |
-`event?` | [K](undefined) |
+`event?` | K |
 
 **Returns:** *number*
 
