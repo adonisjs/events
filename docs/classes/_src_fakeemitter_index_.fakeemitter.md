@@ -69,7 +69,7 @@ Name | Type |
 
 ###  transport
 
-• **transport**: *[MemoryTransport](_src_transports_memory_.memorytransport.md)‹›* =  new MemoryTransport()
+• **transport**: *[MemoryTransport](_src_transports_memory_.memorytransport.md)‹›* = new MemoryTransport()
 
 *Overrides [Emitter](_src_emitter_index_.emitter.md).[transport](_src_emitter_index_.emitter.md#transport)*
 

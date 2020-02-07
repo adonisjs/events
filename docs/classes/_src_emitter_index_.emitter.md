@@ -63,7 +63,7 @@ Name | Type |
 
 ###  transport
 
-• **transport**: *EmitterTransportContract* =  new Emittery()
+• **transport**: *EmitterTransportContract* = new Emittery()
 
 ## Methods
 

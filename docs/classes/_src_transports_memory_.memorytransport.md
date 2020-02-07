@@ -35,7 +35,7 @@ emitted events with memory, that can be used later for tests assertions.
 
 ###  events
 
-• **events**: *object[]* =  []
+• **events**: *object[]* = []
 
 ## Methods
 
