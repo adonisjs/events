@@ -74,6 +74,14 @@
   "dependencies": {
     "emittery": "^0.6.0"
   },
+  "peerDependencies": {
+    "@adonisjs/fold": "6.x.x"
+  },
+  "peerDependenciesMeta": {
+    "@adonisjs/fold": {
+      "optional": true
+    }
+  },
   "directories": {
     "doc": "docs",
     "test": "test"
