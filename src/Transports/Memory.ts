@@ -22,28 +22,28 @@ export class MemoryTransport implements EmitterTransportContract {
     this.events.push({ event, data })
   }
 
-  public on (_event: string, _handler: EventHandler): void {
+  public on (_: string, __: EventHandler): void {
   }
 
-  public async once (_event: string): Promise<void> {
+  public async once (_: string): Promise<void> {
   }
 
-  public onAny (_handler: AnyHandler): void {
+  public onAny (__: AnyHandler): void {
   }
 
-  public _off (_event: string, _handler: EventHandler): void {
+  public _off (_: string, __: EventHandler): void {
   }
 
-  public offAny (_handler: AnyHandler): void {
+  public offAny (__: AnyHandler): void {
   }
 
-  public off (_event: string, _handler: EventHandler): void {
+  public off (_: string, __: EventHandler): void {
   }
 
-  public clearListeners (_event: string): void {
+  public clearListeners (_: string): void {
   }
 
-  public listenerCount (_event: string): number {
+  public listenerCount (_: string): number {
     return 0
   }
 }

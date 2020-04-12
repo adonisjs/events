@@ -16,22 +16,22 @@ declare module '@ioc:Adonis/Core/Event' {
   /**
    * Shape of catch all events handler
    */
-  export type AnyHandler<T extends any = any> = ((event: string, data: T) => Promise<void> | void)
+  export type AnyHandler<T extends any = any> = ((event: string | symbol, data: T) => Promise<void> | void)
 
   /**
    * The shape of emitter transport. This has to be same as
    * `emittery`.
    */
   export interface EmitterTransportContract {
-    on (event: string, handler: EventHandler): void
-    once (event: string): Promise<any>
-    onAny (handler: AnyHandler): void
-    emit (event: string, data: any): Promise<void>
-    off (event: string, handler: EventHandler): void
-    offAny (handler: AnyHandler): void
-    off (event: string, handler: EventHandler): void
-    clearListeners (event?: string): void
-    listenerCount (event?: string): number
+    on (event: string | symbol, handler: EventHandler): any
+    once (event: string | symbol): Promise<any>
+    onAny (handler: AnyHandler): any
+    emit (event: string | symbol, data: any): Promise<any>
+    off (event: string | symbol, handler: EventHandler): any
+    offAny (handler: AnyHandler): any
+    off (event: string | symbol, handler: EventHandler): any
+    clearListeners (event?: string | symbol): any
+    listenerCount (event?: string | symbol): number
   }
 
   /**
