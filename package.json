@@ -19,7 +19,7 @@
     "clean": "del build",
     "compile": "npm run lint && npm run clean && tsc",
     "copyfiles": "copyfiles \"templates/**/*.txt\" build",
-    "build": "npm run compile && npm run copyfiles && typedoc --theme markdown --excludePrivate --hideSources && git add docs",
+    "build": "npm run compile && npm run copyfiles",
     "commit": "git-cz",
     "release": "np",
     "version": "npm run build"
@@ -46,9 +46,6 @@
     "mrm": "^2.2.1",
     "np": "^5.2.1",
     "ts-node": "^8.8.2",
-    "typedoc": "^0.17.4",
-    "typedoc-plugin-external-module-name": "^3.0.0",
-    "typedoc-plugin-markdown": "^2.2.17",
     "typescript": "^3.8.3"
   },
   "nyc": {
