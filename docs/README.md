@@ -4,7 +4,7 @@
 
 ## Index
 
-### External modules
+### Modules
 
 * ["adonis-typings/events"](modules/_adonis_typings_events_.md)
 * ["providers/EventProvider"](modules/_providers_eventprovider_.md)

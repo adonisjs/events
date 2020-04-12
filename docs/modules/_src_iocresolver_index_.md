@@ -1,6 +1,6 @@
 [@adonisjs/events](../README.md) › ["src/IocResolver/index"](_src_iocresolver_index_.md)
 
-# External module: "src/IocResolver/index"
+# Module: "src/IocResolver/index"
 
 ## Index
 

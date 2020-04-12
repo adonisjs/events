@@ -41,14 +41,14 @@ emitted events with memory, that can be used later for tests assertions.
 
 ###  _off
 
-▸ **_off**(`_event`: string, `_handler`: EventHandler): *void*
+▸ **_off**(`_`: string, `__`: EventHandler): *void*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`_event` | string |
-`_handler` | EventHandler |
+`_` | string |
+`__` | EventHandler |
 
 **Returns:** *void*
 
@@ -56,13 +56,13 @@ ___
 
 ###  clearListeners
 
-▸ **clearListeners**(`_event`: string): *void*
+▸ **clearListeners**(`_`: string): *void*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`_event` | string |
+`_` | string |
 
 **Returns:** *void*
 
@@ -85,13 +85,13 @@ ___
 
 ###  listenerCount
 
-▸ **listenerCount**(`_event`: string): *number*
+▸ **listenerCount**(`_`: string): *number*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`_event` | string |
+`_` | string |
 
 **Returns:** *number*
 
@@ -99,14 +99,14 @@ ___
 
 ###  off
 
-▸ **off**(`_event`: string, `_handler`: EventHandler): *void*
+▸ **off**(`_`: string, `__`: EventHandler): *void*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`_event` | string |
-`_handler` | EventHandler |
+`_` | string |
+`__` | EventHandler |
 
 **Returns:** *void*
 
@@ -114,13 +114,13 @@ ___
 
 ###  offAny
 
-▸ **offAny**(`_handler`: AnyHandler): *void*
+▸ **offAny**(`__`: AnyHandler): *void*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`_handler` | AnyHandler |
+`__` | AnyHandler |
 
 **Returns:** *void*
 
@@ -128,14 +128,14 @@ ___
 
 ###  on
 
-▸ **on**(`_event`: string, `_handler`: EventHandler): *void*
+▸ **on**(`_`: string, `__`: EventHandler): *void*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`_event` | string |
-`_handler` | EventHandler |
+`_` | string |
+`__` | EventHandler |
 
 **Returns:** *void*
 
@@ -143,13 +143,13 @@ ___
 
 ###  onAny
 
-▸ **onAny**(`_handler`: AnyHandler): *void*
+▸ **onAny**(`__`: AnyHandler): *void*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`_handler` | AnyHandler |
+`__` | AnyHandler |
 
 **Returns:** *void*
 
@@ -157,12 +157,12 @@ ___
 
 ###  once
 
-▸ **once**(`_event`: string): *Promise‹void›*
+▸ **once**(`_`: string): *Promise‹void›*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`_event` | string |
+`_` | string |
 
 **Returns:** *Promise‹void›*

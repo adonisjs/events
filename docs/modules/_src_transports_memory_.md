@@ -1,6 +1,6 @@
 [@adonisjs/events](../README.md) › ["src/Transports/Memory"](_src_transports_memory_.md)
 
-# External module: "src/Transports/Memory"
+# Module: "src/Transports/Memory"
 
 ## Index
 

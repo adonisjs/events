@@ -1,6 +1,6 @@
 [@adonisjs/events](../README.md) › ["providers/EventProvider"](_providers_eventprovider_.md)
 
-# External module: "providers/EventProvider"
+# Module: "providers/EventProvider"
 
 ## Index
 

@@ -1,6 +1,6 @@
 [@adonisjs/events](../README.md) › ["src/FakeEmitter/index"](_src_fakeemitter_index_.md)
 
-# External module: "src/FakeEmitter/index"
+# Module: "src/FakeEmitter/index"
 
 ## Index
 
