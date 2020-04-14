@@ -6,7 +6,6 @@
   "files": [
     "build/src",
     "build/providers",
-    "build/templates",
     "build/adonis-typings",
     "build/standalone.d.ts",
     "build/standalone.js"
@@ -18,8 +17,7 @@
     "lint": "eslint . --ext=.ts",
     "clean": "del build",
     "compile": "npm run lint && npm run clean && tsc",
-    "copyfiles": "copyfiles \"templates/**/*.txt\" build",
-    "build": "npm run compile && npm run copyfiles",
+    "build": "npm run compile",
     "commit": "git-cz",
     "release": "np",
     "version": "npm run build"
@@ -35,7 +33,6 @@
     "@adonisjs/mrm-preset": "^2.3.0",
     "@types/node": "^13.11.1",
     "commitizen": "^4.0.4",
-    "copyfiles": "^2.2.0",
     "cz-conventional-changelog": "^3.1.0",
     "del-cli": "^3.0.0",
     "doctoc": "^1.4.0",
@@ -88,15 +85,5 @@
   "bugs": {
     "url": "https://github.com/adonisjs/events/issues"
   },
-  "homepage": "https://github.com/adonisjs/events#readme",
-  "adonisjs": {
-    "templates": {
-      "contracts": [
-        {
-          "src": "contracts/events.txt",
-          "dest": "events"
-        }
-      ]
-    }
-  }
+  "homepage": "https://github.com/adonisjs/events#readme"
 }
