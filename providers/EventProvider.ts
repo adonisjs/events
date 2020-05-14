@@ -11,14 +11,14 @@ import { IocContract } from '@adonisjs/fold'
 import { Emitter } from '../src/Emitter'
 
 export default class EventProvider {
-  constructor (protected $container: IocContract) {}
+  constructor (protected container: IocContract) {}
 
   /**
    * Register `Event emitter` to the container.
    */
   public register () {
-    this.$container.singleton('Adonis/Core/Event', () => {
-      return new Emitter(this.$container)
+    this.container.singleton('Adonis/Core/Event', () => {
+      return new Emitter(this.container)
     })
   }
 }
