@@ -18,6 +18,8 @@ declare module '@ioc:Adonis/Core/Event' {
    */
   export type AnyHandler<T extends any = any> = ((event: string | symbol, data: T) => Promise<void> | void)
 
+  export type EventData<T extends any, K extends any> = K extends keyof T ? T[K] : any
+
   /**
    * The shape of emitter transport. This has to be same as
    * `emittery`.
@@ -54,12 +56,7 @@ declare module '@ioc:Adonis/Core/Event' {
     /**
      * Listen for an event
      */
-    on<K extends string> (event: K, handler: EventHandler<T[K]> | string): this
-
-    /**
-     * Listen for an event
-     */
-    on<K extends keyof T | string> (event: K, handler: EventHandler<T[K]> | string): this
+    on<K extends string> (event: K, handler: EventHandler<EventData<T, K>> | string): this
 
     /**
      * Listen for an event only once
@@ -69,12 +66,7 @@ declare module '@ioc:Adonis/Core/Event' {
     /**
      * Listen for an event only once
      */
-    once<K extends string> (event: K, handler: EventHandler<T[K]> | string): this
-
-    /**
-     * Listen for an event only once
-     */
-    once<K extends keyof T | string> (event: K, handler: EventHandler<T[K]> | string): this
+    once<K extends string> (event: K, handler: EventHandler<EventData<T, K>> | string): this
 
     /**
      * Listen for all events
@@ -89,12 +81,7 @@ declare module '@ioc:Adonis/Core/Event' {
     /**
      * Emit an event
      */
-    emit<K extends string> (event: K, data: T[K]): Promise<void>
-
-    /**
-     * Emit an event
-     */
-    emit<K extends keyof T | string> (event: K, data: T[K]): Promise<void>
+    emit<K extends string> (event: K, data: EventData<T, K>): Promise<void>
 
     /**
      * Remove event listener
@@ -105,11 +92,6 @@ declare module '@ioc:Adonis/Core/Event' {
      * Remove event listener
      */
     off<K extends string> (event: K, handler: EventHandler | string): void
-
-    /**
-     * Remove event listener
-     */
-    off<K extends keyof T | string> (event: K, handler: EventHandler | string): void
 
     /**
      * Remove event listener listening for all events
@@ -127,11 +109,6 @@ declare module '@ioc:Adonis/Core/Event' {
     clearListener<K extends string> (event: K, handler: EventHandler | string): void
 
     /**
-     * Clear a given listener for a given event
-     */
-    clearListener<K extends keyof T | string> (event: K, handler: EventHandler | string): void
-
-    /**
      * Clear all listeners for a given event
      */
     clearListeners<K extends keyof T> (event: K): void
@@ -140,11 +117,6 @@ declare module '@ioc:Adonis/Core/Event' {
      * Clear all listeners for a given event
      */
     clearListeners<K extends string> (event: K): void
-
-    /**
-     * Clear all listeners for a given event
-     */
-    clearListeners<K extends keyof T | string> (event: K): void
 
     /**
      * Returns count of listeners listening for a given event
@@ -157,11 +129,6 @@ declare module '@ioc:Adonis/Core/Event' {
     listenerCount<K extends string> (event?: K): number
 
     /**
-     * Returns count of listeners listening for a given event
-     */
-    listenerCount<K extends keyof T | string> (event?: K): number
-
-    /**
      * Returns true when an event has one or more listeners
      */
     hasListeners<K extends keyof T> (event?: K): boolean
@@ -170,11 +137,6 @@ declare module '@ioc:Adonis/Core/Event' {
      * Returns true when an event has one or more listeners
      */
     hasListeners<K extends string> (event?: K): boolean
-
-    /**
-     * Returns true when an event has one or more listeners
-     */
-    hasListeners<K extends keyof T | string> (event?: K): boolean
   }
 
   /**

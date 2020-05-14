@@ -14,6 +14,7 @@ import { IocContract } from '@adonisjs/fold'
 import { IocResolver } from '../IocResolver'
 
 import {
+  EventData,
   AnyHandler,
   EventHandler,
   EmitterContract,
@@ -37,8 +38,8 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
    * Define event handler for a given event
    */
   public on<K extends keyof T> (event: K, handler: EventHandler<T[K]> | string): this
-  public on<K extends string> (event: K, handler: EventHandler<T[K]> | string): this
-  public on<K extends keyof T | string> (event: K, handler: EventHandler<T[K]> | string): this {
+  public on<K extends string> (event: K, handler: EventHandler<EventData<T, K>> | string): this
+  public on<K extends keyof T | string> (event: K, handler: EventHandler<EventData<T, K>> | string): this {
     if (typeof (handler) === 'string') {
       handler = this.iocResolver.getEventHandler(event as string, handler)
     }
@@ -52,8 +53,8 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
    * only once.
    */
   public once<K extends keyof T> (event: K, handler: EventHandler<T[K]> | string): this
-  public once<K extends string> (event: K, handler: EventHandler<T[K]> | string): this
-  public once<K extends keyof T | string> (event: K, handler: EventHandler<T[K]> | string): this {
+  public once<K extends string> (event: K, handler: EventHandler<EventData<T, K>> | string): this
+  public once<K extends keyof T | string> (event: K, handler: EventHandler<EventData<T, K>> | string): this {
     this.transport.once(event as string).then((data) => {
       if (typeof (handler) === 'string') {
         this.iocResolver.getEventHandler(event as string, handler)(data)
@@ -81,8 +82,8 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
    * Emit event
    */
   public emit<K extends keyof T> (event: K, data: T[K]): Promise<void>
-  public emit<K extends string> (event: K, data: T[K]): Promise<void>
-  public emit<K extends keyof T | string> (event: K, data: T[K]) {
+  public emit<K extends string> (event: K, data: EventData<T, K>): Promise<void>
+  public emit<K extends keyof T | string> (event: K, data: EventData<T, K>) {
     return this.transport.emit(event as string, data)
   }
 
@@ -91,7 +92,7 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
    */
   public off<K extends keyof T> (event: K, handler: EventHandler | string): void
   public off<K extends string> (event: K, handler: EventHandler | string): void
-  public off<K extends keyof T | string> (event: K, handler: EventHandler | string): void {
+  public off<K extends keyof T> (event: K | string, handler: EventHandler | string): void {
     if (typeof (handler) === 'string') {
       const offHandler = this.iocResolver.removeEventHandler(event as string, handler)
       if (offHandler) {
@@ -124,8 +125,8 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
    */
   public clearListener<K extends keyof T> (event: K, handler: EventHandler | string): void
   public clearListener<K extends string> (event: K, handler: EventHandler | string): void
-  public clearListener<K extends keyof T | string> (event: K, handler: EventHandler | string): void {
-    this.off(event, handler)
+  public clearListener<K extends keyof T> (event: K | string, handler: EventHandler | string): void {
+    this.off(event as string, handler)
   }
 
   /**
@@ -161,7 +162,7 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
   public hasListeners<K extends keyof T> (event?: K): boolean
   public hasListeners<K extends string> (event?: K): boolean
   public hasListeners<K extends keyof T | string> (event?: K): boolean {
-    return this.listenerCount(event) > 0
+    return this.listenerCount(event as string) > 0
   }
 
   /**
