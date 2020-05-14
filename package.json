@@ -72,7 +72,7 @@
     "emittery": "^0.7.0"
   },
   "peerDependencies": {
-    "@adonisjs/fold": "6.x.x"
+    "@adonisjs/fold": "^6.0.0"
   },
   "directories": {
     "doc": "docs",
