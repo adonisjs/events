@@ -153,6 +153,15 @@ test.group('Events', () => {
 		await event.emit('new:user', { id: 1 })
 		assert.equal(event.listenerCount(), 1)
 	})
+
+	test('raise exception when registering event handler as a string without IoC container', async (assert) => {
+		const event = new Emitter()
+		const fn = () => event.on('new:user', 'App/Listeners/Foo')
+		assert.throw(
+			fn,
+			'Cannot resolve string based event handler "App/Listeners/Foo". IoC container is not provided to the event emitter'
+		)
+	})
 })
 
 test.group('Fake Emitter', () => {
@@ -181,7 +190,7 @@ test.group('Emitter IoC reference', () => {
 		event.on('new:user', 'MyListeners.newUser')
 		await event.emit('new:user', { id: 1 })
 
-		assert.equal(event['iocResolver']['eventHandlers'].get('new:user')!.size, 1)
+		assert.equal(event['iocResolver']!['eventHandlers'].get('new:user')!.size, 1)
 		assert.equal(event.listenerCount(), 1)
 	})
 
@@ -210,7 +219,7 @@ test.group('Emitter IoC reference', () => {
 		await event.emit('new:user', { id: 1 })
 		await event.emit('new:user', { id: 1 })
 
-		assert.equal(event['iocResolver']['eventHandlers'].get('new:user')!.size, 0)
+		assert.equal(event['iocResolver']!['eventHandlers'].get('new:user')!.size, 0)
 		assert.equal(event.listenerCount(), 0)
 	})
 
@@ -233,7 +242,7 @@ test.group('Emitter IoC reference', () => {
 		event.on('new:user', 'MyListeners.newUser')
 		await event.emit('new:user', { id: 1 })
 
-		assert.equal(event['iocResolver']['eventHandlers'].get('new:user')!.size, 1)
+		assert.equal(event['iocResolver']!['eventHandlers'].get('new:user')!.size, 1)
 		assert.equal(event.listenerCount(), 1)
 	})
 
@@ -255,7 +264,7 @@ test.group('Emitter IoC reference', () => {
 		event.once('new:user', 'MyListeners.newUser')
 		await event.emit('new:user', { id: 1 })
 
-		assert.equal(event['iocResolver']['eventHandlers'].get('new:user')!.size, 0)
+		assert.equal(event['iocResolver']!['eventHandlers'].get('new:user')!.size, 0)
 		assert.equal(event.listenerCount(), 0)
 	})
 
@@ -278,7 +287,7 @@ test.group('Emitter IoC reference', () => {
 		event.onAny('MyListeners.newUser')
 		await event.emit('new:user', { id: 1 })
 
-		assert.equal(event['iocResolver']['anyHandlers'].size, 1)
+		assert.equal(event['iocResolver']!['anyHandlers'].size, 1)
 		assert.equal(event.listenerCount(), 1)
 	})
 
@@ -304,7 +313,7 @@ test.group('Emitter IoC reference', () => {
 
 		await event.emit('new:user', { id: 1 })
 
-		assert.equal(event['iocResolver']['anyHandlers'].size, 1)
+		assert.equal(event['iocResolver']!['anyHandlers'].size, 1)
 		assert.equal(event.listenerCount(), 1)
 	})
 
@@ -331,7 +340,7 @@ test.group('Emitter IoC reference', () => {
 		await event.emit('new:user', { id: 1 })
 		await event.emit('new:user', { id: 1 })
 
-		assert.equal(event['iocResolver']['anyHandlers'].size, 0)
+		assert.equal(event['iocResolver']!['anyHandlers'].size, 0)
 		assert.equal(event.listenerCount(), 0)
 	})
 
@@ -353,7 +362,7 @@ test.group('Emitter IoC reference', () => {
 		event.on('new:user', 'MyListeners.newUser')
 		event.emit('new:user', { id: 1 })
 
-		assert.equal(event['iocResolver']['eventHandlers'].get('new:user')!.size, 1)
+		assert.equal(event['iocResolver']!['eventHandlers'].get('new:user')!.size, 1)
 		assert.equal(event.listenerCount(), 1)
 	})
 })

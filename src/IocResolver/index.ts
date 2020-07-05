@@ -18,9 +18,30 @@ import { AnyHandler, EventHandler } from '@ioc:Adonis/Core/Event'
  * the event listeners properly.
  */
 export class IocResolver {
+	/**
+	 * A reference to the event handlers resolved from the IoC container and
+	 * cached. It is a map of
+	 *
+	 * [event, [namespace, resolvedHandler]]
+	 */
 	private eventHandlers: Map<string, Map<string, EventHandler>> = new Map()
+
+	/**
+	 * A reference to the catch all event handlers. They can be plain callbacks or reference
+	 * to an IoC container namespace
+	 */
 	private anyHandlers: Map<string, AnyHandler> = new Map()
+
+	/**
+	 * Reference to AdonisJS IoC container resolver. It looks for listeners inside the
+	 * `App/Listeners` namespace or the namespace defined inside `eventListeners`
+	 * property
+	 */
 	private containerResolver: IocResolverContract
+
+	/**
+	 * A custom base namespace defined directly on the event class.
+	 */
 	private listenersBaseNamespace?: string
 
 	constructor(container: IocContract) {
@@ -32,7 +53,7 @@ export class IocResolver {
 	 */
 	private getReferenceListener(handler: string) {
 		return (...args: any[]) => {
-			return (this.containerResolver as IocResolverContract).call(handler, this.listenersBaseNamespace, args)
+			return this.containerResolver.call(handler, this.listenersBaseNamespace, args)
 		}
 	}
 
