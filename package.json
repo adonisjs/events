@@ -38,7 +38,6 @@
 		"commitizen": "^4.1.2",
 		"cz-conventional-changelog": "^3.2.0",
 		"del-cli": "^3.0.1",
-		"doctoc": "^1.4.0",
 		"eslint": "^7.5.0",
 		"eslint-config-prettier": "^6.11.0",
 		"eslint-plugin-adonis": "^1.0.14",
@@ -63,7 +62,7 @@
 	},
 	"husky": {
 		"hooks": {
-			"pre-commit": "doctoc README.md --title='## Table of contents' && git add README.md && npm audit --production --json | ./node_modules/.bin/npm-audit-html && git add npm-audit.html",
+			"pre-commit": "npm audit --production --json | ./node_modules/.bin/npm-audit-html && git add npm-audit.html",
 			"commit-msg": "node ./node_modules/@adonisjs/mrm-preset/validateCommit/conventional/validate.js"
 		}
 	},
