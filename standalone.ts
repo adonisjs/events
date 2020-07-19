@@ -8,4 +8,3 @@
  */
 
 export { Emitter } from './src/Emitter'
-export { FakeEmitter } from './src/FakeEmitter'

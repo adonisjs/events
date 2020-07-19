@@ -10,7 +10,6 @@
 import test from 'japa'
 import { Ioc } from '@adonisjs/fold'
 import { Emitter } from '../src/Emitter'
-import { FakeEmitter } from '../src/FakeEmitter'
 
 test.group('Events', () => {
 	test('listen for an event', async (assert) => {
@@ -137,14 +136,6 @@ test.group('Events', () => {
 			fn,
 			'Cannot resolve string based event handler "App/Listeners/Foo". IoC container is not provided to the event emitter'
 		)
-	})
-})
-
-test.group('Fake Emitter', () => {
-	test('collect events within memory with fake emitter', async (assert) => {
-		const emitter = new FakeEmitter(new Ioc())
-		await emitter.emit('new:user', { id: 1 })
-		assert.deepEqual(emitter.transport.events, [{ event: 'new:user', data: { id: 1 } }])
 	})
 })
 
