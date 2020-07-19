@@ -8,7 +8,6 @@
  */
 
 import { IocContract } from '@adonisjs/fold'
-import { Emitter } from '../src/Emitter'
 
 export default class EventProvider {
 	constructor(protected container: IocContract) {}
@@ -18,6 +17,7 @@ export default class EventProvider {
 	 */
 	public register() {
 		this.container.singleton('Adonis/Core/Event', () => {
+			const { Emitter } = require('../src/Emitter')
 			return new Emitter(this.container)
 		})
 	}
