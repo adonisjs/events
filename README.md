@@ -6,7 +6,7 @@
 
 <div align="center">
   <h3>AdonisJS Event Emitter</h3>
-  <p>Asynchronous Event Emitter built on top of [emittery](https://github.com/sindresorhus/emittery) with first class for <strong>typed events</strong> and ability to <strong>trap events during tests</strong>.</p>
+  <p>Asynchronous Event Emitter built on top of <a href="https://github.com/sindresorhus/emittery">emittery</a> with first class for <strong>typed events</strong> and ability to <strong>trap events during tests</strong>.</p>
 </div>
 
 <br />
