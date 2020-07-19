@@ -14,14 +14,16 @@
 		"mrm": "mrm --preset=@adonisjs/mrm-preset",
 		"pretest": "npm run lint",
 		"test": "node japaFile.js",
-		"lint": "eslint . --ext=.ts",
 		"clean": "del build",
 		"compile": "npm run lint && npm run clean && tsc",
 		"build": "npm run compile",
 		"commit": "git-cz",
 		"release": "np",
 		"version": "npm run build",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"prepublishOnly": "npm run build",
+		"lint": "eslint . --ext=.ts",
+		"sync-labels": "github-label-sync --labels ./node_modules/@adonisjs/mrm-preset/gh-labels.json adonisjs/events"
 	},
 	"keywords": [
 		"emitter",
@@ -41,6 +43,7 @@
 		"eslint-config-prettier": "^6.11.0",
 		"eslint-plugin-adonis": "^1.0.14",
 		"eslint-plugin-prettier": "^3.1.4",
+		"github-label-sync": "^2.0.0",
 		"husky": "^4.2.5",
 		"japa": "^3.1.1",
 		"mrm": "^2.3.3",
