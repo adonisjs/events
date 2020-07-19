@@ -1,4 +1,6 @@
-require('ts-node/register')
+require('ts-node').register({
+	files: true,
+})
 
 const { configure } = require('japa')
 configure({

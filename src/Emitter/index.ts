@@ -16,8 +16,10 @@ import { IocResolver } from '../IocResolver'
 import {
 	AnyHandler,
 	EventsList,
+	TrapHandler,
 	EventHandler,
 	DataForEvent,
+	TrapAllHandler,
 	EmitterContract,
 	EmitterTransportContract,
 } from '@ioc:Adonis/Core/Event'
@@ -30,6 +32,10 @@ import {
 export class Emitter implements EmitterContract {
 	public transport: EmitterTransportContract = new Emittery()
 	private iocResolver?: IocResolver
+
+	private trappingEvents: boolean = false
+	private traps: Map<string, TrapHandler> = new Map()
+	private trapAllHandler?: TrapAllHandler
 
 	constructor(container?: IocContract) {
 		if (container) {
@@ -100,8 +106,24 @@ export class Emitter implements EmitterContract {
 	/**
 	 * Emit event
 	 */
-	public emit<K extends keyof EventsList | string>(event: K, data: DataForEvent<K>) {
-		return this.transport.emit(event as string, data)
+	public async emit<K extends keyof EventsList | string>(event: K, data: DataForEvent<K>) {
+		if (!this.trappingEvents) {
+			return this.transport.emit(event as string, data)
+		}
+
+		/**
+		 * Give preference to the handler for a specific event
+		 */
+		if (this.traps.has(event)) {
+			return this.traps.get(event)!(data)
+		}
+
+		/**
+		 * Invoke catch all (if defined)
+		 */
+		if (this.trapAllHandler) {
+			return this.trapAllHandler(event as any, data)
+		}
 	}
 
 	/**
@@ -183,6 +205,37 @@ export class Emitter implements EmitterContract {
 		if (this.iocResolver) {
 			this.iocResolver.namespace(namespace)
 		}
+		return this
+	}
+
+	/**
+	 * Trap event instead of emitting it
+	 */
+	public trap<K extends keyof EventsList | string>(
+		event: K,
+		handler: TrapHandler<DataForEvent<K>>
+	): this {
+		this.trappingEvents = true
+		this.traps.set(event, handler)
+		return this
+	}
+
+	/**
+	 * Trap all events instead of emitting them
+	 */
+	public trapAll(handler: TrapAllHandler): this {
+		this.trappingEvents = true
+		this.trapAllHandler = handler
+		return this
+	}
+
+	/**
+	 * Restore trap
+	 */
+	public restore(): this {
+		this.trappingEvents = false
+		this.traps.clear()
+		this.trapAllHandler = undefined
 		return this
 	}
 }

@@ -9,6 +9,11 @@
 
 declare module '@ioc:Adonis/Core/Event' {
 	/**
+	 * Returns the data type for a given key
+	 */
+	export type DataForEvent<K extends string> = K extends keyof EventsList ? EventsList[K] : any
+
+	/**
 	 * Shape of event handler
 	 */
 	export type EventHandler<T extends any = any> = (data: T) => Promise<void> | void
@@ -16,15 +21,20 @@ declare module '@ioc:Adonis/Core/Event' {
 	/**
 	 * Shape of catch all events handler
 	 */
-	export interface AnyHandler {
-		<K extends keyof EventsList>(event: K, data: EventsList[K]): Promise<void> | void
-		<K extends string>(event: K, data: DataForEvent<K>): Promise<void> | void
-	}
+	export type AnyHandler = (
+		event: keyof EventsList,
+		data: { [P in keyof EventsList]: EventsList[P] }[keyof EventsList]
+	) => Promise<void> | void
 
 	/**
-	 * Returns the data type for a given key
+	 * Shape of event trap handler
 	 */
-	export type DataForEvent<K extends string> = K extends keyof EventsList ? EventsList[K] : any
+	export type TrapHandler<T extends any = any> = EventHandler<T>
+
+	/**
+	 * Shape of trap all events handler
+	 */
+	export type TrapAllHandler = AnyHandler
 
 	/**
 	 * The shape of emitter transport. This has to be same as
@@ -33,10 +43,10 @@ declare module '@ioc:Adonis/Core/Event' {
 	export interface EmitterTransportContract {
 		on(event: string | symbol, handler: EventHandler): any
 		once(event: string | symbol): Promise<any>
-		onAny(handler: AnyHandler): any
+		onAny(handler: (event: any, data: any) => Promise<void> | void): any
 		emit(event: string | symbol, data: any): Promise<any>
 		off(event: string | symbol, handler: EventHandler): any
-		offAny(handler: AnyHandler): any
+		offAny(handler: (event: any, data: any) => Promise<void> | void): any
 		off(event: string | symbol, handler: EventHandler): any
 		clearListeners(event?: string | symbol): any
 		listenerCount(event?: string | symbol): number
@@ -69,7 +79,7 @@ declare module '@ioc:Adonis/Core/Event' {
 		/**
 		 * Listen for all events
 		 */
-		onAny(handler: AnyHandler): this
+		onAny(handler: AnyHandler | string): this
 
 		/**
 		 * Emit an event
@@ -86,7 +96,7 @@ declare module '@ioc:Adonis/Core/Event' {
 		/**
 		 * Remove event listener listening for all events
 		 */
-		offAny(handler: AnyHandler): void
+		offAny(handler: AnyHandler | string): void
 
 		/**
 		 * Clear a given listener for a given event
@@ -111,6 +121,23 @@ declare module '@ioc:Adonis/Core/Event' {
 		 */
 		hasListeners<K extends keyof EventsList>(event?: K): boolean
 		hasListeners<K extends string>(event?: K): boolean
+
+		/**
+		 * Trap a specific event. The event listener won't be executed during
+		 * the trap. Call [[this.restore]] to remove traps
+		 */
+		trap<K extends keyof EventsList>(event: K, handler: TrapHandler<EventsList[K]>): this
+		trap<K extends string>(event: K, handler: TrapHandler<DataForEvent<K>>): this
+
+		/**
+		 * Trap all the events, which are not trapped using the [[this.trap]] method
+		 */
+		trapAll(handler: AnyHandler): this
+
+		/**
+		 * Restore traps
+		 */
+		restore(): this
 	}
 
 	/**
