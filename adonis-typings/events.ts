@@ -16,7 +16,10 @@ declare module '@ioc:Adonis/Core/Event' {
 	/**
 	 * Shape of catch all events handler
 	 */
-	export type AnyHandler<T extends any = any> = (event: string | symbol, data: T) => Promise<void> | void
+	export type AnyHandler<T extends any = any> = (
+		event: string | symbol,
+		data: T
+	) => Promise<void> | void
 
 	export type EventData<T extends any, K extends any> = K extends keyof T ? T[K] : any
 

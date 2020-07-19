@@ -27,8 +27,9 @@ export class IocResolver {
 	private eventHandlers: Map<string, Map<string, EventHandler>> = new Map()
 
 	/**
-	 * A reference to the catch all event handlers. They can be plain callbacks or reference
-	 * to an IoC container namespace
+	 * A reference to the catch all event handlers. It is a map of
+	 *
+	 * [namespace, resolvedHandler]
 	 */
 	private anyHandlers: Map<string, AnyHandler> = new Map()
 
@@ -51,7 +52,7 @@ export class IocResolver {
 	/**
 	 * Returns the listener by resolving the namespace from the IoC container
 	 */
-	private getReferenceListener(handler: string) {
+	private getReferenceListener(handler: string): EventHandler {
 		return (...args: any[]) => {
 			return this.containerResolver.call(handler, this.listenersBaseNamespace, args)
 		}
@@ -93,7 +94,7 @@ export class IocResolver {
 			return handlers.get(handler)!
 		}
 
-		const eventHandler = this.getReferenceListener(handler) as EventHandler
+		const eventHandler = this.getReferenceListener(handler)
 
 		/**
 		 * Store reference to the handler, so that we can clean it off
@@ -129,7 +130,7 @@ export class IocResolver {
 			return this.anyHandlers.get(handler)!
 		}
 
-		const eventHandler = this.getReferenceListener(handler) as AnyHandler
+		const eventHandler = this.getReferenceListener(handler)
 		this.anyHandlers.set(handler, eventHandler)
 		return eventHandler
 	}

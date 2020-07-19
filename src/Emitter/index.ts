@@ -13,7 +13,13 @@ import Emittery from 'emittery'
 import { IocContract } from '@adonisjs/fold'
 import { IocResolver } from '../IocResolver'
 
-import { EventData, AnyHandler, EventHandler, EmitterContract, EmitterTransportContract } from '@ioc:Adonis/Core/Event'
+import {
+	EventData,
+	AnyHandler,
+	EventHandler,
+	EmitterContract,
+	EmitterTransportContract,
+} from '@ioc:Adonis/Core/Event'
 
 /**
  * Emitter class exposes the API for async event emitter built on top of
@@ -34,7 +40,7 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
 	 * Returns reference to the IoC resolver. Do not call this method until
 	 * handler is not a string
 	 */
-	private getResolver(handler: string) {
+	private getResolver(handler: string): IocResolver {
 		if (!this.iocResolver) {
 			throw new Error(
 				`Cannot resolve string based event handler "${handler}". IoC container is not provided to the event emitter`
@@ -49,7 +55,10 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
 	 */
 	public on<K extends keyof T>(event: K, handler: EventHandler<T[K]> | string): this
 	public on<K extends string>(event: K, handler: EventHandler<EventData<T, K>> | string): this
-	public on<K extends keyof T | string>(event: K, handler: EventHandler<EventData<T, K>> | string): this {
+	public on<K extends keyof T | string>(
+		event: K,
+		handler: EventHandler<EventData<T, K>> | string
+	): this {
 		if (typeof handler === 'string') {
 			handler = this.getResolver(handler).getEventHandler(event as string, handler)
 		}
@@ -64,7 +73,10 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
 	 */
 	public once<K extends keyof T>(event: K, handler: EventHandler<T[K]> | string): this
 	public once<K extends string>(event: K, handler: EventHandler<EventData<T, K>> | string): this
-	public once<K extends keyof T | string>(event: K, handler: EventHandler<EventData<T, K>> | string): this {
+	public once<K extends keyof T | string>(
+		event: K,
+		handler: EventHandler<EventData<T, K>> | string
+	): this {
 		this.transport.once(event as string).then((data) => {
 			if (typeof handler === 'string') {
 				this.getResolver(handler).getEventHandler(event as string, handler)(data)
