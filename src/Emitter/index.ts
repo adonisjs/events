@@ -14,9 +14,10 @@ import { IocContract } from '@adonisjs/fold'
 import { IocResolver } from '../IocResolver'
 
 import {
-	EventData,
 	AnyHandler,
+	EventsList,
 	EventHandler,
+	DataForEvent,
 	EmitterContract,
 	EmitterTransportContract,
 } from '@ioc:Adonis/Core/Event'
@@ -26,7 +27,7 @@ import {
  * Emittery. It also exposes an API to pre-define the Typescript types
  * for different events.
  */
-export class Emitter<T extends any = any> implements EmitterContract<T> {
+export class Emitter implements EmitterContract {
 	public transport: EmitterTransportContract = new Emittery()
 	private iocResolver?: IocResolver
 
@@ -53,11 +54,9 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
 	/**
 	 * Define event handler for a given event
 	 */
-	public on<K extends keyof T>(event: K, handler: EventHandler<T[K]> | string): this
-	public on<K extends string>(event: K, handler: EventHandler<EventData<T, K>> | string): this
-	public on<K extends keyof T | string>(
+	public on<K extends keyof EventsList | string>(
 		event: K,
-		handler: EventHandler<EventData<T, K>> | string
+		handler: EventHandler<DataForEvent<K>> | string
 	): this {
 		if (typeof handler === 'string') {
 			handler = this.getResolver(handler).getEventHandler(event as string, handler)
@@ -71,11 +70,9 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
 	 * Define event handler for a given event and to be called
 	 * only once.
 	 */
-	public once<K extends keyof T>(event: K, handler: EventHandler<T[K]> | string): this
-	public once<K extends string>(event: K, handler: EventHandler<EventData<T, K>> | string): this
-	public once<K extends keyof T | string>(
+	public once<K extends keyof EventsList | string>(
 		event: K,
-		handler: EventHandler<EventData<T, K>> | string
+		handler: EventHandler<DataForEvent<K>> | string
 	): this {
 		this.transport.once(event as string).then((data) => {
 			if (typeof handler === 'string') {
@@ -103,18 +100,14 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
 	/**
 	 * Emit event
 	 */
-	public emit<K extends keyof T>(event: K, data: T[K]): Promise<void>
-	public emit<K extends string>(event: K, data: EventData<T, K>): Promise<void>
-	public emit<K extends keyof T | string>(event: K, data: EventData<T, K>) {
+	public emit<K extends keyof EventsList | string>(event: K, data: DataForEvent<K>) {
 		return this.transport.emit(event as string, data)
 	}
 
 	/**
 	 * Remove existing event listener
 	 */
-	public off<K extends keyof T>(event: K, handler: EventHandler | string): void
-	public off<K extends string>(event: K, handler: EventHandler | string): void
-	public off<K extends keyof T>(event: K | string, handler: EventHandler | string): void {
+	public off<K extends keyof EventsList>(event: K | string, handler: EventHandler | string): void {
 		if (typeof handler === 'string') {
 			const offHandler = this.getResolver(handler).removeEventHandler(event as string, handler)
 			if (offHandler) {
@@ -145,18 +138,17 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
 	 * Remove existing event listener.
 	 * @alias off
 	 */
-	public clearListener<K extends keyof T>(event: K, handler: EventHandler | string): void
-	public clearListener<K extends string>(event: K, handler: EventHandler | string): void
-	public clearListener<K extends keyof T>(event: K | string, handler: EventHandler | string): void {
+	public clearListener<K extends keyof EventsList | string>(
+		event: K,
+		handler: EventHandler | string
+	): void {
 		this.off(event as string, handler)
 	}
 
 	/**
 	 * Clear all listeners for a given event
 	 */
-	public clearListeners<K extends keyof T>(event: K): void
-	public clearListeners<K extends string>(event: K): void
-	public clearListeners<K extends keyof T | string>(event: K): void {
+	public clearListeners<K extends keyof EventsList | string>(event: K): void {
 		this.transport.clearListeners(event as string)
 	}
 
@@ -171,9 +163,7 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
 	 * Returns count of listeners for a given event or all
 	 * events.
 	 */
-	public listenerCount<K extends keyof T>(event?: K): number
-	public listenerCount<K extends string>(event?: K): number
-	public listenerCount<K extends keyof T | string>(event?: K): number {
+	public listenerCount<K extends keyof EventsList | string>(event?: K): number {
 		return this.transport.listenerCount(event ? (event as string) : undefined)
 	}
 
@@ -181,9 +171,7 @@ export class Emitter<T extends any = any> implements EmitterContract<T> {
 	 * Returns a boolean telling if listeners count for a given
 	 * event or all events is greater than 0 or not.
 	 */
-	public hasListeners<K extends keyof T>(event?: K): boolean
-	public hasListeners<K extends string>(event?: K): boolean
-	public hasListeners<K extends keyof T | string>(event?: K): boolean {
+	public hasListeners<K extends keyof EventsList | string>(event?: K): boolean {
 		return this.listenerCount(event as string) > 0
 	}
 

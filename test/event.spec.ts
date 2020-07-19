@@ -130,30 +130,6 @@ test.group('Events', () => {
 		assert.equal(event.listenerCount(), 2)
 	})
 
-	test('emit via typed emitter', async (assert) => {
-		assert.plan(2)
-
-		const event = new Emitter<{ 'new:user': { id: number } }>(new Ioc())
-		event.on('new:user', (data) => {
-			assert.deepEqual(data, { id: 1 })
-		})
-
-		await event.emit('new:user', { id: 1 })
-		assert.equal(event.listenerCount(), 1)
-	})
-
-	test('listen typed events', async (assert) => {
-		assert.plan(2)
-
-		const event = new Emitter<{ 'new:user': { id: number } }>(new Ioc())
-		event.on('new:user', (data) => {
-			assert.deepEqual(data, { id: 1 })
-		})
-
-		await event.emit('new:user', { id: 1 })
-		assert.equal(event.listenerCount(), 1)
-	})
-
 	test('raise exception when registering event handler as a string without IoC container', async (assert) => {
 		const event = new Emitter()
 		const fn = () => event.on('new:user', 'App/Listeners/Foo')
@@ -166,7 +142,7 @@ test.group('Events', () => {
 
 test.group('Fake Emitter', () => {
 	test('collect events within memory with fake emitter', async (assert) => {
-		const emitter = new FakeEmitter<{ 'new:user': { id: number } }>(new Ioc())
+		const emitter = new FakeEmitter(new Ioc())
 		await emitter.emit('new:user', { id: 1 })
 		assert.deepEqual(emitter.transport.events, [{ event: 'new:user', data: { id: 1 } }])
 	})
@@ -342,27 +318,5 @@ test.group('Emitter IoC reference', () => {
 
 		assert.equal(event['iocResolver']!['anyHandlers'].size, 0)
 		assert.equal(event.listenerCount(), 0)
-	})
-
-	test('define string based typed event listener', async (assert) => {
-		assert.plan(3)
-
-		class MyListeners {
-			public newUser(data: any) {
-				assert.deepEqual(data, { id: 1 })
-			}
-		}
-
-		const ioc = new Ioc()
-		ioc.bind('App/Listeners/MyListeners', () => {
-			return new MyListeners()
-		})
-
-		const event = new Emitter<{ 'new:user': { id: number } }>(ioc)
-		event.on('new:user', 'MyListeners.newUser')
-		event.emit('new:user', { id: 1 })
-
-		assert.equal(event['iocResolver']!['eventHandlers'].get('new:user')!.size, 1)
-		assert.equal(event.listenerCount(), 1)
 	})
 })
