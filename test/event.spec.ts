@@ -188,6 +188,51 @@ test.group('Events | Trap', () => {
 		event.restore()
 		await Promise.all([event.emit('new:user', { id: 1 }), event.emit('new:user', { id: 1 })])
 	})
+
+	test('invoke event listener for which no trap has been placed', async (assert) => {
+		assert.plan(2)
+
+		const event = new Emitter(new Ioc())
+		event.on('new:user', () => {
+			throw new Error('Never expected to reach')
+		})
+
+		event.on('remove:user', (data) => {
+			assert.deepEqual(data, { id: 4 })
+		})
+
+		event.trap('new:user', (data) => {
+			assert.deepEqual(data, { id: 1 })
+		})
+
+		await Promise.all([event.emit('new:user', { id: 1 }), event.emit('remove:user', { id: 4 })])
+		event.restore()
+	})
+
+	test('do not invoke any event listener when trapAll is defined', async (assert) => {
+		assert.plan(3)
+
+		const event = new Emitter(new Ioc())
+		event.on('new:user', () => {
+			throw new Error('Never expected to reach')
+		})
+
+		event.on('remove:user', () => {
+			throw new Error('Never expected to reach')
+		})
+
+		event.trap('new:user', (data) => {
+			assert.deepEqual(data, { id: 1 })
+		})
+
+		event.trapAll((name, data) => {
+			assert.equal(name, 'remove:user')
+			assert.deepEqual(data, { id: 4 })
+		})
+
+		await Promise.all([event.emit('new:user', { id: 1 }), event.emit('remove:user', { id: 4 })])
+		event.restore()
+	})
 })
 
 test.group('Emitter IoC reference', () => {

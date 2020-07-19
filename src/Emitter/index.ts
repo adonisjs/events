@@ -107,23 +107,23 @@ export class Emitter implements EmitterContract {
 	 * Emit event
 	 */
 	public async emit<K extends keyof EventsList | string>(event: K, data: DataForEvent<K>) {
-		if (!this.trappingEvents) {
-			return this.transport.emit(event as string, data)
+		if (this.trappingEvents) {
+			/**
+			 * Give preference to the handler for a specific event
+			 */
+			if (this.traps.has(event)) {
+				return this.traps.get(event)!(data)
+			}
+
+			/**
+			 * Invoke catch all (if defined)
+			 */
+			if (this.trapAllHandler) {
+				return this.trapAllHandler(event as any, data)
+			}
 		}
 
-		/**
-		 * Give preference to the handler for a specific event
-		 */
-		if (this.traps.has(event)) {
-			return this.traps.get(event)!(data)
-		}
-
-		/**
-		 * Invoke catch all (if defined)
-		 */
-		if (this.trapAllHandler) {
-			return this.trapAllHandler(event as any, data)
-		}
+		return this.transport.emit(event as string, data)
 	}
 
 	/**
