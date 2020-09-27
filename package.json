@@ -93,5 +93,9 @@
 	"bugs": {
 		"url": "https://github.com/adonisjs/events/issues"
 	},
-	"homepage": "https://github.com/adonisjs/events#readme"
+	"homepage": "https://github.com/adonisjs/events#readme",
+	"publishConfig": {
+    "access": "public",
+    "tag": "next"
+  }
 }
