@@ -10,9 +10,7 @@
 /// <reference path="../../adonis-typings/events.ts" />
 
 import Emittery from 'emittery'
-import { IocContract } from '@adonisjs/fold'
-import { IocResolver } from '../IocResolver'
-
+import { ApplicationContract } from '@ioc:Adonis/Core/Application'
 import {
 	AnyHandler,
 	EventsList,
@@ -23,6 +21,8 @@ import {
 	EmitterContract,
 	EmitterTransportContract,
 } from '@ioc:Adonis/Core/Event'
+
+import { IocResolver } from '../IocResolver'
 
 /**
  * Emitter class exposes the API for async event emitter built on top of
@@ -37,9 +37,9 @@ export class Emitter implements EmitterContract {
 	private traps: Map<string, TrapHandler> = new Map()
 	private trapAllHandler?: TrapAllHandler
 
-	constructor(container?: IocContract) {
-		if (container) {
-			this.iocResolver = new IocResolver(container)
+	constructor(app?: ApplicationContract) {
+		if (app) {
+			this.iocResolver = new IocResolver(app)
 		}
 	}
 

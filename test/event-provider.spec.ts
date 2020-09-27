@@ -8,18 +8,18 @@
  */
 
 import test from 'japa'
-import { join } from 'path'
-import { Registrar, Ioc } from '@adonisjs/fold'
 import { Emitter } from '../src/Emitter'
+import { fs, setUp } from '../test-helpers'
 
-test.group('EventProvider', () => {
+test.group('EventProvider', (group) => {
+	group.afterEach(async () => {
+		await fs.cleanup()
+	})
+
 	test('register event provider', async (assert) => {
-		const ioc = new Ioc()
-		const registrar = new Registrar(ioc, join(__dirname, '..'))
+		const app = await setUp()
 
-		await registrar.useProviders(['./providers/EventProvider']).registerAndBoot()
-
-		assert.instanceOf(ioc.use('Adonis/Core/Event'), Emitter)
-		assert.deepEqual(ioc.use('Adonis/Core/Event'), ioc.use('Adonis/Core/Event'))
+		assert.instanceOf(app.container.use('Adonis/Core/Event'), Emitter)
+		assert.deepEqual(app.container.use('Adonis/Core/Event'), app.container.use('Adonis/Core/Event'))
 	})
 })

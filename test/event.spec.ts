@@ -8,14 +8,19 @@
  */
 
 import test from 'japa'
-import { Ioc } from '@adonisjs/fold'
 import { Emitter } from '../src/Emitter'
+import { fs, setUp } from '../test-helpers'
 
-test.group('Events', () => {
+test.group('Events', (group) => {
+	group.afterEach(async () => {
+		await fs.cleanup()
+	})
+
 	test('listen for an event', async (assert) => {
 		assert.plan(2)
+		const app = await setUp()
+		const event = new Emitter(app)
 
-		const event = new Emitter(new Ioc())
 		event.on('new:user', (data) => {
 			assert.deepEqual(data, { id: 1 })
 		})
@@ -26,7 +31,9 @@ test.group('Events', () => {
 	test('listen for an event only once', async (assert) => {
 		assert.plan(1)
 
-		const event = new Emitter(new Ioc())
+		const app = await setUp()
+		const event = new Emitter(app)
+
 		event.once('new:user', (data) => {
 			assert.deepEqual(data, { id: 1 })
 		})
@@ -37,7 +44,9 @@ test.group('Events', () => {
 	test('listen for any events', async (assert) => {
 		assert.plan(5)
 
-		const event = new Emitter(new Ioc())
+		const app = await setUp()
+		const event = new Emitter(app)
+
 		event.once('new:user', (data) => {
 			assert.deepEqual(data, { id: 1 })
 		})
@@ -53,7 +62,8 @@ test.group('Events', () => {
 	test('remove event listener', async (assert) => {
 		assert.plan(1)
 
-		const event = new Emitter(new Ioc())
+		const app = await setUp()
+		const event = new Emitter(app)
 
 		function listener(data) {
 			event.off('new:user', listener)
@@ -68,7 +78,8 @@ test.group('Events', () => {
 	test('remove all event listeners for a given event', async (assert) => {
 		assert.plan(1)
 
-		const event = new Emitter(new Ioc())
+		const app = await setUp()
+		const event = new Emitter(app)
 
 		event.once('new:user', (data) => {
 			event.clearListeners('new:user')
@@ -81,7 +92,8 @@ test.group('Events', () => {
 	test('remove listeners for all events', async (assert) => {
 		assert.plan(3)
 
-		const event = new Emitter(new Ioc())
+		const app = await setUp()
+		const event = new Emitter(app)
 
 		event.once('new:user', (data) => {
 			event.clearAllListeners()
@@ -98,7 +110,8 @@ test.group('Events', () => {
 	})
 
 	test('get listener counts', async (assert) => {
-		const event = new Emitter(new Ioc())
+		const app = await setUp()
+		const event = new Emitter(app)
 		event.onAny(() => {})
 
 		event.on('new:user', () => {})
@@ -111,7 +124,8 @@ test.group('Events', () => {
 	})
 
 	test('remove any listener', async (assert) => {
-		const event = new Emitter(new Ioc())
+		const app = await setUp()
+		const event = new Emitter(app)
 		function anyListener() {}
 		event.onAny(anyListener)
 
@@ -143,7 +157,8 @@ test.group('Events | Trap', () => {
 	test('invoke trap instead of emitting event', async (assert) => {
 		assert.plan(2)
 
-		const event = new Emitter(new Ioc())
+		const app = await setUp()
+		const event = new Emitter(app)
 		event.on('new:user', () => {
 			throw new Error('Never expected to reach')
 		})
@@ -159,7 +174,8 @@ test.group('Events | Trap', () => {
 	test('invoke trap all instead of emitting event', async (assert) => {
 		assert.plan(4)
 
-		const event = new Emitter(new Ioc())
+		const app = await setUp()
+		const event = new Emitter(app)
 		event.on('new:user', () => {
 			throw new Error('Never expected to reach')
 		})
@@ -176,7 +192,8 @@ test.group('Events | Trap', () => {
 	test('remove trap', async (assert) => {
 		assert.plan(2)
 
-		const event = new Emitter(new Ioc())
+		const app = await setUp()
+		const event = new Emitter(app)
 		event.on('new:user', (data) => {
 			assert.deepEqual(data, { id: 1 })
 		})
@@ -192,7 +209,8 @@ test.group('Events | Trap', () => {
 	test('invoke event listener for which no trap has been placed', async (assert) => {
 		assert.plan(2)
 
-		const event = new Emitter(new Ioc())
+		const app = await setUp()
+		const event = new Emitter(app)
 		event.on('new:user', () => {
 			throw new Error('Never expected to reach')
 		})
@@ -212,7 +230,8 @@ test.group('Events | Trap', () => {
 	test('do not invoke any event listener when trapAll is defined', async (assert) => {
 		assert.plan(3)
 
-		const event = new Emitter(new Ioc())
+		const app = await setUp()
+		const event = new Emitter(app)
 		event.on('new:user', () => {
 			throw new Error('Never expected to reach')
 		})
@@ -244,12 +263,12 @@ test.group('Emitter IoC reference', () => {
 			}
 		}
 
-		const ioc = new Ioc()
-		ioc.bind('App/Listeners/MyListeners', () => {
+		const app = await setUp()
+		app.container.bind('App/Listeners/MyListeners', () => {
 			return new MyListeners()
 		})
 
-		const event = new Emitter(ioc)
+		const event = new Emitter(app)
 		event.on('new:user', 'MyListeners.newUser')
 		await event.emit('new:user', { id: 1 })
 
@@ -272,12 +291,12 @@ test.group('Emitter IoC reference', () => {
 			}
 		}
 
-		const ioc = new Ioc()
-		ioc.bind('App/Listeners/MyListeners', () => {
+		const app = await setUp()
+		app.container.bind('App/Listeners/MyListeners', () => {
 			return new MyListeners()
 		})
 
-		const event = new Emitter(ioc)
+		const event = new Emitter(app)
 		event.on('new:user', 'MyListeners.newUser')
 		await event.emit('new:user', { id: 1 })
 		await event.emit('new:user', { id: 1 })
@@ -294,12 +313,12 @@ test.group('Emitter IoC reference', () => {
 			}
 		}
 
-		const ioc = new Ioc()
-		ioc.bind('App/Listeners/MyListeners', () => {
+		const app = await setUp()
+		app.container.bind('App/Listeners/MyListeners', () => {
 			return new MyListeners()
 		})
 
-		const event = new Emitter(ioc)
+		const event = new Emitter(app)
 		event.on('new:user', 'MyListeners.newUser')
 		event.on('new:user', 'MyListeners.newUser')
 		event.on('new:user', 'MyListeners.newUser')
@@ -318,12 +337,12 @@ test.group('Emitter IoC reference', () => {
 			}
 		}
 
-		const ioc = new Ioc()
-		ioc.bind('App/Listeners/MyListeners', () => {
+		const app = await setUp()
+		app.container.bind('App/Listeners/MyListeners', () => {
 			return new MyListeners()
 		})
 
-		const event = new Emitter(ioc)
+		const event = new Emitter(app)
 		event.once('new:user', 'MyListeners.newUser')
 		await event.emit('new:user', { id: 1 })
 
@@ -341,12 +360,12 @@ test.group('Emitter IoC reference', () => {
 			}
 		}
 
-		const ioc = new Ioc()
-		ioc.bind('App/Listeners/MyListeners', () => {
+		const app = await setUp()
+		app.container.bind('App/Listeners/MyListeners', () => {
 			return new MyListeners()
 		})
 
-		const event = new Emitter(ioc)
+		const event = new Emitter(app)
 		event.onAny('MyListeners.newUser')
 		await event.emit('new:user', { id: 1 })
 
@@ -364,12 +383,12 @@ test.group('Emitter IoC reference', () => {
 			}
 		}
 
-		const ioc = new Ioc()
-		ioc.bind('App/Listeners/MyListeners', () => {
+		const app = await setUp()
+		app.container.bind('App/Listeners/MyListeners', () => {
 			return new MyListeners()
 		})
 
-		const event = new Emitter(ioc)
+		const event = new Emitter(app)
 		event.onAny('MyListeners.newUser')
 		event.onAny('MyListeners.newUser')
 		event.onAny('MyListeners.newUser')
@@ -391,13 +410,13 @@ test.group('Emitter IoC reference', () => {
 			}
 		}
 
-		const ioc = new Ioc()
+		const app = await setUp()
 
-		ioc.bind('App/Listeners/MyListeners', () => {
+		app.container.bind('App/Listeners/MyListeners', () => {
 			return new MyListeners()
 		})
 
-		const event = new Emitter(ioc)
+		const event = new Emitter(app)
 		event.onAny('MyListeners.newUser')
 		await event.emit('new:user', { id: 1 })
 		await event.emit('new:user', { id: 1 })

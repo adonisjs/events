@@ -9,7 +9,7 @@
 
 /// <reference path="../../adonis-typings/events.ts" />
 
-import { IocContract, IocResolverContract } from '@adonisjs/fold'
+import { ApplicationContract } from '@ioc:Adonis/Core/Application'
 import { AnyHandler, EventHandler } from '@ioc:Adonis/Core/Event'
 
 /**
@@ -38,15 +38,15 @@ export class IocResolver {
 	 * `App/Listeners` namespace or the namespace defined inside `eventListeners`
 	 * property
 	 */
-	private containerResolver: IocResolverContract
+	private containerResolver: ReturnType<ApplicationContract['container']['getResolver']>
 
 	/**
 	 * A custom base namespace defined directly on the event class.
 	 */
 	private listenersBaseNamespace?: string
 
-	constructor(container: IocContract) {
-		this.containerResolver = container.getResolver(undefined, 'eventListeners', 'App/Listeners')
+	constructor(app: ApplicationContract) {
+		this.containerResolver = app.container.getResolver(undefined, 'eventListeners', 'App/Listeners')
 	}
 
 	/**

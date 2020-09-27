@@ -7,18 +7,18 @@
  * file that was distributed with this source code.
  */
 
-import { IocContract } from '@adonisjs/fold'
+import { ApplicationContract } from '@ioc:Adonis/Core/Application'
 
 export default class EventProvider {
-	constructor(protected container: IocContract) {}
+	constructor(protected app: ApplicationContract) {}
 
 	/**
 	 * Register `Event emitter` to the container.
 	 */
 	public register() {
-		this.container.singleton('Adonis/Core/Event', () => {
+		this.app.container.singleton('Adonis/Core/Event', () => {
 			const { Emitter } = require('../src/Emitter')
-			return new Emitter(this.container)
+			return new Emitter(this.app)
 		})
 	}
 }
