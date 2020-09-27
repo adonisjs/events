@@ -1,6 +1,6 @@
 {
 	"name": "@adonisjs/events",
-	"version": "4.0.1",
+	"version": "5.0.0",
 	"description": "Event emitter with asynchronous events",
 	"main": "build/providers/EventProvider.js",
 	"files": [
@@ -32,7 +32,7 @@
 	"author": "virk,adonisjs",
 	"license": "MIT",
 	"devDependencies": {
-		"@adonisjs/application": "^3.0.5",
+		"@adonisjs/application": "^3.0.7",
 		"@adonisjs/mrm-preset": "^2.4.0",
 		"@adonisjs/require-ts": "^1.0.0",
 		"@poppinss/dev-utils": "^1.0.10",
@@ -95,7 +95,7 @@
 	},
 	"homepage": "https://github.com/adonisjs/events#readme",
 	"publishConfig": {
-    "access": "public",
-    "tag": "next"
-  }
+		"access": "public",
+		"tag": "next"
+	}
 }
