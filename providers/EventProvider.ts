@@ -11,6 +11,7 @@ import { ApplicationContract } from '@ioc:Adonis/Core/Application'
 
 export default class EventProvider {
 	constructor(protected app: ApplicationContract) {}
+	public static needsApplication = true
 
 	/**
 	 * Register `Event emitter` to the container.
