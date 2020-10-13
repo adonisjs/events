@@ -1,6 +1,6 @@
 {
 	"name": "@adonisjs/events",
-	"version": "5.0.2",
+	"version": "5.0.3",
 	"description": "Event emitter with asynchronous events",
 	"main": "build/providers/EventProvider.js",
 	"files": [
