@@ -96,6 +96,6 @@
 	"homepage": "https://github.com/adonisjs/events#readme",
 	"publishConfig": {
 		"access": "public",
-		"tag": "next"
+		"tag": "latest"
 	}
 }
