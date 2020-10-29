@@ -31,6 +31,7 @@ import { IocResolver } from '../IocResolver'
  */
 export class Emitter implements EmitterContract {
 	public transport: EmitterTransportContract = new Emittery()
+	private app?: ApplicationContract
 	private iocResolver?: IocResolver
 
 	private trappingEvents: boolean = false
@@ -41,6 +42,7 @@ export class Emitter implements EmitterContract {
 		if (app) {
 			this.iocResolver = new IocResolver(app)
 		}
+		this.app = app
 	}
 
 	/**
@@ -106,24 +108,30 @@ export class Emitter implements EmitterContract {
 	/**
 	 * Emit event
 	 */
-	public async emit<K extends keyof EventsList | string>(event: K, data: DataForEvent<K>) {
+	public emit<K extends keyof EventsList | string>(event: K, data: DataForEvent<K>) {
 		if (this.trappingEvents) {
 			/**
 			 * Give preference to the handler for a specific event
 			 */
 			if (this.traps.has(event)) {
-				return this.traps.get(event)!(data)
+				this.traps.get(event)!(data)
+				return
 			}
 
 			/**
 			 * Invoke catch all (if defined)
 			 */
 			if (this.trapAllHandler) {
-				return this.trapAllHandler(event as any, data)
+				this.trapAllHandler(event as any, data)
+				return
 			}
 		}
 
-		return this.transport.emit(event as string, data)
+		this.transport
+			.emit(event as string, data)
+			.catch((err) =>
+				this.app?.logger.error(`An event handler for '${event}' event thrown an error`, err)
+			)
 	}
 
 	/**

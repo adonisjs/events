@@ -84,8 +84,8 @@ declare module '@ioc:Adonis/Core/Event' {
 		/**
 		 * Emit an event
 		 */
-		emit<K extends keyof EventsList>(event: K, data: EventsList[K]): Promise<void>
-		emit<K extends string>(event: K, data: DataForEvent<K>): Promise<void>
+		emit<K extends keyof EventsList>(event: K, data: EventsList[K]): void
+		emit<K extends string>(event: K, data: DataForEvent<K>): void
 
 		/**
 		 * Remove event listener
