@@ -14,14 +14,14 @@ import { Application } from '@adonisjs/application'
 export const fs = new Filesystem(join(__dirname, 'app'))
 
 export async function setUp() {
-	await fs.add('.env', '')
-	await fs.fsExtra.ensureDir(join(fs.basePath, 'config'))
-	const app = new Application(fs.basePath, 'web', {
-		providers: ['../../providers/EventProvider'],
-	})
+  await fs.add('.env', '')
+  await fs.fsExtra.ensureDir(join(fs.basePath, 'config'))
+  const app = new Application(fs.basePath, 'web', {
+    providers: ['../../providers/EventProvider'],
+  })
 
-	app.setup()
-	app.registerProviders()
-	await app.bootProviders()
-	return app
+  app.setup()
+  app.registerProviders()
+  await app.bootProviders()
+  return app
 }

@@ -8,9 +8,9 @@
  */
 
 declare module '@ioc:Adonis/Core/Application' {
-	import { EmitterContract } from '@ioc:Adonis/Core/Event'
+  import { EmitterContract } from '@ioc:Adonis/Core/Event'
 
-	export interface ContainerBindings {
-		'Adonis/Core/Event': EmitterContract
-	}
+  export interface ContainerBindings {
+    'Adonis/Core/Event': EmitterContract
+  }
 }

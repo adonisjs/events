@@ -12,14 +12,14 @@ import { Emitter } from '../src/Emitter'
 import { fs, setUp } from '../test-helpers'
 
 test.group('EventProvider', (group) => {
-	group.afterEach(async () => {
-		await fs.cleanup()
-	})
+  group.afterEach(async () => {
+    await fs.cleanup()
+  })
 
-	test('register event provider', async (assert) => {
-		const app = await setUp()
+  test('register event provider', async (assert) => {
+    const app = await setUp()
 
-		assert.instanceOf(app.container.use('Adonis/Core/Event'), Emitter)
-		assert.deepEqual(app.container.use('Adonis/Core/Event'), app.container.use('Adonis/Core/Event'))
-	})
+    assert.instanceOf(app.container.use('Adonis/Core/Event'), Emitter)
+    assert.deepEqual(app.container.use('Adonis/Core/Event'), app.container.use('Adonis/Core/Event'))
+  })
 })

@@ -10,16 +10,16 @@
 import { ApplicationContract } from '@ioc:Adonis/Core/Application'
 
 export default class EventProvider {
-	constructor(protected app: ApplicationContract) {}
-	public static needsApplication = true
+  constructor(protected app: ApplicationContract) {}
+  public static needsApplication = true
 
-	/**
-	 * Register `Event emitter` to the container.
-	 */
-	public register() {
-		this.app.container.singleton('Adonis/Core/Event', () => {
-			const { Emitter } = require('../src/Emitter')
-			return new Emitter(this.app)
-		})
-	}
+  /**
+   * Register `Event emitter` to the container.
+   */
+  public register() {
+    this.app.container.singleton('Adonis/Core/Event', () => {
+      const { Emitter } = require('../src/Emitter')
+      return new Emitter(this.app)
+    })
+  }
 }

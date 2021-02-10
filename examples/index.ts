@@ -1,7 +1,7 @@
 import Event from '@ioc:Adonis/Core/Event'
 
 Event.on('another:user', (data) => {
-	data.id
+  data.id
 })
 
 Event.on('new:user', () => {})
@@ -12,7 +12,7 @@ Event.emit('another:user', { id: '10' })
 Event.off('new:user', () => {})
 
 Event.onAny((event, data) => {
-	if (event === 'delete:user') {
-		console.log(data)
-	}
+  if (event === 'delete:user') {
+    console.log(data)
+  }
 })
