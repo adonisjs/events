@@ -32,7 +32,7 @@
   "author": "virk,adonisjs",
   "license": "MIT",
   "devDependencies": {
-    "@adonisjs/application": "^4.0.1",
+    "@adonisjs/application": "^4.0.2",
     "@adonisjs/mrm-preset": "^3.0.0",
     "@adonisjs/require-ts": "^2.0.2",
     "@poppinss/dev-utils": "^1.1.0",
