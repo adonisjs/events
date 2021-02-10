@@ -41,15 +41,15 @@ declare module '@ioc:Adonis/Core/Event' {
    * `emittery`.
    */
   export interface EmitterTransportContract {
-    on(event: string | symbol, handler: EventHandler): any
-    once(event: string | symbol): Promise<any>
+    on(event: string, handler: EventHandler): any
+    once(event: string): Promise<any>
     onAny(handler: (event: any, data: any) => Promise<void> | void): any
-    emit(event: string | symbol, data: any): Promise<any>
-    off(event: string | symbol, handler: EventHandler): any
+    emit(event: string, data: any): Promise<any>
+    off(event: string, handler: EventHandler): any
     offAny(handler: (event: any, data: any) => Promise<void> | void): any
-    off(event: string | symbol, handler: EventHandler): any
-    clearListeners(event?: string | symbol): any
-    listenerCount(event?: string | symbol): number
+    off(event: string, handler: EventHandler): any
+    clearListeners(event?: string): any
+    listenerCount(event?: string): number
   }
 
   /**
