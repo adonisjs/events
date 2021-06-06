@@ -32,6 +32,11 @@ declare module '@ioc:Adonis/Core/Event' {
   export type TrapHandler<T extends any = any> = EventHandler<T>
 
   /**
+   * The error handler for handling events when an emit call fails
+   */
+  export type ErrorHandler = (event: string, error: any, data: any) => void
+
+  /**
    * Shape of trap all events handler
    */
   export type TrapAllHandler = AnyHandler
@@ -57,6 +62,11 @@ declare module '@ioc:Adonis/Core/Event' {
    */
   export interface EmitterContract {
     transport: EmitterTransportContract
+
+    /**
+     * Define a custom error handler
+     */
+    onError(handler: ErrorHandler): this
 
     /**
      * Define a custom IoC Container base namespace for resolving

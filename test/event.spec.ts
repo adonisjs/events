@@ -151,6 +151,44 @@ test.group('Events', (group) => {
       'Cannot resolve string based event handler "App/Listeners/Foo". IoC container is not provided to the event emitter'
     )
   })
+
+  test('throw exception when event handler raises one', async (assert) => {
+    assert.plan(2)
+    const app = await setUp()
+    const event = new Emitter(app)
+
+    event.on('new:user', (data) => {
+      assert.deepEqual(data, { id: 1 })
+      throw new Error('boom')
+    })
+
+    try {
+      await event.emit('new:user', { id: 1 })
+    } catch (error) {
+      assert.equal(error.message, 'boom')
+    }
+  })
+
+  test('do not raise exception when there is an error handler in place', async (assert, done) => {
+    assert.plan(4)
+
+    const app = await setUp()
+    const event = new Emitter(app)
+
+    event.on('new:user', (data) => {
+      assert.deepEqual(data, { id: 1 })
+      throw new Error('boom')
+    })
+
+    event.onError((eventName, error, data) => {
+      assert.equal(eventName, 'new:user')
+      assert.equal(error.message, 'boom')
+      assert.deepEqual(data, { id: 1 })
+      done()
+    })
+
+    event.emit('new:user', { id: 1 })
+  })
 })
 
 test.group('Events | Trap', () => {

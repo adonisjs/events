@@ -17,6 +17,7 @@ import {
   TrapHandler,
   EventHandler,
   DataForEvent,
+  ErrorHandler,
   TrapAllHandler,
   EmitterContract,
   EmitterTransportContract,
@@ -36,6 +37,7 @@ export class Emitter implements EmitterContract {
   private trappingEvents: boolean = false
   private traps: Map<string, TrapHandler> = new Map()
   private trapAllHandler?: TrapAllHandler
+  private errorHandler?: ErrorHandler
 
   constructor(app?: ApplicationContract) {
     if (app) {
@@ -55,6 +57,14 @@ export class Emitter implements EmitterContract {
     }
 
     return this.iocResolver
+  }
+
+  /**
+   * Define a custom error handler
+   */
+  public onError(handler: ErrorHandler): this {
+    this.errorHandler = handler
+    return this
   }
 
   /**
@@ -107,23 +117,31 @@ export class Emitter implements EmitterContract {
    * Emit event
    */
   public async emit<K extends keyof EventsList | string>(event: K, data: DataForEvent<K>) {
-    if (this.trappingEvents) {
-      /**
-       * Give preference to the handler for a specific event
-       */
-      if (this.traps.has(event)) {
-        return this.traps.get(event)!(data)
+    try {
+      if (this.trappingEvents) {
+        /**
+         * Give preference to the handler for a specific event
+         */
+        if (this.traps.has(event)) {
+          return await this.traps.get(event)!(data)
+        }
+
+        /**
+         * Invoke catch all (if defined)
+         */
+        if (this.trapAllHandler) {
+          return await this.trapAllHandler(event as any, data)
+        }
       }
 
-      /**
-       * Invoke catch all (if defined)
-       */
-      if (this.trapAllHandler) {
-        return this.trapAllHandler(event as any, data)
+      return await this.transport.emit(event as string, data)
+    } catch (error) {
+      if (this.errorHandler) {
+        return this.errorHandler(event, error, data)
       }
+
+      throw error
     }
-
-    return this.transport.emit(event as string, data)
   }
 
   /**
