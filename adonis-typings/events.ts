@@ -121,6 +121,11 @@ declare module '@ioc:Adonis/Core/Event' {
     clearListeners<K extends string>(event: K): void
 
     /**
+     * Clear all listeners for all events
+     */
+    clearAllListeners(): void
+
+    /**
      * Returns count of listeners listening for a given event
      */
     listenerCount<K extends keyof EventsList>(event?: K): number
