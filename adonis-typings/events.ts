@@ -119,7 +119,7 @@ declare module '@ioc:Adonis/Core/Event' {
      */
     clearListeners<K extends keyof EventsList>(event: K): void
     clearListeners<K extends string>(event: K): void
-    
+
     /**
      * Clear all listeners for all events
      */
