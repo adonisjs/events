@@ -7,16 +7,16 @@
  * file that was distributed with this source code.
  */
 
-import test from 'japa'
+import { test } from '@japa/runner'
 import { Emitter } from '../src/Emitter'
 import { fs, setUp } from '../test-helpers'
 
 test.group('EventProvider', (group) => {
-  group.afterEach(async () => {
+  group.each.teardown(async () => {
     await fs.cleanup()
   })
 
-  test('register event provider', async (assert) => {
+  test('register event provider', async ({ assert }) => {
     const app = await setUp()
 
     assert.instanceOf(app.container.use('Adonis/Core/Event'), Emitter)
