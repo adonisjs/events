@@ -7,16 +7,16 @@
  * file that was distributed with this source code.
  */
 
-import test from 'japa'
+import { test } from '@japa/runner'
 import { Emitter } from '../src/Emitter'
 import { fs, setUp } from '../test-helpers'
 
 test.group('Events', (group) => {
-  group.afterEach(async () => {
+  group.each.teardown(async () => {
     await fs.cleanup()
   })
 
-  test('listen for an event', async (assert) => {
+  test('listen for an event', async ({ assert }) => {
     assert.plan(2)
     const app = await setUp()
     const event = new Emitter(app)
@@ -28,7 +28,7 @@ test.group('Events', (group) => {
     await Promise.all([event.emit('new:user', { id: 1 }), event.emit('new:user', { id: 1 })])
   })
 
-  test('listen for an event only once', async (assert) => {
+  test('listen for an event only once', async ({ assert }) => {
     assert.plan(1)
 
     const app = await setUp()
@@ -41,7 +41,7 @@ test.group('Events', (group) => {
     await Promise.all([event.emit('new:user', { id: 1 }), event.emit('new:user', { id: 1 })])
   })
 
-  test('listen for any events', async (assert) => {
+  test('listen for any events', async ({ assert }) => {
     assert.plan(5)
 
     const app = await setUp()
@@ -59,7 +59,7 @@ test.group('Events', (group) => {
     await Promise.all([event.emit('new:user', { id: 1 }), event.emit('new:user', { id: 1 })])
   })
 
-  test('remove event listener', async (assert) => {
+  test('remove event listener', async ({ assert }) => {
     assert.plan(1)
 
     const app = await setUp()
@@ -75,7 +75,7 @@ test.group('Events', (group) => {
     await Promise.all([event.emit('new:user', { id: 1 }), event.emit('new:user', { id: 1 })])
   })
 
-  test('remove all event listeners for a given event', async (assert) => {
+  test('remove all event listeners for a given event', async ({ assert }) => {
     assert.plan(1)
 
     const app = await setUp()
@@ -89,7 +89,7 @@ test.group('Events', (group) => {
     await Promise.all([event.emit('new:user', { id: 1 }), event.emit('new:user', { id: 1 })])
   })
 
-  test('remove listeners for all events', async (assert) => {
+  test('remove listeners for all events', async ({ assert }) => {
     assert.plan(3)
 
     const app = await setUp()
@@ -109,7 +109,7 @@ test.group('Events', (group) => {
     await event.emit('new:account', { id: 1 })
   })
 
-  test('get listener counts', async (assert) => {
+  test('get listener counts', async ({ assert }) => {
     const app = await setUp()
     const event = new Emitter(app)
     event.onAny(() => {})
@@ -123,7 +123,7 @@ test.group('Events', (group) => {
     assert.equal(event.listenerCount(), 3)
   })
 
-  test('remove any listener', async (assert) => {
+  test('remove any listener', async ({ assert }) => {
     const app = await setUp()
     const event = new Emitter(app)
     function anyListener() {}
@@ -143,16 +143,18 @@ test.group('Events', (group) => {
     assert.equal(event.listenerCount(), 2)
   })
 
-  test('raise exception when registering event handler as a string without IoC container', async (assert) => {
+  test('raise exception when registering event handler as a string without IoC container', async ({
+    assert,
+  }) => {
     const event = new Emitter()
     const fn = () => event.on('new:user', 'App/Listeners/Foo')
-    assert.throw(
+    assert.throws(
       fn,
       'Cannot resolve string based event handler "App/Listeners/Foo". IoC container is not provided to the event emitter'
     )
   })
 
-  test('throw exception when event handler raises one', async (assert) => {
+  test('throw exception when event handler raises one', async ({ assert }) => {
     assert.plan(2)
     const app = await setUp()
     const event = new Emitter(app)
@@ -169,7 +171,9 @@ test.group('Events', (group) => {
     }
   })
 
-  test('do not raise exception when there is an error handler in place', async (assert, done) => {
+  test('do not raise exception when there is an error handler in place', async ({
+    assert,
+  }, done) => {
     assert.plan(4)
 
     const app = await setUp()
@@ -188,11 +192,11 @@ test.group('Events', (group) => {
     })
 
     event.emit('new:user', { id: 1 })
-  })
+  }).waitForDone()
 })
 
 test.group('Events | Trap', () => {
-  test('invoke trap instead of emitting event', async (assert) => {
+  test('invoke trap instead of emitting event', async ({ assert }) => {
     assert.plan(2)
 
     const app = await setUp()
@@ -209,7 +213,7 @@ test.group('Events | Trap', () => {
     event.restore()
   })
 
-  test('invoke trap all instead of emitting event', async (assert) => {
+  test('invoke trap all instead of emitting event', async ({ assert }) => {
     assert.plan(4)
 
     const app = await setUp()
@@ -227,7 +231,7 @@ test.group('Events | Trap', () => {
     event.restore()
   })
 
-  test('remove trap', async (assert) => {
+  test('remove trap', async ({ assert }) => {
     assert.plan(2)
 
     const app = await setUp()
@@ -244,7 +248,7 @@ test.group('Events | Trap', () => {
     await Promise.all([event.emit('new:user', { id: 1 }), event.emit('new:user', { id: 1 })])
   })
 
-  test('invoke event listener for which no trap has been placed', async (assert) => {
+  test('invoke event listener for which no trap has been placed', async ({ assert }) => {
     assert.plan(2)
 
     const app = await setUp()
@@ -265,7 +269,7 @@ test.group('Events | Trap', () => {
     event.restore()
   })
 
-  test('do not invoke any event listener when trapAll is defined', async (assert) => {
+  test('do not invoke any event listener when trapAll is defined', async ({ assert }) => {
     assert.plan(3)
 
     const app = await setUp()
@@ -293,7 +297,7 @@ test.group('Events | Trap', () => {
 })
 
 test.group('Emitter IoC reference', () => {
-  test('define string based event listener', async (assert) => {
+  test('define string based event listener', async ({ assert }) => {
     assert.plan(3)
     class MyListeners {
       public newUser(data) {
@@ -314,7 +318,7 @@ test.group('Emitter IoC reference', () => {
     assert.equal(event.listenerCount(), 1)
   })
 
-  test('remove string based event listener', async (assert) => {
+  test('remove string based event listener', async ({ assert }) => {
     assert.plan(3)
     class MyListeners {
       public newUser(data) {
@@ -343,7 +347,7 @@ test.group('Emitter IoC reference', () => {
     assert.equal(event.listenerCount(), 0)
   })
 
-  test('multiple same event listeners must result in a noop', async (assert) => {
+  test('multiple same event listeners must result in a noop', async ({ assert }) => {
     assert.plan(3)
     class MyListeners {
       public newUser(data) {
@@ -366,7 +370,7 @@ test.group('Emitter IoC reference', () => {
     assert.equal(event.listenerCount(), 1)
   })
 
-  test('define string based one time event listener', async (assert) => {
+  test('define string based one time event listener', async ({ assert }) => {
     assert.plan(3)
 
     class MyListeners {
@@ -388,7 +392,7 @@ test.group('Emitter IoC reference', () => {
     assert.equal(event.listenerCount(), 0)
   })
 
-  test('define string based wildcard event listener', async (assert) => {
+  test('define string based wildcard event listener', async ({ assert }) => {
     assert.plan(4)
 
     class MyListeners {
@@ -411,7 +415,9 @@ test.group('Emitter IoC reference', () => {
     assert.equal(event.listenerCount(), 1)
   })
 
-  test('multiple string based wildcard event listeners must result in a noop', async (assert) => {
+  test('multiple string based wildcard event listeners must result in a noop', async ({
+    assert,
+  }) => {
     assert.plan(4)
 
     class MyListeners {
@@ -437,7 +443,7 @@ test.group('Emitter IoC reference', () => {
     assert.equal(event.listenerCount(), 1)
   })
 
-  test('remove string based wildcard event listener', async (assert) => {
+  test('remove string based wildcard event listener', async ({ assert }) => {
     assert.plan(4)
 
     class MyListeners {
