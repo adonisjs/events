@@ -58,10 +58,80 @@ declare module '@ioc:Adonis/Core/Event' {
   }
 
   /**
+   * Fake emitter to be used for finding and asserting
+   * faked events
+   */
+  export interface FakeEmitterContract {
+    /**
+     * Returns all the emitted events
+     */
+    all(): { name: string; data: any }[]
+
+    /**
+     * Find if the event exists
+     */
+    exists<K extends keyof EventsList>(event: K): boolean
+    exists(event: string): boolean
+    exists<Events extends Record<string, any> = EventsList>(
+      matchCallback: (
+        event:
+          | {
+              [K in keyof Events]: { name: K; data: Events[K] }
+            }[keyof Events]
+      ) => boolean
+    ): boolean
+
+    /**
+     * Find an event
+     */
+    find<K extends keyof EventsList>(event: K): { name: K; data: DataForEvent<K> } | null
+    find(event: string): { name: string; data: any }
+    find<Events extends Record<string, any> = EventsList>(
+      matchCallback: (
+        event:
+          | {
+              [K in keyof Events]: { name: K; data: Events[K] }
+            }[keyof Events]
+      ) => boolean
+    ):
+      | {
+          [K in keyof Events]: { name: K; data: Events[K] }
+        }[keyof Events]
+      | null
+
+    /**
+     * Find multiple events
+     */
+    filter<K extends keyof EventsList>(event: K): { name: K; data: DataForEvent<K> }[]
+    filter(event: string): { name: string; data: any }[]
+    filter<Events extends Record<string, any> = EventsList>(
+      matchCallback: (
+        event:
+          | {
+              [K in keyof Events]: { name: K; data: Events[K] }
+            }[keyof Events]
+      ) => boolean
+    ):
+      | {
+          [K in keyof Events]: { name: K; data: Events[K] }
+        }[keyof Events][]
+
+    /**
+     * Get number of events emitted
+     */
+    size(): number
+  }
+
+  /**
    * Shape of Event emitter
    */
   export interface EmitterContract {
     transport: EmitterTransportContract
+
+    /**
+     * Fake the upcoming events
+     */
+    fake<K extends keyof EventsList>(events?: K[] | string[]): FakeEmitterContract
 
     /**
      * Define a custom error handler

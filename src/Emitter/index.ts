@@ -23,6 +23,7 @@ import {
   EmitterTransportContract,
 } from '@ioc:Adonis/Core/Event'
 
+import { FakeEmitter } from '../FakeEmitter'
 import { IocResolver } from '../IocResolver'
 
 /**
@@ -34,10 +35,23 @@ export class Emitter implements EmitterContract {
   public transport: EmitterTransportContract = new Emittery()
   private iocResolver?: IocResolver
 
+  /**
+   * Error handler to report emitter errors
+   */
+  private errorHandler?: ErrorHandler
+
+  /**
+   * Deprecated properties to manage trapping events
+   */
   private trappingEvents: boolean = false
   private traps: Map<string, TrapHandler> = new Map()
   private trapAllHandler?: TrapAllHandler
-  private errorHandler?: ErrorHandler
+
+  /**
+   * Fakes
+   */
+  private eventsToFake: Set<string> = new Set()
+  private fakeEmitter?: FakeEmitter
 
   constructor(app?: ApplicationContract) {
     if (app) {
@@ -118,23 +132,32 @@ export class Emitter implements EmitterContract {
    */
   public async emit<K extends keyof EventsList | string>(event: K, data: DataForEvent<K>) {
     try {
+      let shouldEmitEvent = true
+
+      /**
+       * Register event with the fake emitter
+       */
+      if (this.fakeEmitter && (this.eventsToFake.has('*') || this.eventsToFake.has(event))) {
+        shouldEmitEvent = false
+        this.fakeEmitter!.events.push({ name: event, data })
+      }
+
       if (this.trappingEvents) {
         /**
          * Give preference to the handler for a specific event
          */
         if (this.traps.has(event)) {
-          return await this.traps.get(event)!(data)
-        }
-
-        /**
-         * Invoke catch all (if defined)
-         */
-        if (this.trapAllHandler) {
-          return await this.trapAllHandler(event as any, data)
+          shouldEmitEvent = false
+          await this.traps.get(event)!(data)
+        } else if (this.trapAllHandler) {
+          shouldEmitEvent = false
+          await this.trapAllHandler(event as any, data)
         }
       }
 
-      return await this.transport.emit(event as string, data)
+      if (shouldEmitEvent) {
+        return await this.transport.emit(event as string, data)
+      }
     } catch (error) {
       if (this.errorHandler) {
         return this.errorHandler(event, error, data)
@@ -233,6 +256,11 @@ export class Emitter implements EmitterContract {
     event: K,
     handler: TrapHandler<DataForEvent<K>>
   ): this {
+    process.emitWarning(
+      'DeprecationWarning',
+      '"Event.trap" is deprecated. Instead use "Event.fake" method'
+    )
+
     this.trappingEvents = true
     this.traps.set(event, handler)
     return this
@@ -242,18 +270,52 @@ export class Emitter implements EmitterContract {
    * Trap all events instead of emitting them
    */
   public trapAll(handler: TrapAllHandler): this {
+    process.emitWarning(
+      'DeprecationWarning',
+      '"Event.trapAll" is deprecated. Instead use "Event.fake" method'
+    )
+
     this.trappingEvents = true
     this.trapAllHandler = handler
     return this
   }
 
   /**
-   * Restore trap
+   * Fake event emitter to collect events in-memory vs
+   * emitting them
+   */
+  public fake(events?: any[]) {
+    this.fakeEmitter = this.fakeEmitter || new FakeEmitter()
+
+    /**
+     * If no events have been mentioned, then fake
+     * all the events
+     */
+    if (!events) {
+      this.eventsToFake.add('*')
+      return this.fakeEmitter
+    }
+
+    /**
+     * Only track event names when wildcard is not added
+     */
+    if (!this.eventsToFake.has('*')) {
+      events.forEach((event) => this.eventsToFake.add(event))
+    }
+
+    return this.fakeEmitter
+  }
+
+  /**
+   * Restore trap and fake
    */
   public restore(): this {
     this.trappingEvents = false
-    this.traps.clear()
     this.trapAllHandler = undefined
+    this.fakeEmitter = undefined
+
+    this.traps.clear()
+    this.eventsToFake.clear()
     return this
   }
 }

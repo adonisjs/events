@@ -470,3 +470,92 @@ test.group('Emitter IoC reference', () => {
     assert.equal(event.listenerCount(), 0)
   })
 })
+
+test.group('Events | Fake', () => {
+  test('fake selected events', async ({ assert }) => {
+    assert.plan(2)
+
+    const app = await setUp()
+    const event = new Emitter(app)
+    event.on('new:user', () => {
+      throw new Error('Never expected to reach')
+    })
+
+    event.on('delete:user', (data) => {
+      assert.deepEqual(data, { id: 1, eventId: '1' })
+    })
+
+    const emitter = event.fake(['new:user'])
+    await Promise.all([
+      event.emit('new:user', { id: 1 }),
+      event.emit('delete:user', { id: 1, eventId: '1' }),
+    ])
+
+    assert.deepEqual(emitter.all(), [
+      {
+        name: 'new:user',
+        data: { id: 1 },
+      },
+    ])
+
+    event.restore()
+  })
+
+  test('fake all events', async ({ assert }) => {
+    const app = await setUp()
+    const event = new Emitter(app)
+    event.on('new:user', () => {
+      throw new Error('Never expected to reach')
+    })
+
+    event.on('delete:user', () => {
+      throw new Error('Never expected to reach')
+    })
+
+    const emitter = event.fake()
+    event.fake(['new:user'])
+
+    await Promise.all([
+      event.emit('new:user', { id: 1 }),
+      event.emit('delete:user', { id: 1, eventId: '1' }),
+    ])
+
+    assert.deepEqual(emitter.all(), [
+      {
+        name: 'new:user',
+        data: { id: 1 },
+      },
+      {
+        name: 'delete:user',
+        data: { id: 1, eventId: '1' },
+      },
+    ])
+
+    event.restore()
+  })
+
+  test('do not fake events after event.restore is called', async ({ assert }) => {
+    assert.plan(3)
+
+    const app = await setUp()
+    const event = new Emitter(app)
+    event.on('new:user', (data) => {
+      assert.deepEqual(data, { id: 1 })
+    })
+
+    event.on('delete:user', (data) => {
+      assert.deepEqual(data, { id: 1, eventId: '1' })
+    })
+
+    const emitter = event.fake()
+    event.fake(['new:user'])
+    event.restore()
+
+    await Promise.all([
+      event.emit('new:user', { id: 1 }),
+      event.emit('delete:user', { id: 1, eventId: '1' }),
+    ])
+
+    assert.deepEqual(emitter.all(), [])
+  })
+})
