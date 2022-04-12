@@ -51,7 +51,7 @@ export class Emitter implements EmitterContract {
    * Fakes
    */
   private eventsToFake: Set<string> = new Set()
-  private fakeEmitter?: FakeEmitter
+  private fakeEmitter = new FakeEmitter()
 
   constructor(app?: ApplicationContract) {
     if (app) {
@@ -137,7 +137,7 @@ export class Emitter implements EmitterContract {
       /**
        * Register event with the fake emitter
        */
-      if (this.fakeEmitter && (this.eventsToFake.has('*') || this.eventsToFake.has(event))) {
+      if (this.eventsToFake.has('*') || this.eventsToFake.has(event)) {
         shouldEmitEvent = false
         this.fakeEmitter!.events.push({ name: event, data })
       }
@@ -285,8 +285,6 @@ export class Emitter implements EmitterContract {
    * emitting them
    */
   public fake(events?: any[]) {
-    this.fakeEmitter = this.fakeEmitter || new FakeEmitter()
-
     /**
      * If no events have been mentioned, then fake
      * all the events
@@ -307,15 +305,14 @@ export class Emitter implements EmitterContract {
   }
 
   /**
-   * Restore trap and fake
+   * Restore fakes
    */
-  public restore(): this {
+  public restore(): void {
     this.trappingEvents = false
     this.trapAllHandler = undefined
-    this.fakeEmitter = undefined
 
     this.traps.clear()
     this.eventsToFake.clear()
-    return this
+    this.fakeEmitter.restore()
   }
 }

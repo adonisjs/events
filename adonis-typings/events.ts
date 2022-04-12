@@ -222,7 +222,7 @@ declare module '@ioc:Adonis/Core/Event' {
     /**
      * Restore traps
      */
-    restore(): this
+    restore(): void
   }
 
   /**

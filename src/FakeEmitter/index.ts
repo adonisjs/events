@@ -62,4 +62,8 @@ export class FakeEmitter implements FakeEmitterContract {
 
     return this.events.find((event) => event.name === eventOrCallback)
   }
+
+  public restore() {
+    this.events = []
+  }
 }
