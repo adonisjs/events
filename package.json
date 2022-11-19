@@ -2,28 +2,33 @@
   "name": "@adonisjs/events",
   "version": "7.2.1",
   "description": "Event emitter with asynchronous events",
-  "main": "build/providers/EventProvider.js",
+  "main": "build/index.js",
+  "type": "module",
   "files": [
     "build/src",
-    "build/providers",
-    "build/adonis-typings",
-    "build/standalone.d.ts",
-    "build/standalone.js"
+    "build/index.d.ts",
+    "build/index.js"
   ],
+  "imports": {
+    "#listeners/*": "./tests/app/listeners/*.js"
+  },
+  "exports": {
+    ".": "./build/index.js",
+    "./types": "./build/src/types.js"
+  },
   "scripts": {
-    "mrm": "mrm --preset=@adonisjs/mrm-preset",
     "pretest": "npm run lint",
-    "test": "node -r @adonisjs/require-ts/build/register bin/test.ts",
+    "test": "c8 npm run vscode:test",
     "clean": "del-cli build",
     "compile": "npm run lint && npm run clean && tsc",
     "build": "npm run compile",
-    "commit": "git-cz",
-    "release": "np --message=\"chore(release): %s\"",
+    "release": "np",
     "version": "npm run build",
     "format": "prettier --write .",
     "prepublishOnly": "npm run build",
     "lint": "eslint . --ext=.ts",
-    "sync-labels": "github-label-sync --labels ./node_modules/@adonisjs/mrm-preset/gh-labels.json adonisjs/events"
+    "sync-labels": "github-label-sync --labels .github/labels.json adonisjs/events",
+    "vscode:test": "node --loader=ts-node/esm --experimental-import-meta-resolve bin/test.ts"
   },
   "keywords": [
     "emitter",
@@ -32,55 +37,37 @@
   "author": "virk,adonisjs",
   "license": "MIT",
   "devDependencies": {
-    "@adonisjs/application": "^5.2.5",
-    "@adonisjs/mrm-preset": "^5.0.2",
-    "@adonisjs/require-ts": "^2.0.13",
+    "@adonisjs/application": "^6.0.2-0",
+    "@commitlint/cli": "^17.2.0",
+    "@commitlint/config-conventional": "^17.2.0",
     "@japa/assert": "^1.3.6",
+    "@japa/expect-type": "^1.0.2",
     "@japa/run-failed-tests": "^1.1.0",
-    "@japa/runner": "^2.2.1",
-    "@japa/spec-reporter": "^1.3.1",
+    "@japa/runner": "^2.2.2",
+    "@japa/spec-reporter": "^1.3.2",
     "@poppinss/dev-utils": "^2.0.1",
-    "@types/node": "^18.8.1",
-    "commitizen": "^4.2.5",
-    "cz-conventional-changelog": "^3.3.0",
+    "@swc/core": "^1.3.18",
+    "@types/fs-extra": "^9.0.13",
+    "@types/node": "^18.11.9",
+    "c8": "^7.12.0",
     "del-cli": "^5.0.0",
-    "eslint": "^8.24.0",
+    "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-adonis": "^2.1.1",
+    "eslint-plugin-adonis": "^3.0.3",
     "eslint-plugin-prettier": "^4.2.1",
+    "fs-extra": "^10.1.0",
     "github-label-sync": "^2.0.1",
-    "husky": "^8.0.1",
-    "mrm": "^4.1.6",
+    "husky": "^8.0.2",
     "np": "^7.6.2",
     "prettier": "^2.7.1",
-    "typescript": "^4.8.4"
-  },
-  "nyc": {
-    "exclude": [
-      "test"
-    ],
-    "extension": [
-      ".ts"
-    ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
-  },
-  "np": {
-    "contents": ".",
-    "anyBranch": false
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.3"
   },
   "dependencies": {
-    "emittery": "^0.10.0"
+    "emittery": "^1.0.1"
   },
   "peerDependencies": {
-    "@adonisjs/application": "^5.0.0"
-  },
-  "directories": {
-    "doc": "docs",
-    "test": "test"
+    "@adonisjs/application": "^6.0.1-0"
   },
   "repository": {
     "type": "git",
@@ -90,23 +77,6 @@
     "url": "https://github.com/adonisjs/events/issues"
   },
   "homepage": "https://github.com/adonisjs/events#readme",
-  "publishConfig": {
-    "access": "public",
-    "tag": "latest"
-  },
-  "mrmConfig": {
-    "core": true,
-    "license": "MIT",
-    "services": [
-      "github-actions"
-    ],
-    "minNodeVersion": "14.15.4",
-    "probotApps": [
-      "stale",
-      "lock"
-    ],
-    "runGhActionsOnWindows": false
-  },
   "eslintConfig": {
     "extends": [
       "plugin:adonis/typescriptPackage",
@@ -136,5 +106,29 @@
     "bracketSpacing": true,
     "arrowParens": "always",
     "printWidth": 100
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "next"
+  },
+  "np": {
+    "message": "chore(release): %s",
+    "tag": "next",
+    "branch": "main",
+    "anyBranch": false
+  },
+  "c8": {
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "exclude": [
+      "tests/**"
+    ]
   }
 }
