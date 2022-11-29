@@ -8,9 +8,11 @@
  */
 
 import Emittery from 'emittery'
-import { EventsBuffer } from './events_buffer.js'
 import type { EventsListItem } from './types.js'
-import { type Container, type Application, moduleExpression } from '@adonisjs/application'
+import { EventsBuffer } from './events_buffer.js'
+
+import { type Application } from '@adonisjs/application'
+import { type Container, moduleExpression } from '@adonisjs/fold'
 
 /**
  * Event emitter is built on top of emittery with support for defining
