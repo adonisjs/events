@@ -8,11 +8,12 @@
  */
 
 import Emittery from 'emittery'
-import type { EventsListItem } from './types.js'
-import { EventsBuffer } from './events_buffer.js'
-
 import { type Application } from '@adonisjs/application'
 import { type Container, moduleExpression } from '@adonisjs/fold'
+
+import debug from './debug.js'
+import type { EventsListItem } from './types.js'
+import { EventsBuffer } from './events_buffer.js'
 
 /**
  * Event emitter is built on top of emittery with support for defining
@@ -156,6 +157,7 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
    */
   async emit<Name extends keyof EventsList>(event: Name, data: EventsList[Name]): Promise<void> {
     if (this.#eventsToFake.has(event) || this.#eventsToFake.has('*')) {
+      debug('faking emit. event: "%s", data: %O', event, data)
       this.#eventsBuffer!.events.push({ name: event, data })
       return
     }
@@ -264,8 +266,10 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
     this.#eventsBuffer = new EventsBuffer()
 
     if (!events) {
+      debug('faking all events')
       this.#eventsToFake.add('*')
     } else {
+      debug('faking events: %O', events)
       events.forEach((event) => this.#eventsToFake.add(event))
     }
 
@@ -276,6 +280,7 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
    * Restore fakes
    */
   restore() {
+    debug('restoring existing fakes')
     this.#eventsToFake.clear()
     this.#eventsBuffer?.flush()
     this.#eventsBuffer = undefined
