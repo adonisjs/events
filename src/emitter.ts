@@ -52,9 +52,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
    * Reference to AdonisJS application, we need the application root
    * and container reference from it.
    */
-  #app: Application
+  #app: Application<any, any, any>
 
-  constructor(app: Application) {
+  constructor(app: Application<any, any, any>) {
     this.#app = app
   }
 
