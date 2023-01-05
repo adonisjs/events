@@ -13,120 +13,7 @@ import { Application } from '@adonisjs/application'
 
 const BASE_URL = new URL('./app/', import.meta.url)
 
-test.group('Emitter', (group) => {
-  group.each.teardown(async () => {})
-
-  test('listen for an event', async ({ assert }) => {
-    const stack: any[] = []
-
-    const app = new Application(BASE_URL, { environment: 'web' })
-    const emitter = new Emitter(app)
-
-    emitter.on('new:user', (data) => {
-      stack.push(data)
-    })
-
-    await emitter.emit('new:user', { id: 1 })
-    assert.deepEqual(stack, [{ id: 1 }])
-  })
-
-  test('listen for an event only once', async ({ assert }) => {
-    const stack: any[] = []
-
-    const app = new Application(BASE_URL, { environment: 'web' })
-    const emitter = new Emitter(app)
-
-    emitter.once('new:user', (data) => {
-      stack.push(data)
-    })
-
-    await emitter.emit('new:user', { id: 1 })
-    await emitter.emit('new:user', { id: 2 })
-    await emitter.emit('new:user', { id: 3 })
-    assert.deepEqual(stack, [{ id: 1 }])
-  })
-
-  test('bind function by reference', async ({ assert }) => {
-    const stack: any[] = []
-
-    class UserListener {
-      sendWelcomeEmail(data: any) {
-        stack.push(data)
-        assert.isUndefined(this)
-      }
-    }
-
-    const app = new Application(BASE_URL, { environment: 'web' })
-    const emitter = new Emitter(app)
-
-    emitter.on('new:user', new UserListener().sendWelcomeEmail)
-
-    await emitter.emit('new:user', { id: 1 })
-    assert.deepEqual(stack, [{ id: 1 }])
-  })
-
-  test('bind function once by reference', async ({ assert }) => {
-    const stack: any[] = []
-
-    class UserListener {
-      sendWelcomeEmail(data: any) {
-        stack.push(data)
-        assert.isUndefined(this)
-      }
-    }
-
-    const app = new Application(BASE_URL, { environment: 'web' })
-    const emitter = new Emitter(app)
-
-    emitter.once('new:user', new UserListener().sendWelcomeEmail)
-
-    await emitter.emit('new:user', { id: 1 })
-    await emitter.emit('new:user', { id: 2 })
-    await emitter.emit('new:user', { id: 3 })
-    assert.deepEqual(stack, [{ id: 1 }])
-  })
-
-  test('raise exception when listener fails', async ({ assert }) => {
-    const app = new Application(BASE_URL, { environment: 'web' })
-    const emitter = new Emitter(app)
-
-    emitter.on('new:user', () => {
-      throw new Error('boom')
-    })
-
-    await assert.rejects(() => emitter.emit('new:user', { id: 1 }), 'boom')
-  })
-
-  test('notify error handler when a listener fails', async ({ assert }, done) => {
-    const app = new Application(BASE_URL, { environment: 'web' })
-    const emitter = new Emitter(app)
-
-    emitter.on('new:user', () => {
-      throw new Error('boom')
-    })
-
-    emitter.onError((event, error) => {
-      assert.equal(event, 'new:user')
-      assert.equal(error.message, 'boom')
-      done()
-    })
-
-    await assert.doesNotRejects(() => emitter.emit('new:user', { id: 1 }))
-  }).waitForDone()
-
-  test('listen for any event', async ({ assert }) => {
-    const stack: any[] = []
-
-    const app = new Application(BASE_URL, { environment: 'web' })
-    const emitter = new Emitter(app)
-    emitter.onAny((event, data) => {
-      stack.push({ event, data })
-    })
-
-    await emitter.emit('new:user', { id: 1 })
-    assert.deepEqual(stack, [{ event: 'new:user', data: { id: 1 } }])
-  })
-
+test.group('Emitter', () => {
   test('find if there are listeners for a specific event', async ({ assert }) => {
     const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
@@ -135,6 +22,8 @@ test.group('Emitter', (group) => {
 
     assert.isTrue(emitter.hasListeners('new:user'))
     assert.isFalse(emitter.hasListeners('resend:email'))
+
+    assert.deepEqual(new Array(...emitter.eventsListeners.keys()), ['new:user'])
   })
 
   test('find if there are listeners for any event', async ({ assert }) => {
@@ -144,6 +33,7 @@ test.group('Emitter', (group) => {
     emitter.on('new:user', () => {})
 
     assert.isTrue(emitter.hasListeners())
+    assert.deepEqual(emitter.eventsListeners.size, 1)
   })
 
   test('get count of listeners for a specific event', async ({ assert }) => {
@@ -154,6 +44,7 @@ test.group('Emitter', (group) => {
 
     assert.equal(emitter.listenerCount('new:user'), 1)
     assert.equal(emitter.listenerCount('resend:email'), 0)
+    assert.deepEqual(emitter.eventsListeners.get('new:user')?.size, 1)
   })
 
   test('get count of listeners for any event', async ({ assert }) => {
@@ -164,21 +55,7 @@ test.group('Emitter', (group) => {
     emitter.on('resend:email', () => {})
 
     assert.equal(emitter.listenerCount(), 2)
-  })
-
-  test('remove a specific listeners', async ({ assert }) => {
-    const app = new Application(BASE_URL, { environment: 'web' })
-
-    const emitter = new Emitter(app)
-    function sendEmail() {}
-
-    emitter.on('new:user', () => {})
-    emitter.on('resend:email', () => {})
-    emitter.on('resend:email', sendEmail)
-    assert.equal(emitter.listenerCount(), 3)
-
-    emitter.clearListener('resend:email', sendEmail)
-    assert.equal(emitter.listenerCount(), 2)
+    assert.deepEqual(emitter.eventsListeners.size, 2)
   })
 
   test('remove all listeners for a specific events', async ({ assert }) => {
@@ -190,10 +67,17 @@ test.group('Emitter', (group) => {
     emitter.on('new:user', () => {})
     emitter.on('resend:email', () => {})
     emitter.on('resend:email', sendEmail)
+
     assert.equal(emitter.listenerCount(), 3)
+    assert.deepEqual(emitter.eventsListeners.size, 2)
+    assert.deepEqual(emitter.eventsListeners.get('new:user')?.size, 1)
+    assert.deepEqual(emitter.eventsListeners.get('resend:email')?.size, 2)
 
     emitter.clearListeners('resend:email')
     assert.equal(emitter.listenerCount(), 1)
+    assert.deepEqual(emitter.eventsListeners.size, 1)
+    assert.deepEqual(emitter.eventsListeners.get('new:user')?.size, 1)
+    assert.isUndefined(emitter.eventsListeners.get('resend:email'))
   })
 
   test('remove all listeners for all events', async ({ assert }) => {
@@ -209,109 +93,6 @@ test.group('Emitter', (group) => {
 
     emitter.clearAllListeners()
     assert.equal(emitter.listenerCount(), 0)
-  })
-
-  test('remove any listener', async ({ assert }) => {
-    const stack: any[] = []
-    const app = new Application(BASE_URL, { environment: 'web' })
-    const emitter = new Emitter(app)
-
-    function sendEmail() {}
-
-    emitter.onAny((event, data) => {
-      stack.push({ event, data })
-    })
-    emitter.onAny(sendEmail)
-
-    assert.equal(emitter.listenerCount(), 2)
-    emitter.offAny(sendEmail)
-
-    assert.equal(emitter.listenerCount(), 1)
-  })
-
-  test('fake event', async ({ assert }) => {
-    const stack: any[] = []
-
-    const app = new Application(BASE_URL, { environment: 'web' })
-    const emitter = new Emitter(app)
-
-    emitter.on('new:user', (data) => {
-      stack.push(data)
-    })
-
-    const events = emitter.fake(['new:user'])
-
-    await emitter.emit('new:user', { id: 1 })
-    assert.deepEqual(stack, [])
-    assert.deepEqual(events.all(), [{ name: 'new:user', data: { id: 1 } }])
-  })
-
-  test('faking multiple times from drop old fakes', async ({ assert }) => {
-    const stack: any[] = []
-
-    const app = new Application(BASE_URL, { environment: 'web' })
-    const emitter = new Emitter(app)
-
-    emitter.on('new:user', (data) => {
-      stack.push(data)
-    })
-    emitter.on('resend:email', (data) => {
-      stack.push(data)
-    })
-
-    const events = emitter.fake(['new:user'])
-    const events1 = emitter.fake(['resend:email'])
-
-    await emitter.emit('new:user', { id: 1 })
-    await emitter.emit('resend:email', { email: 'foo@bar.com' })
-
-    assert.deepEqual(stack, [{ id: 1 }])
-    assert.deepEqual(events.all(), [])
-    assert.deepEqual(events1.all(), [{ name: 'resend:email', data: { email: 'foo@bar.com' } }])
-  })
-
-  test('fake all events', async ({ assert }) => {
-    const stack: any[] = []
-
-    const app = new Application(BASE_URL, { environment: 'web' })
-    const emitter = new Emitter(app)
-
-    emitter.on('new:user', (data) => {
-      stack.push(data)
-    })
-    emitter.on('resend:email', (data) => {
-      stack.push(data)
-    })
-
-    const events = emitter.fake()
-    await emitter.emit('new:user', { id: 1 })
-    await emitter.emit('resend:email', { email: 'foo@bar.com' })
-
-    assert.deepEqual(stack, [])
-    assert.deepEqual(events.all(), [
-      { name: 'new:user', data: { id: 1 } },
-      { name: 'resend:email', data: { email: 'foo@bar.com' } },
-    ])
-  })
-
-  test('do not invoke any listeners when events are faked', async ({ assert }) => {
-    const stack: any[] = []
-
-    const app = new Application(BASE_URL, { environment: 'web' })
-    const emitter = new Emitter(app)
-
-    emitter.onAny((data) => {
-      stack.push(data)
-    })
-
-    const events = emitter.fake()
-    await emitter.emit('new:user', { id: 1 })
-    await emitter.emit('resend:email', { email: 'foo@bar.com' })
-
-    assert.deepEqual(stack, [])
-    assert.deepEqual(events.all(), [
-      { name: 'new:user', data: { id: 1 } },
-      { name: 'resend:email', data: { email: 'foo@bar.com' } },
-    ])
+    assert.deepEqual(emitter.eventsListeners.size, 0)
   })
 })

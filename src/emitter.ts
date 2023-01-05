@@ -7,19 +7,29 @@
  * file that was distributed with this source code.
  */
 
-import Emittery from 'emittery'
-import { type Application } from '@adonisjs/application'
-import { type Container, moduleExpression } from '@adonisjs/fold'
+import is from '@adonisjs/application/helpers/is'
+import type { Application } from '@adonisjs/application'
+import Emittery, { type UnsubscribeFunction } from 'emittery'
+import { moduleExpression, moduleCaller, moduleImporter } from '@adonisjs/fold'
 
 import debug from './debug.js'
-import type { EventsListItem } from './types.js'
 import { EventsBuffer } from './events_buffer.js'
+import type { Constructor, EventsListItem, Listener, ListenerMethod } from './types.js'
 
 /**
  * Event emitter is built on top of emittery with support for defining
  * event listeners as string expressions.
  */
 export class Emitter<EventsList extends Record<string | symbol | number, any>> {
+  /**
+   * A collection of events and their listeners. We do not track listeners
+   * listening for events only once.
+   */
+  #eventsListeners: Map<
+    keyof EventsList,
+    Map<Listener<any, Constructor<any>>, ListenerMethod<any>>
+  > = new Map()
+
   /**
    * Underlying transport to emit events
    */
@@ -42,29 +52,39 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
   #errorHandler?: (event: keyof EventsList, error: any, data: any) => void
 
   /**
-   * A map with module expression string and a callable function that
-   * internally imports the module and calls the relevant listener
-   * method.
-   */
-  #moduleListeners: Map<string, (data: any) => any | Promise<any>> = new Map()
-
-  /**
    * Reference to AdonisJS application, we need the application root
    * and container reference from it.
    */
   #app: Application<any, any>
+
+  /**
+   * Returns a map of events and their registered listeners. The
+   * map key is the event name and the value is another map
+   * of listeners.
+   *
+   * The listeners map key is the original binding listener
+   * and the value is a callback function.
+   */
+  get eventsListeners() {
+    return this.#eventsListeners
+  }
 
   constructor(app: Application<any, any>) {
     this.#app = app
   }
 
   /**
-   * Create callable function for a given module expression
+   * Returns the event listeners map
    */
-  #createModuleListener(importExpression: string) {
-    return moduleExpression(importExpression, this.#app.appRoot).toCallable<Container<any>, [any]>(
-      this.#app.container
-    )
+  #getEventListeners<Name extends keyof EventsList, T extends Constructor<any>>(name: Name) {
+    if (!this.#eventsListeners.has(name)) {
+      this.#eventsListeners.set(name, new Map())
+    }
+
+    return this.#eventsListeners.get(name) as Map<
+      Listener<EventsList[Name], T>,
+      ListenerMethod<EventsList[Name]>
+    >
   }
 
   /**
@@ -72,12 +92,38 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
    * the listener functions to ensure that a give import expression leads
    * to a single event listener only.
    */
-  #getSetModuleListener(importExpression: string) {
-    if (!this.#moduleListeners.has(importExpression)) {
-      this.#moduleListeners.set(importExpression, this.#createModuleListener(importExpression))
+  #resolveEventListener<Data, T extends Constructor<any>>(
+    listener: Listener<Data, T>
+  ): ListenerMethod<Data> {
+    /**
+     * Parse string based listener
+     */
+    if (typeof listener === 'string') {
+      return moduleExpression(listener, this.#app.appRoot).toCallable(this.#app.container)
     }
 
-    return this.#moduleListeners.get(importExpression)!
+    /**
+     * Parse array based listener with the listener reference
+     * or lazily imported listener class
+     */
+    if (Array.isArray(listener)) {
+      const listenerModule = listener[0]
+      const method = (listener[1] as string) || 'handle'
+
+      /**
+       * Class reference
+       */
+      if (is.class_(listenerModule)) {
+        return moduleCaller(listenerModule, method).toCallable(this.#app.container)
+      }
+
+      /**
+       * Lazily loaded module
+       */
+      return moduleImporter(listenerModule, method).toCallable(this.#app.container)
+    }
+
+    return listener
   }
 
   /**
@@ -89,34 +135,42 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
   }
 
   /**
-   * Listen for an event
+   * Listen for an event. The method returns the unsubscribe function.
    */
-  on<Name extends keyof EventsList>(
+  on<Name extends keyof EventsList, T extends Constructor<any>>(
     event: Name,
-    handler: string | ((data: EventsList[Name]) => any | Promise<any>)
-  ): this {
-    if (typeof handler === 'string') {
-      this.#transport.on(event, this.#getSetModuleListener(handler))
-      return this
+    listener: Listener<EventsList[Name], T>
+  ): UnsubscribeFunction {
+    const eventListeners = this.#getEventListeners<Name, T>(event)
+
+    /**
+     * Track event listener so that we can re-use resolved callable
+     * methods and also return a list of events that has one or
+     * more listeners.
+     */
+    if (!eventListeners.has(listener)) {
+      eventListeners.set(listener, this.#resolveEventListener(listener))
     }
 
-    this.#transport.on(event, handler)
-    return this
+    if (debug.enabled) {
+      debug('registering event listener, event: "%s", listener: %O', event, listener)
+    }
+
+    this.#transport.on(event, eventListeners.get(listener)!)
+    return () => this.off(event, listener)
   }
 
   /**
    * Listen for an event only once
    */
-  once<Name extends keyof EventsList>(
+  once<Name extends keyof EventsList, T extends Constructor<any>>(
     event: Name,
-    handler: string | ((data: EventsList[Name]) => any | Promise<any>)
-  ): this {
-    if (typeof handler === 'string') {
-      const off = this.#transport.on(event, async (data) => {
-        off()
-        await this.#createModuleListener(handler)(data)
-      })
-      return this
+    listener: Listener<EventsList[Name], T>
+  ): void {
+    const resolvedListener = this.#resolveEventListener(listener)
+
+    if (debug.enabled) {
+      debug('registering one time event listener, event: "%s", listener: %O', event, listener)
     }
 
     /**
@@ -126,27 +180,19 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
      */
     const off = this.#transport.on(event, async (data) => {
       off()
-      await handler(data)
+      debug('removing one time event listener, event: "%s"', event)
+      await resolvedListener(data)
     })
-
-    return this
   }
 
   /**
-   * Attach a listener to listen for all the events
+   * Attach a listener to listen for all the events. Wildcard listeners
+   * can only be defined as inline callbacks.
    */
   onAny(
-    handler:
-      | string
-      | ((event: keyof EventsList, data: EventsListItem<EventsList>) => any | Promise<any>)
-  ): this {
-    if (typeof handler === 'string') {
-      this.#transport.onAny(this.#getSetModuleListener(handler))
-      return this
-    }
-
-    this.#transport.onAny(handler)
-    return this
+    listener: (event: keyof EventsList, data: EventsListItem<EventsList>) => any | Promise<any>
+  ): UnsubscribeFunction {
+    return this.#transport.onAny(listener)
   }
 
   /**
@@ -176,38 +222,32 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
   /**
    * Remove a specific listener for an event
    */
-  off<Name extends keyof EventsList>(
+  off<Name extends keyof EventsList, T extends Constructor<any>>(
     event: Name,
-    handler: string | ((data: EventsList[Name]) => any | Promise<any>)
-  ): this {
-    if (typeof handler === 'string') {
-      if (this.#moduleListeners.has(handler)) {
-        this.#transport.off(event, this.#moduleListeners.get(handler)!)
-      }
-      return this
+    listener: Listener<EventsList[Name], T>
+  ): void {
+    const listeners = this.#getEventListeners<Name, T>(event)
+
+    const resolvedListener = listeners.get(listener)
+    if (!resolvedListener) {
+      return
     }
 
-    this.#transport.off(event, handler)
-    return this
+    if (debug.enabled) {
+      debug('removing listener, event: "%s", listener: %O', event, listener)
+    }
+
+    listeners.delete(listener)
+    this.#transport.off(event, resolvedListener)
   }
 
   /**
-   * Remove a specific listener listing for all
-   * the events
+   * Remove a specific listener listening for all the events
    */
   offAny(
-    handler:
-      | string
-      | ((event: keyof EventsList, data: EventsListItem<EventsList>) => any | Promise<any>)
+    listener: (event: keyof EventsList, data: EventsListItem<EventsList>) => any | Promise<any>
   ): this {
-    if (typeof handler === 'string') {
-      if (this.#moduleListeners.has(handler)) {
-        this.#transport.offAny(this.#moduleListeners.get(handler)!)
-      }
-      return this
-    }
-
-    this.#transport.offAny(handler)
+    this.#transport.offAny(listener)
     return this
   }
 
@@ -216,25 +256,29 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
    *
    * @alias "off"
    */
-  clearListener<Name extends keyof EventsList>(
+  clearListener<Name extends keyof EventsList, T extends Constructor<any>>(
     event: Name,
-    handler: string | ((data: EventsList[Name]) => any | Promise<any>)
-  ): this {
-    return this.off(event, handler)
+    listener: Listener<EventsList[Name], T>
+  ): void {
+    return this.off(event, listener)
   }
 
   /**
    * Clear all listeners for a specific event
    */
   clearListeners(event: keyof EventsList) {
+    debug('clearing all listeners for event "%s"', event)
     this.#transport.clearListeners(event)
+    this.#eventsListeners.delete(event)
   }
 
   /**
    * Clear all listeners for all the events
    */
   clearAllListeners() {
+    debug('clearing all event listeners')
     this.#transport.clearListeners()
+    this.#eventsListeners.clear()
   }
 
   /**
