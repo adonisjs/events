@@ -7,4 +7,5 @@
  * file that was distributed with this source code.
  */
 
-export { Emitter as default } from './src/emitter.js'
+export { Emitter } from './src/emitter.js'
+export { BaseEvent } from './src/base_event.js'

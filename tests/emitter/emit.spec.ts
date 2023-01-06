@@ -11,9 +11,9 @@ import { join } from 'node:path'
 import { test } from '@japa/runner'
 import { fileURLToPath } from 'node:url'
 import { remove, outputFile } from 'fs-extra'
+import { Application } from '@adonisjs/application'
 
 import { Emitter } from '../../src/emitter.js'
-import { Application } from '@adonisjs/application'
 
 const BASE_URL = new URL('../app/', import.meta.url)
 const BASE_PATH = fileURLToPath(BASE_URL)
