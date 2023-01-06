@@ -14,6 +14,7 @@ import { remove, outputFile } from 'fs-extra'
 import { Application } from '@adonisjs/application'
 
 import { Emitter } from '../../src/emitter.js'
+import { BaseEvent } from '../../index.js'
 
 const BASE_URL = new URL('../app/', import.meta.url)
 const BASE_PATH = fileURLToPath(BASE_URL)
@@ -328,6 +329,58 @@ test.group('Emitter | listen | lazily loaded listener', () => {
     assert.deepEqual(stack, ['invoked'])
     assert.equal(emitter.eventsListeners.get('new:user')?.size, 0)
   })
+
+  test('bind multiple listeners to an event', async ({ assert }) => {
+    const stack: UserRegistered[] = []
+    class UserRegistered extends BaseEvent {
+      constructor(public email: string) {
+        super()
+      }
+    }
+
+    const NotifyAddedToTeamListener = async () => {
+      return {
+        default: class NotifyAddedToTeam {
+          handle(_: { teamId: number }) {}
+        },
+      }
+    }
+
+    const SendEmailListener = async () => {
+      return {
+        default: class SendEmail {
+          handle(event: UserRegistered) {
+            stack.push(event)
+          }
+        },
+      }
+    }
+
+    const ProvisionAccountListener = async () => {
+      return {
+        default: class ProvisionAccount {
+          handle(event: UserRegistered) {
+            stack.push(event)
+          }
+        },
+      }
+    }
+
+    const app = new Application(BASE_URL, { environment: 'web' })
+    await app.init()
+
+    const emitter = new Emitter(app)
+    UserRegistered.useEmitter(emitter)
+
+    emitter.listen(UserRegistered, [SendEmailListener, ProvisionAccountListener])
+    await emitter.emit(UserRegistered, new UserRegistered('foo@bar.com'))
+
+    // @ts-expect-error (unable to assert with expectTypeOf)
+    emitter.listen(UserRegistered, [NotifyAddedToTeamListener])
+
+    assert.deepEqual(stack, [new UserRegistered('foo@bar.com'), new UserRegistered('foo@bar.com')])
+    assert.equal(emitter.eventsListeners.get(UserRegistered)?.size, 3)
+  })
 })
 
 test.group('Emitter | listen | listener by reference', () => {
@@ -402,5 +455,45 @@ test.group('Emitter | listen | listener by reference', () => {
 
     assert.deepEqual(stack, ['invoked'])
     assert.equal(emitter.eventsListeners.get('new:user')?.size, 0)
+  })
+
+  test('bind multiple listeners to an event', async ({ assert }) => {
+    const stack: UserRegistered[] = []
+    class UserRegistered extends BaseEvent {
+      constructor(public email: string) {
+        super()
+      }
+    }
+
+    class NotifyAddedToTeam {
+      handle(_: { teamId: number }) {}
+    }
+
+    class SendEmail {
+      handle(event: UserRegistered) {
+        stack.push(event)
+      }
+    }
+
+    class ProvisionAccount {
+      handle(event: UserRegistered) {
+        stack.push(event)
+      }
+    }
+
+    const app = new Application(BASE_URL, { environment: 'web' })
+    await app.init()
+
+    const emitter = new Emitter(app)
+    UserRegistered.useEmitter(emitter)
+
+    emitter.listen(UserRegistered, [SendEmail, ProvisionAccount])
+    await emitter.emit(UserRegistered, new UserRegistered('foo@bar.com'))
+
+    // @ts-expect-error (unable to assert with expectTypeOf)
+    emitter.listen(UserRegistered, [NotifyAddedToTeam])
+
+    assert.deepEqual(stack, [new UserRegistered('foo@bar.com'), new UserRegistered('foo@bar.com')])
+    assert.equal(emitter.eventsListeners.get(UserRegistered)?.size, 3)
   })
 })

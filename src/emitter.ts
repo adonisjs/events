@@ -14,7 +14,14 @@ import { moduleExpression, moduleCaller, moduleImporter } from '@adonisjs/fold'
 
 import debug from './debug.js'
 import { EventsBuffer } from './events_buffer.js'
-import type { Listener, Constructor, ListenerMethod, AllowedEventTypes } from './types.js'
+import type {
+  Listener,
+  LazyImport,
+  Constructor,
+  ListenerMethod,
+  AllowedEventTypes,
+  ListenerClassWithHandleMethod,
+} from './types.js'
 
 /**
  * Event emitter is built on top of emittery with support class based
@@ -173,6 +180,21 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
   ): this {
     this.#errorHandler = callback
     return this
+  }
+
+  /**
+   * Bind multiple listeners to listen for a single event. The listen
+   * method is a convenience helper to be used with class based
+   * events and listeners.
+   */
+  listen<Event extends Constructor<any>>(
+    event: Event,
+    listeners: (
+      | ListenerClassWithHandleMethod<InstanceType<Event>>
+      | LazyImport<ListenerClassWithHandleMethod<InstanceType<Event>>>
+    )[]
+  ) {
+    listeners.forEach((listener) => this.on(event, [listener, 'handle']))
   }
 
   /**

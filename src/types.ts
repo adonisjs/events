@@ -59,6 +59,13 @@ export type GetListenersMethods<Listener extends Constructor<any>, Data> = {
 }[keyof InstanceType<Listener>]
 
 /**
+ * Representation of listener class with handle method
+ */
+export type ListenerClassWithHandleMethod<Data> = Constructor<{
+  handle: ListenerMethod<Data>
+}>
+
+/**
  * The event listener defined as an inline callback, string
  * listener class reference or a lazily imported listener
  */
