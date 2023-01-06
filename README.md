@@ -5,7 +5,7 @@
 [![gh-workflow-image]][gh-workflow-url] [![npm-image]][npm-url] ![][typescript-image] [![license-image]][license-url] [![synk-image]][synk-url]
 
 ## Introduction
-AdonisJS events is an implementation of the event emitter built on top of [emittery](https://github.com/sindresorhus/emittery). Alongside defining event listeners as inline callbacks, you can also bind modules to events and register event subscribers.
+AdonisJS events is an implementation of the event emitter built on top of [emittery](https://github.com/sindresorhus/emittery). Alongside defining event listeners as inline callbacks, you can also bind modules to events and define events as classes.
 
 ## Official Documentation
 The documentation is available on the [AdonisJS website](https://docs.adonisjs.com/guides/events)
@@ -21,7 +21,7 @@ In order to ensure that the AdonisJS community is welcoming to all, please revie
 ## License
 AdonisJS events is open-sourced software licensed under the [MIT license](LICENSE.md).
 
-[gh-workflow-image]: https://img.shields.io/github/workflow/status/adonisjs/events/test?style=for-the-badge
+[gh-workflow-image]: https://img.shields.io/github/actions/workflow/status/adonisjs/events/test.yml?style=for-the-badge
 [gh-workflow-url]: https://github.com/adonisjs/events/actions/workflows/test.yml "Github action"
 
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
