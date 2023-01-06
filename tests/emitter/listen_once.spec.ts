@@ -73,6 +73,57 @@ test.group('Emitter | listenOnce', () => {
     assert.deepEqual(stack, [{ id: 1 }])
     assert.isUndefined(emitter.eventsListeners.get('new:user'))
   })
+
+  test('listen once for a class based event', async ({ assert, expectTypeOf }) => {
+    const stack: any[] = []
+
+    const app = new Application(BASE_URL, { environment: 'web' })
+    const emitter = new Emitter<{ 'new:user': { id: number } }>(app)
+
+    class UserRegistered {
+      constructor(public email: string) {}
+    }
+
+    emitter.once(UserRegistered, (event) => {
+      assert.instanceOf(event, UserRegistered)
+      expectTypeOf(event).toEqualTypeOf<UserRegistered>()
+      stack.push(event)
+    })
+
+    await emitter.emit(UserRegistered, new UserRegistered('foo@bar.com'))
+    await emitter.emit(UserRegistered, new UserRegistered('foo@bar.com'))
+    assert.deepEqual(stack, [new UserRegistered('foo@bar.com')])
+
+    assert.isUndefined(emitter.eventsListeners.get(UserRegistered))
+  })
+
+  test('define multiple listeners for a class based event', async ({ assert, expectTypeOf }) => {
+    const stack: any[] = []
+
+    const app = new Application(BASE_URL, { environment: 'web' })
+    const emitter = new Emitter<{ 'new:user': { id: number } }>(app)
+
+    class UserRegistered {
+      constructor(public email: string) {}
+    }
+
+    emitter.once(UserRegistered, (event) => {
+      assert.instanceOf(event, UserRegistered)
+      expectTypeOf(event).toEqualTypeOf<UserRegistered>()
+      stack.push(event)
+    })
+
+    emitter.once(UserRegistered, (event) => {
+      assert.instanceOf(event, UserRegistered)
+      expectTypeOf(event).toEqualTypeOf<UserRegistered>()
+      stack.push(event)
+    })
+
+    await emitter.emit(UserRegistered, new UserRegistered('foo@bar.com'))
+    await emitter.emit(UserRegistered, new UserRegistered('foo@bar.com'))
+    assert.deepEqual(stack, [new UserRegistered('foo@bar.com'), new UserRegistered('foo@bar.com')])
+    assert.isUndefined(emitter.eventsListeners.get(UserRegistered))
+  })
 })
 
 test.group('Emitter | listenOnce | magic string listener', (group) => {

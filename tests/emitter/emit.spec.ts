@@ -40,19 +40,48 @@ test.group('Emitter | emit', (group) => {
     assert.deepEqual(stack, [{ id: 1 }, { id: 2 }])
   })
 
+  test('emit event for class based events', async ({ assert }) => {
+    const stack: any[] = []
+
+    const app = new Application(BASE_URL, { environment: 'web' })
+    const emitter = new Emitter(app)
+
+    class UserRegistered {
+      constructor(public email: string) {}
+    }
+
+    emitter.on(UserRegistered, (data) => {
+      stack.push(data)
+    })
+
+    await emitter.emit(UserRegistered, new UserRegistered('foo@bar.com'))
+    await emitter.emit(UserRegistered, new UserRegistered('baz@bar.com'))
+    assert.deepEqual(stack, [new UserRegistered('foo@bar.com'), new UserRegistered('baz@bar.com')])
+  })
+
   test('validate emit types', async ({ assert, expectTypeOf }) => {
     const stack: any[] = []
 
     const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter<{ 'new:user': NewUserEvent }>(app)
 
+    class UserRegistered {
+      constructor(public email: string) {}
+    }
+
     emitter.on('new:user', (data) => {
+      stack.push(data)
+    })
+    emitter.on(UserRegistered, (data) => {
       stack.push(data)
     })
 
     expectTypeOf(emitter.emit).parameters.toEqualTypeOf<['new:user', NewUserEvent]>()
+
     await emitter.emit('new:user', { id: 2 })
-    assert.deepEqual(stack, [{ id: 2 }])
+    await emitter.emit(UserRegistered, new UserRegistered('foo@bar.com'))
+
+    assert.deepEqual(stack, [{ id: 2 }, new UserRegistered('foo@bar.com')])
   })
 
   test('raise exception when listener fails', async ({ assert }) => {
@@ -231,7 +260,7 @@ test.group('Emitter | fake', () => {
 
     await emitter.emit('new:user', { id: 1 })
     assert.deepEqual(stack, [])
-    assert.deepEqual(events.all(), [{ name: 'new:user', data: { id: 1 } }])
+    assert.deepEqual(events.all(), [{ event: 'new:user', data: { id: 1 } }])
   })
 
   test('faking multiple times should drop old fakes', async ({ assert }) => {
@@ -255,7 +284,7 @@ test.group('Emitter | fake', () => {
 
     assert.deepEqual(stack, [{ id: 1 }])
     assert.deepEqual(events.all(), [])
-    assert.deepEqual(events1.all(), [{ name: 'resend:email', data: { email: 'foo@bar.com' } }])
+    assert.deepEqual(events1.all(), [{ event: 'resend:email', data: { email: 'foo@bar.com' } }])
   })
 
   test('fake all events', async ({ assert }) => {
@@ -277,8 +306,8 @@ test.group('Emitter | fake', () => {
 
     assert.deepEqual(stack, [])
     assert.deepEqual(events.all(), [
-      { name: 'new:user', data: { id: 1 } },
-      { name: 'resend:email', data: { email: 'foo@bar.com' } },
+      { event: 'new:user', data: { id: 1 } },
+      { event: 'resend:email', data: { email: 'foo@bar.com' } },
     ])
   })
 
@@ -298,8 +327,8 @@ test.group('Emitter | fake', () => {
 
     assert.deepEqual(stack, [])
     assert.deepEqual(events.all(), [
-      { name: 'new:user', data: { id: 1 } },
-      { name: 'resend:email', data: { email: 'foo@bar.com' } },
+      { event: 'new:user', data: { id: 1 } },
+      { event: 'resend:email', data: { email: 'foo@bar.com' } },
     ])
   })
 
@@ -318,6 +347,6 @@ test.group('Emitter | fake', () => {
     await emitter.emit('resend:email', { email: 'foo@bar.com' })
 
     assert.deepEqual(stack, [{ name: 'new:user', data: { id: 1 } }])
-    assert.deepEqual(events.all(), [{ name: 'resend:email', data: { email: 'foo@bar.com' } }])
+    assert.deepEqual(events.all(), [{ event: 'resend:email', data: { email: 'foo@bar.com' } }])
   })
 })

@@ -8,18 +8,9 @@
  */
 
 /**
- * Event list item inside bufferred items
+ * Data types for event name
  */
-export type BufferedEventsListItem<EventsList> = {
-  [Name in keyof EventsList]: { name: Name; data: EventsList[Name] }
-}[keyof EventsList]
-
-/**
- * Event list item
- */
-export type EventsListItem<EventsList> = {
-  [Name in keyof EventsList]: EventsList[Name]
-}[keyof EventsList]
+export type AllowedEventTypes = string | symbol | number | Constructor<any>
 
 /**
  * Class constructor type
@@ -30,6 +21,27 @@ export type Constructor<T> = new (...args: any[]) => T
  * A function that lazily imports a middleware
  */
 export type LazyImport<DefaultExport> = () => Promise<{ default: DefaultExport }>
+
+/**
+ * Data structure for a buffered event
+ */
+export type BufferedEvent<Event, Data> = { event: Event; data: Data }
+
+/**
+ * Event list item inside bufferred items
+ */
+export type BufferedEventsList<EventsList> =
+  | {
+      [Name in keyof EventsList]: BufferedEvent<Name, EventsList[Name]>
+    }[keyof EventsList]
+  | BufferedEvent<Constructor<any>, any>
+
+/**
+ * Event list item
+ */
+export type EventsListItem<EventsList> = {
+  [Name in keyof EventsList]: EventsList[Name]
+}[keyof EventsList]
 
 /**
  * Representation of listener method on the listener class. The
@@ -57,7 +69,7 @@ export type GetListenersMethods<Listener extends Constructor<any>, Data> = {
  * The event listener defined as an inline callback, string
  * listener class reference or a lazily imported listener
  */
-export type Listener<Data, T extends Constructor<any>> =
+export type Listener<Data, ListenerClass extends Constructor<any>> =
   | ListenerFn<Data>
   | string
-  | [LazyImport<T> | T, GetListenersMethods<T, Data>?]
+  | [LazyImport<ListenerClass> | ListenerClass, GetListenersMethods<ListenerClass, Data>?]

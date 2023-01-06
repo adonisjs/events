@@ -37,6 +37,30 @@ test.group('Emitter | clearListener', () => {
     assert.equal(emitter.eventsListeners.get('new:user')?.size, 1)
   })
 
+  test('remove listener for a class based event', async ({ assert }) => {
+    const app = new Application(BASE_URL, { environment: 'web' })
+    const emitter = new Emitter<{ 'new:user': NewUserEvent }>(app)
+
+    function listener1() {
+      throw new Error('Never expected to reach here')
+    }
+    function listener2() {}
+
+    class UserRegistered {}
+
+    emitter.on(UserRegistered, listener1)
+    emitter.on(UserRegistered, listener2)
+
+    assert.equal(emitter.listenerCount(UserRegistered), 2)
+    assert.equal(emitter.eventsListeners.get(UserRegistered)?.size, 2)
+
+    emitter.clearListener(UserRegistered, listener1)
+    await emitter.emit(UserRegistered, new UserRegistered())
+
+    assert.equal(emitter.listenerCount(UserRegistered), 1)
+    assert.equal(emitter.eventsListeners.get(UserRegistered)?.size, 1)
+  })
+
   test('remove magic string listener', async ({ assert }) => {
     const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter<{ 'new:user': NewUserEvent }>(app)

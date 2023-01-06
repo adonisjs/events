@@ -11,9 +11,9 @@ import { join } from 'node:path'
 import { test } from '@japa/runner'
 import { fileURLToPath } from 'node:url'
 import { remove, outputFile } from 'fs-extra'
+import { Application } from '@adonisjs/application'
 
 import { Emitter } from '../../src/emitter.js'
-import { Application } from '@adonisjs/application'
 
 const BASE_URL = new URL('../app/', import.meta.url)
 const BASE_PATH = fileURLToPath(BASE_URL)
@@ -33,6 +33,7 @@ test.group('Emitter | listen', () => {
 
     await emitter.emit('new:user', { id: 1 })
     assert.deepEqual(stack, [{ id: 1 }])
+    assert.equal(emitter.eventsListeners.get('new:user')?.size, 1)
   })
 
   test('do not register multiple listeners when callback is the same', async ({ assert }) => {
@@ -50,6 +51,7 @@ test.group('Emitter | listen', () => {
 
     await emitter.emit('new:user', { id: 1 })
     assert.deepEqual(stack, [{ id: 1 }])
+    assert.equal(emitter.eventsListeners.get('new:user')?.size, 1)
   })
 
   test('listen for any event', async ({ assert }) => {
@@ -103,6 +105,54 @@ test.group('Emitter | listen', () => {
     assert.deepEqual(stack, [{ id: 1 }])
     assert.equal(emitter.eventsListeners.get('new:user')?.size, 0)
   })
+
+  test('listen for a class based event', async ({ assert, expectTypeOf }) => {
+    const stack: any[] = []
+
+    const app = new Application(BASE_URL, { environment: 'web' })
+    const emitter = new Emitter<{ 'new:user': { id: number } }>(app)
+
+    class UserRegistered {
+      constructor(public email: string) {}
+    }
+
+    emitter.on(UserRegistered, (event) => {
+      assert.instanceOf(event, UserRegistered)
+      expectTypeOf(event).toEqualTypeOf<UserRegistered>()
+      stack.push(event)
+    })
+
+    await emitter.emit(UserRegistered, new UserRegistered('foo@bar.com'))
+    assert.deepEqual(stack, [new UserRegistered('foo@bar.com')])
+    assert.equal(emitter.eventsListeners.get(UserRegistered)?.size, 1)
+  })
+
+  test('define multiple listeners for a class based event', async ({ assert, expectTypeOf }) => {
+    const stack: any[] = []
+
+    const app = new Application(BASE_URL, { environment: 'web' })
+    const emitter = new Emitter<{ 'new:user': { id: number } }>(app)
+
+    class UserRegistered {
+      constructor(public email: string) {}
+    }
+
+    emitter.on(UserRegistered, (event) => {
+      assert.instanceOf(event, UserRegistered)
+      expectTypeOf(event).toEqualTypeOf<UserRegistered>()
+      stack.push(event)
+    })
+
+    emitter.on(UserRegistered, (event) => {
+      assert.instanceOf(event, UserRegistered)
+      expectTypeOf(event).toEqualTypeOf<UserRegistered>()
+      stack.push(event)
+    })
+
+    await emitter.emit(UserRegistered, new UserRegistered('foo@bar.com'))
+    assert.deepEqual(stack, [new UserRegistered('foo@bar.com'), new UserRegistered('foo@bar.com')])
+    assert.equal(emitter.eventsListeners.get(UserRegistered)?.size, 2)
+  })
 })
 
 test.group('Emitter | listen | magic string listener', (group) => {
@@ -132,6 +182,7 @@ test.group('Emitter | listen | magic string listener', (group) => {
     await emitter.emit('new:user', stack)
 
     assert.deepEqual(stack, ['invoked'])
+    assert.equal(emitter.eventsListeners.get('new:user')?.size, 1)
   })
 
   test('do not register multiple listeners when using magic strings', async ({ assert }) => {
@@ -157,6 +208,7 @@ test.group('Emitter | listen | magic string listener', (group) => {
     await emitter.emit('new:user', stack)
 
     assert.deepEqual(stack, ['invoked'])
+    assert.equal(emitter.eventsListeners.get('new:user')?.size, 1)
   })
 
   test('unsubscribe when using magic string', async ({ assert }) => {
@@ -215,6 +267,7 @@ test.group('Emitter | listen | lazily loaded listener', () => {
     await emitter.emit('new:user', stack)
 
     assert.deepEqual(stack, ['invoked'])
+    assert.equal(emitter.eventsListeners.get('new:user')?.size, 1)
   })
 
   test('do not register multiple listeners when using lazy load function', async ({ assert }) => {
@@ -240,6 +293,7 @@ test.group('Emitter | listen | lazily loaded listener', () => {
     await emitter.emit('new:user', stack)
 
     assert.deepEqual(stack, ['invoked'])
+    assert.equal(emitter.eventsListeners.get('new:user')?.size, 1)
   })
 
   test('unsubscribe when using lazily loaded listener', async ({ assert }) => {
@@ -293,6 +347,7 @@ test.group('Emitter | listen | listener by reference', () => {
     await emitter.emit('new:user', stack)
 
     assert.deepEqual(stack, ['invoked'])
+    assert.equal(emitter.eventsListeners.get('new:user')?.size, 1)
   })
 
   test('do not register multiple listeners when passing listener by reference', async ({
@@ -317,6 +372,7 @@ test.group('Emitter | listen | listener by reference', () => {
     await emitter.emit('new:user', stack)
 
     assert.deepEqual(stack, ['invoked'])
+    assert.equal(emitter.eventsListeners.get('new:user')?.size, 1)
   })
 
   test('unsubscribe when passing listener by reference', async ({ assert }) => {

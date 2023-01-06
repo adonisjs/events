@@ -14,19 +14,25 @@ import { moduleExpression, moduleCaller, moduleImporter } from '@adonisjs/fold'
 
 import debug from './debug.js'
 import { EventsBuffer } from './events_buffer.js'
-import type { Constructor, EventsListItem, Listener, ListenerMethod } from './types.js'
+import type { Listener, Constructor, ListenerMethod, AllowedEventTypes } from './types.js'
 
 /**
- * Event emitter is built on top of emittery with support for defining
- * event listeners as string expressions.
+ * Event emitter is built on top of emittery with support class based
+ * events and listeners
  */
 export class Emitter<EventsList extends Record<string | symbol | number, any>> {
   /**
+   * Event classes to symbols mapping. We need symbols as emittery
+   * does not support class based event names
+   */
+  #eventsClassSymbols: Map<Constructor<any>, symbol> = new Map()
+
+  /**
    * A collection of events and their listeners. We do not track listeners
-   * listening for events only once.
+   * listening for events only once
    */
   #eventsListeners: Map<
-    keyof EventsList,
+    AllowedEventTypes,
     Map<Listener<any, Constructor<any>>, ListenerMethod<any>>
   > = new Map()
 
@@ -44,12 +50,12 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
   /**
    * A set of events to fake
    */
-  #eventsToFake: Set<keyof EventsList | '*'> = new Set()
+  #eventsToFake: Set<AllowedEventTypes | '*'> = new Set()
 
   /**
    * Error handler to catch all errors thrown by listeners
    */
-  #errorHandler?: (event: keyof EventsList, error: any, data: any) => void
+  #errorHandler?: (event: keyof EventsList | Constructor<any>, error: any, data: any) => void
 
   /**
    * Reference to AdonisJS application, we need the application root
@@ -74,27 +80,44 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
   }
 
   /**
-   * Returns the event listeners map
+   * Returns the symbol for a class based event.
    */
-  #getEventListeners<Name extends keyof EventsList, T extends Constructor<any>>(name: Name) {
-    if (!this.#eventsListeners.has(name)) {
-      this.#eventsListeners.set(name, new Map())
+  #getEventClassSymbol(event: Constructor<any>): symbol {
+    if (!this.#eventsClassSymbols.has(event)) {
+      this.#eventsClassSymbols.set(event, Symbol(event.name))
     }
 
-    return this.#eventsListeners.get(name) as Map<
-      Listener<EventsList[Name], T>,
-      ListenerMethod<EventsList[Name]>
-    >
+    return this.#eventsClassSymbols.get(event)!
   }
 
   /**
-   * Returns the listener function for a given import expression. We cache
-   * the listener functions to ensure that a give import expression leads
-   * to a single event listener only.
+   * Normalizes the event to emittery supported data types. The class
+   * constructors are cached against a unique symbol.
    */
-  #resolveEventListener<Data, T extends Constructor<any>>(
-    listener: Listener<Data, T>
-  ): ListenerMethod<Data> {
+  #resolveEvent(event: AllowedEventTypes): string | symbol | number {
+    if (is.class_(event)) {
+      return this.#getEventClassSymbol(event)
+    }
+
+    return event
+  }
+
+  /**
+   * Returns the event listeners map
+   */
+  #getEventListeners(event: AllowedEventTypes) {
+    if (!this.#eventsListeners.has(event)) {
+      this.#eventsListeners.set(event, new Map())
+    }
+
+    return this.#eventsListeners.get(event)!
+  }
+
+  /**
+   * Normalizes the event listener to a function that can be passed to
+   * emittery.
+   */
+  #normalizeEventListener(listener: Listener<any, Constructor<any>>): ListenerMethod<any> {
     /**
      * Parse string based listener
      */
@@ -127,9 +150,27 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
   }
 
   /**
+   * Resolves the event listener either from the cache or normalizes
+   * it and stores it inside the cache
+   */
+  #resolveEventListener(
+    event: AllowedEventTypes,
+    listener: Listener<any, Constructor<any>>
+  ): ListenerMethod<any> {
+    const eventListeners = this.#getEventListeners(event)
+    if (!eventListeners.has(listener)) {
+      eventListeners.set(listener, this.#normalizeEventListener(listener))
+    }
+
+    return eventListeners.get(listener)!
+  }
+
+  /**
    * Register a global error handler
    */
-  onError(callback: (event: keyof EventsList, error: any, data: any) => void): this {
+  onError(
+    callback: (event: keyof EventsList | Constructor<any>, error: any, data: any) => void
+  ): this {
     this.#errorHandler = callback
     return this
   }
@@ -137,51 +178,62 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
   /**
    * Listen for an event. The method returns the unsubscribe function.
    */
-  on<Name extends keyof EventsList, T extends Constructor<any>>(
+  on<Event extends Constructor<any>, ListenerClass extends Constructor<any>>(
+    event: Event,
+    listener: Listener<InstanceType<Event>, ListenerClass>
+  ): UnsubscribeFunction
+  on<Name extends keyof EventsList, ListenerClass extends Constructor<any>>(
     event: Name,
-    listener: Listener<EventsList[Name], T>
+    listener: Listener<EventsList[Name], ListenerClass>
+  ): UnsubscribeFunction
+  on<Event extends AllowedEventTypes>(
+    event: Event,
+    listener: Listener<any, Constructor<any>>
   ): UnsubscribeFunction {
-    const eventListeners = this.#getEventListeners<Name, T>(event)
-
-    /**
-     * Track event listener so that we can re-use resolved callable
-     * methods and also return a list of events that has one or
-     * more listeners.
-     */
-    if (!eventListeners.has(listener)) {
-      eventListeners.set(listener, this.#resolveEventListener(listener))
-    }
-
     if (debug.enabled) {
-      debug('registering event listener, event: "%s", listener: %O', event, listener)
+      debug('registering event listener, event: %O, listener: %O', event, listener)
     }
 
-    this.#transport.on(event, eventListeners.get(listener)!)
+    const normalizedEvent = this.#resolveEvent(event)
+    const normalizedListener = this.#resolveEventListener(event, listener)
+
+    this.#transport.on(normalizedEvent, normalizedListener)
     return () => this.off(event, listener)
   }
 
   /**
    * Listen for an event only once
    */
-  once<Name extends keyof EventsList, T extends Constructor<any>>(
+  once<Event extends Constructor<any>, ListenerClass extends Constructor<any>>(
+    event: Event,
+    listener: Listener<InstanceType<Event>, ListenerClass>
+  ): void
+  once<Name extends keyof EventsList, ListenerClass extends Constructor<any>>(
     event: Name,
-    listener: Listener<EventsList[Name], T>
+    listener: Listener<EventsList[Name], ListenerClass>
+  ): void
+  once<Event extends AllowedEventTypes>(
+    event: Event,
+    listener: Listener<any, Constructor<any>>
   ): void {
-    const resolvedListener = this.#resolveEventListener(listener)
-
     if (debug.enabled) {
-      debug('registering one time event listener, event: "%s", listener: %O', event, listener)
+      debug('registering one time event listener, event: %O, listener: %O', event, listener)
     }
 
+    const normalizedEvent = this.#resolveEvent(event)
+    const normalizedListener = this.#normalizeEventListener(listener)
+
     /**
+     * Listening for an event and unsubscribing right after the event is emitted.
      * Internally emittery does the same thing, but they do not await the
-     * handler, therefore the `once` events listeners can finish
-     * after "await emitter.emit" call as well.
+     * handler. Therefore, the "once" listeners will finish after the
+     * "emit" call. This behavior is not inline with the "on" event
+     * listeners.
      */
-    const off = this.#transport.on(event, async (data) => {
+    const off = this.#transport.on(normalizedEvent, async (data) => {
       off()
-      debug('removing one time event listener, event: "%s"', event)
-      await resolvedListener(data)
+      debug('removing one time event listener, event: %O', event)
+      await normalizedListener(data)
     })
   }
 
@@ -190,7 +242,7 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
    * can only be defined as inline callbacks.
    */
   onAny(
-    listener: (event: keyof EventsList, data: EventsListItem<EventsList>) => any | Promise<any>
+    listener: (event: AllowedEventTypes, data: any) => any | Promise<any>
   ): UnsubscribeFunction {
     return this.#transport.onAny(listener)
   }
@@ -201,15 +253,21 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
    *
    * You can await this method to wait for events listeners to finish
    */
-  async emit<Name extends keyof EventsList>(event: Name, data: EventsList[Name]): Promise<void> {
+  async emit<Event extends Constructor<any>>(event: Event, data: InstanceType<Event>): Promise<void>
+  async emit<Name extends keyof EventsList>(event: Name, data: EventsList[Name]): Promise<void>
+  async emit<Event extends AllowedEventTypes>(event: Event, data: any): Promise<void> {
+    /**
+     * Entertain fakes if exists
+     */
     if (this.#eventsToFake.has(event) || this.#eventsToFake.has('*')) {
-      debug('faking emit. event: "%s", data: %O', event, data)
-      this.#eventsBuffer!.events.push({ name: event, data })
+      debug('faking emit. event: %O, data: %O', event, data)
+      this.#eventsBuffer!.add(event, data)
       return
     }
 
     try {
-      await this.#transport.emit(event, data)
+      const normalizedEvent = this.#resolveEvent(event)
+      await this.#transport.emit(normalizedEvent, data)
     } catch (error) {
       if (this.#errorHandler) {
         this.#errorHandler(event, error, data)
@@ -222,30 +280,28 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
   /**
    * Remove a specific listener for an event
    */
-  off<Name extends keyof EventsList, T extends Constructor<any>>(
-    event: Name,
-    listener: Listener<EventsList[Name], T>
-  ): void {
-    const listeners = this.#getEventListeners<Name, T>(event)
+  off(event: keyof EventsList | Constructor<any>, listener: Listener<any, Constructor<any>>): void {
+    if (debug.enabled) {
+      debug('removing listener, event: %O, listener: %O', event, listener)
+    }
 
-    const resolvedListener = listeners.get(listener)
-    if (!resolvedListener) {
+    const normalizedEvent = this.#resolveEvent(event)
+    const listeners = this.#getEventListeners(event)
+    const normalizedListener = listeners.get(listener)
+
+    if (!normalizedListener) {
       return
     }
 
-    if (debug.enabled) {
-      debug('removing listener, event: "%s", listener: %O', event, listener)
-    }
-
     listeners.delete(listener)
-    this.#transport.off(event, resolvedListener)
+    this.#transport.off(normalizedEvent, normalizedListener)
   }
 
   /**
    * Remove a specific listener listening for all the events
    */
   offAny(
-    listener: (event: keyof EventsList, data: EventsListItem<EventsList>) => any | Promise<any>
+    listener: (event: keyof EventsList | Constructor<any>, data: any) => any | Promise<any>
   ): this {
     this.#transport.offAny(listener)
     return this
@@ -256,9 +312,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
    *
    * @alias "off"
    */
-  clearListener<Name extends keyof EventsList, T extends Constructor<any>>(
-    event: Name,
-    listener: Listener<EventsList[Name], T>
+  clearListener(
+    event: keyof EventsList | Constructor<any>,
+    listener: Listener<any, Constructor<any>>
   ): void {
     return this.off(event, listener)
   }
@@ -266,9 +322,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
   /**
    * Clear all listeners for a specific event
    */
-  clearListeners(event: keyof EventsList) {
-    debug('clearing all listeners for event "%s"', event)
-    this.#transport.clearListeners(event)
+  clearListeners(event: keyof EventsList | Constructor<any>) {
+    debug('clearing all listeners for event %O', event)
+    this.#transport.clearListeners(this.#resolveEvent(event))
     this.#eventsListeners.delete(event)
   }
 
@@ -284,14 +340,14 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
   /**
    * Get count of listeners for a given event or all the events
    */
-  listenerCount<Name extends keyof EventsList>(event?: Name): number {
-    return this.#transport.listenerCount(event)
+  listenerCount(event?: keyof EventsList | Constructor<any>): number {
+    return this.#transport.listenerCount(event ? this.#resolveEvent(event) : undefined)
   }
 
   /**
    * Find if an event has one or more listeners
    */
-  hasListeners<Name extends keyof EventsList>(event?: Name): boolean {
+  hasListeners(event?: keyof EventsList | Constructor<any>): boolean {
     return this.listenerCount(event) > 0
   }
 
@@ -305,9 +361,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
    * Calling this method one than once drops the existing fakes and
    * creates new one.
    */
-  fake(events?: (keyof EventsList)[]): EventsBuffer<EventsList> {
+  fake(events?: (keyof EventsList | Constructor<any>)[]): EventsBuffer<EventsList> {
     this.restore()
-    this.#eventsBuffer = new EventsBuffer()
+    this.#eventsBuffer = new EventsBuffer<EventsList>()
 
     if (!events) {
       debug('faking all events')
