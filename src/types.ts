@@ -37,13 +37,6 @@ export type BufferedEventsList<EventsList> =
   | BufferedEvent<Constructor<any>, any>
 
 /**
- * Event list item
- */
-export type EventsListItem<EventsList> = {
-  [Name in keyof EventsList]: EventsList[Name]
-}[keyof EventsList]
-
-/**
  * Representation of listener method on the listener class. The
  * spread args can type hint dependencies and container will
  * resolve them
