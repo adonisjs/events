@@ -12,7 +12,7 @@ import { AppFactory } from '@adonisjs/application/test_factories/app'
 import { Emitter } from '../src/emitter.js'
 
 type FactoryParameters = {
-  app: Application<any, any>
+  app: Application<any>
 }
 
 /**

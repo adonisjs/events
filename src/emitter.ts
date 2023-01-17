@@ -68,7 +68,7 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
    * Reference to AdonisJS application, we need the application root
    * and container reference from it.
    */
-  #app: Application<any, any>
+  #app: Application<any>
 
   /**
    * Returns a map of events and their registered listeners. The
@@ -82,7 +82,7 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
     return this.#eventsListeners
   }
 
-  constructor(app: Application<any, any>) {
+  constructor(app: Application<any>) {
     this.#app = app
   }
 
