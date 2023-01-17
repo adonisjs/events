@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+import { RuntimeException } from '@poppinss/utils'
 import { Emitter } from './emitter.js'
 
 /**
@@ -19,7 +20,7 @@ export class BaseEvent {
   /**
    * The emitter to use for dispatching events
    */
-  static emitter: Emitter<any>
+  static emitter?: Emitter<any>
 
   /**
    * Specify the emitter instance to use for dispatching events
@@ -32,7 +33,13 @@ export class BaseEvent {
    * Dispatch the current class as an event. The method takes the arguments
    * accepted by the class constructor.
    */
-  static dispatch<T extends typeof BaseEvent>(this: T, ...args: ConstructorParameters<T>) {
+  static async dispatch<T extends typeof BaseEvent>(this: T, ...args: ConstructorParameters<T>) {
+    if (!this.emitter) {
+      throw new RuntimeException(
+        `Cannot dispatch "${this.name}" event. Make sure to pass emitter to the base event for dispatch method to work`
+      )
+    }
+
     return this.emitter.emit<T>(this, new this(...args) as InstanceType<T>)
   }
 }

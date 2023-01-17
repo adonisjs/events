@@ -101,4 +101,12 @@ test.group('Base event', () => {
     await EntityRegistered.dispatch('foo@bar.com', 'foo')
     assert.deepEqual(stack, [new EntityRegistered('foo@bar.com', 'foo')])
   })
+
+  test('raise error when base event does not have the emitter', async ({ assert }) => {
+    class UserRegistered extends BaseEvent {}
+    await assert.rejects(
+      () => UserRegistered.dispatch(),
+      'Cannot dispatch "UserRegistered" event. Make sure to pass emitter to the base event for dispatch method to work'
+    )
+  })
 })
