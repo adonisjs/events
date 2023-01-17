@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import is from '@adonisjs/application/helpers/is'
+import is from '@sindresorhus/is'
 import type { Application } from '@adonisjs/application'
 import Emittery, { type UnsubscribeFunction } from 'emittery'
 import { moduleExpression, moduleCaller, moduleImporter } from '@adonisjs/fold'
