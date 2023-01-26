@@ -18,7 +18,7 @@ test.group('Class based events', () => {
   test('listen for a class based event', async ({ assert }) => {
     const stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter(app)
 
     class UserRegistered {
@@ -36,7 +36,7 @@ test.group('Class based events', () => {
   test('attach multiple listeners for class based events', async ({ assert }) => {
     const stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter(app)
 
     class UserRegistered {
@@ -59,7 +59,7 @@ test.group('Class based events', () => {
   test('get listeners for a class based event', async ({ assert }) => {
     const stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter(app)
 
     class UserRegistered {

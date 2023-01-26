@@ -25,7 +25,7 @@ test.group('Emitter | listen', () => {
   test('listen for an event', async ({ assert }) => {
     const stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter(app)
 
     emitter.on('new:user', (data) => {
@@ -40,7 +40,7 @@ test.group('Emitter | listen', () => {
   test('do not register multiple listeners when callback is the same', async ({ assert }) => {
     const stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter(app)
 
     function listener(data: any) {
@@ -58,7 +58,7 @@ test.group('Emitter | listen', () => {
   test('listen for any event', async ({ assert }) => {
     const stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter(app)
     emitter.onAny((event, data) => {
       stack.push({ event, data })
@@ -71,7 +71,7 @@ test.group('Emitter | listen', () => {
   test('infer event data type in listener callback', async ({ assert, expectTypeOf }) => {
     const stack: NewUserEvent[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter<{ 'new:user': NewUserEvent }>(app)
 
     emitter.on('new:user', (data) => {
@@ -86,7 +86,7 @@ test.group('Emitter | listen', () => {
   test('unsubscribe from event', async ({ assert }) => {
     const stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter(app)
 
     const unsubscribe = emitter.on('new:user', (data) => {
@@ -110,7 +110,7 @@ test.group('Emitter | listen', () => {
   test('listen for a class based event', async ({ assert, expectTypeOf }) => {
     const stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter<{ 'new:user': { id: number } }>(app)
 
     class UserRegistered {
@@ -131,7 +131,7 @@ test.group('Emitter | listen', () => {
   test('define multiple listeners for a class based event', async ({ assert, expectTypeOf }) => {
     const stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter<{ 'new:user': { id: number } }>(app)
 
     class UserRegistered {
@@ -175,7 +175,7 @@ test.group('Emitter | listen | magic string listener', (group) => {
 
     const stack: string[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter<{ 'new:user': string[] }>(app)
     await app.init()
 
@@ -200,7 +200,7 @@ test.group('Emitter | listen | magic string listener', (group) => {
 
     const stack: string[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter<{ 'new:user': string[] }>(app)
     await app.init()
 
@@ -226,7 +226,7 @@ test.group('Emitter | listen | magic string listener', (group) => {
     `
     )
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter(app)
     await app.init()
 
@@ -260,7 +260,7 @@ test.group('Emitter | listen | lazily loaded listener', () => {
       }
     }
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter<{ 'new:user': string[] }>(app)
     await app.init()
 
@@ -284,7 +284,7 @@ test.group('Emitter | listen | lazily loaded listener', () => {
     }
     const sendEmail: [typeof NewUserListener] = [NewUserListener]
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter<{ 'new:user': string[] }>(app)
     await app.init()
 
@@ -310,7 +310,7 @@ test.group('Emitter | listen | lazily loaded listener', () => {
       }
     }
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter(app)
     await app.init()
 
@@ -366,7 +366,7 @@ test.group('Emitter | listen | lazily loaded listener', () => {
       }
     }
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     await app.init()
 
     const emitter = new Emitter(app)
@@ -392,7 +392,7 @@ test.group('Emitter | listen | listener by reference', () => {
       }
     }
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter<{ 'new:user': string[] }>(app)
     await app.init()
 
@@ -413,7 +413,7 @@ test.group('Emitter | listen | listener by reference', () => {
       }
     }
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter<{ 'new:user': string[] }>(app)
     await app.init()
 
@@ -437,7 +437,7 @@ test.group('Emitter | listen | listener by reference', () => {
       }
     }
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter(app)
     await app.init()
 
@@ -481,7 +481,7 @@ test.group('Emitter | listen | listener by reference', () => {
       }
     }
 
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     await app.init()
 
     const emitter = new Emitter(app)

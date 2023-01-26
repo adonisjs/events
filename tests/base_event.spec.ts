@@ -8,8 +8,9 @@
  */
 
 import { test } from '@japa/runner'
-import { Emitter } from '../src/emitter.js'
 import { Application } from '@adonisjs/application'
+
+import { Emitter } from '../src/emitter.js'
 import { BaseEvent } from '../src/base_event.js'
 
 const BASE_URL = new URL('./app/', import.meta.url)
@@ -17,7 +18,7 @@ const BASE_URL = new URL('./app/', import.meta.url)
 test.group('Base event', () => {
   test('dispatch event using the event class', async ({ assert }) => {
     const stack: UserRegistered[] = []
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter(app)
 
     class UserRegistered extends BaseEvent {}
@@ -31,7 +32,7 @@ test.group('Base event', () => {
 
   test('pass event arguments via dispatch method', async ({ assert }) => {
     const stack: UserRegistered[] = []
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter(app)
 
     class UserRegistered extends BaseEvent {
@@ -52,7 +53,7 @@ test.group('Base event', () => {
     assert,
   }) => {
     const stack: UserRegistered[] = []
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter(app)
 
     class EntityRegistered extends BaseEvent {
@@ -79,7 +80,7 @@ test.group('Base event', () => {
     assert,
   }) => {
     const stack: UserRegistered[] = []
-    const app = new Application(BASE_URL, { environment: 'web' })
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
     const emitter = new Emitter(app)
 
     class EntityRegistered extends BaseEvent {
