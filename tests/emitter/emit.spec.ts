@@ -7,10 +7,8 @@
  * file that was distributed with this source code.
  */
 
-import { join } from 'node:path'
 import { test } from '@japa/runner'
 import { fileURLToPath } from 'node:url'
-import { remove, outputFile } from 'fs-extra'
 import { Application } from '@adonisjs/application'
 
 import { Emitter } from '../../src/emitter.js'
@@ -21,8 +19,9 @@ const BASE_PATH = fileURLToPath(BASE_URL)
 type NewUserEvent = { id: number }
 
 test.group('Emitter | emit', (group) => {
-  group.each.teardown(async () => {
-    return () => remove(BASE_PATH)
+  group.each.setup(async ({ context }) => {
+    context.fs.baseUrl = BASE_URL
+    context.fs.basePath = BASE_PATH
   })
 
   test('emit event multiple times', async ({ assert }) => {
@@ -95,9 +94,9 @@ test.group('Emitter | emit', (group) => {
     await assert.rejects(() => emitter.emit('new:user', { id: 1 }), 'boom')
   })
 
-  test('raise exception when magic string listener fails', async ({ assert }) => {
-    await outputFile(
-      join(BASE_PATH, './listeners/raises_exception.ts'),
+  test('raise exception when magic string listener fails', async ({ assert, fs }) => {
+    await fs.create(
+      'listeners/raises_exception.ts',
       `
       export default class RaisesException {
         handle() {
@@ -107,7 +106,7 @@ test.group('Emitter | emit', (group) => {
     `
     )
 
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(fs.baseUrl, { environment: 'web', importer: () => {} })
     const emitter = new Emitter(app)
     await app.init()
 
@@ -151,8 +150,9 @@ test.group('Emitter | emit', (group) => {
 })
 
 test.group('Emitter | emit | with error handler', (group) => {
-  group.each.teardown(async () => {
-    return () => remove(BASE_PATH)
+  group.each.setup(async ({ context }) => {
+    context.fs.baseUrl = BASE_URL
+    context.fs.basePath = BASE_PATH
   })
 
   test('capture error using onError handler', async ({ assert }, done) => {
@@ -172,9 +172,9 @@ test.group('Emitter | emit | with error handler', (group) => {
     await emitter.emit('new:user', { id: 1 })
   }).waitForDone()
 
-  test('raise exception when magic string listener fails', async ({ assert }, done) => {
-    await outputFile(
-      join(BASE_PATH, './listeners/raises_exception.ts'),
+  test('raise exception when magic string listener fails', async ({ assert, fs }, done) => {
+    await fs.create(
+      './listeners/raises_exception.ts',
       `
       export default class RaisesException {
         handle() {

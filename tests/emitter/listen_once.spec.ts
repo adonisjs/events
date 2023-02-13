@@ -7,10 +7,8 @@
  * file that was distributed with this source code.
  */
 
-import { join } from 'node:path'
 import { test } from '@japa/runner'
 import { fileURLToPath } from 'node:url'
-import { remove, outputFile } from 'fs-extra'
 
 import { Emitter } from '../../src/emitter.js'
 import { Application } from '@adonisjs/application'
@@ -127,13 +125,14 @@ test.group('Emitter | listenOnce', () => {
 })
 
 test.group('Emitter | listenOnce | magic string listener', (group) => {
-  group.each.teardown(async () => {
-    return () => remove(BASE_PATH)
+  group.each.setup(async ({ context }) => {
+    context.fs.baseUrl = BASE_URL
+    context.fs.basePath = BASE_PATH
   })
 
-  test('lazy load listener using magic string', async ({ assert }) => {
-    await outputFile(
-      join(BASE_PATH, './listeners/new_user.ts'),
+  test('lazy load listener using magic string', async ({ assert, fs }) => {
+    await fs.create(
+      './listeners/new_user.ts',
       `
       export default class NewUser {
         sendEmail(data) {
@@ -157,9 +156,9 @@ test.group('Emitter | listenOnce | magic string listener', (group) => {
     assert.isUndefined(emitter.eventsListeners.get('new:user'))
   })
 
-  test('register multiple listeners when using magic strings', async ({ assert }) => {
-    await outputFile(
-      join(BASE_PATH, './listeners/new_user.ts'),
+  test('register multiple listeners when using magic strings', async ({ assert, fs }) => {
+    await fs.create(
+      './listeners/new_user.ts',
       `
       export default class NewUser {
         sendEmail(data) {
