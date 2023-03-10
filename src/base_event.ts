@@ -8,7 +8,7 @@
  */
 
 import { RuntimeException } from '@poppinss/utils'
-import { Emitter } from './emitter.js'
+import type { Emitter } from './emitter.js'
 
 /**
  * Base event adds ability to a class to act as an event. You can emit the
@@ -36,7 +36,7 @@ export class BaseEvent {
   static async dispatch<T extends typeof BaseEvent>(this: T, ...args: ConstructorParameters<T>) {
     if (!this.emitter) {
       throw new RuntimeException(
-        `Cannot dispatch "${this.name}" event. Make sure to pass emitter to the base event for dispatch method to work`
+        `Cannot dispatch "${this.name}" event. Make sure to pass emitter to the "BaseEvent" class for dispatch method to work`
       )
     }
 

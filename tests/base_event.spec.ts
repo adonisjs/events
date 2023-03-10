@@ -107,7 +107,7 @@ test.group('Base event', () => {
     class UserRegistered extends BaseEvent {}
     await assert.rejects(
       () => UserRegistered.dispatch(),
-      'Cannot dispatch "UserRegistered" event. Make sure to pass emitter to the base event for dispatch method to work'
+      'Cannot dispatch "UserRegistered" event. Make sure to pass emitter to the "BaseEvent" class for dispatch method to work'
     )
   })
 })
