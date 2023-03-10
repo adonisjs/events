@@ -172,3 +172,78 @@ test.group('Events buffer', () => {
     assert.equal(events.size(), 1)
   })
 })
+
+test.group('Events buffer | assertions', () => {
+  test('assert event was emitted', ({ assert }) => {
+    const events = new EventsBuffer<any>()
+
+    class UserRegistered {}
+    class NewUser {}
+
+    events.add('new:user', { id: 1 })
+    events.add(NewUser, new NewUser())
+
+    assert.doesNotThrows(() => events.assertEmitted('new:user'))
+    assert.doesNotThrows(() =>
+      events.assertEmitted(({ event: eventName }) => eventName === 'new:user')
+    )
+    assert.doesNotThrows(() => events.assertEmitted(NewUser))
+
+    assert.throws(
+      () => events.assertEmitted('user:registered'),
+      'Expected "user:registered" event to be emitted'
+    )
+    assert.throws(
+      () => events.assertEmitted(({ event: eventName }) => eventName === 'user:registered'),
+      'Expected callback to find an emitted event'
+    )
+    assert.throws(
+      () => events.assertEmitted(UserRegistered),
+      'Expected "UserRegistered" event to be emitted'
+    )
+  })
+
+  test('assert event was not emitted', ({ assert }) => {
+    const events = new EventsBuffer<any>()
+
+    class UserRegistered {}
+    class NewUser {}
+
+    events.add('new:user', { id: 1 })
+    events.add(NewUser, new NewUser())
+
+    assert.throws(
+      () => events.assertNotEmitted('new:user'),
+      'Expected "new:user" event to be not emitted'
+    )
+    assert.throws(
+      () => events.assertNotEmitted(({ event: eventName }) => eventName === 'new:user'),
+      'Expected callback to not find any event'
+    )
+    assert.throws(
+      () => events.assertNotEmitted(NewUser),
+      'Expected "NewUser" event to be not emitted'
+    )
+
+    assert.doesNotThrows(() => events.assertNotEmitted('user:registered'))
+    assert.doesNotThrows(() =>
+      events.assertNotEmitted(({ event: eventName }) => eventName === 'user:registered')
+    )
+    assert.doesNotThrows(() => events.assertNotEmitted(UserRegistered))
+  })
+
+  test('assert no events where emitted', ({ assert }) => {
+    const events = new EventsBuffer<any>()
+
+    assert.doesNotThrows(() => events.assertNoneEmitted())
+
+    class NewUser {}
+    events.add('new:user', { id: 1 })
+    events.add(NewUser, new NewUser())
+
+    assert.throws(
+      () => events.assertNoneEmitted(),
+      'Expected zero events to be emitted. Instead received "2" event(s)'
+    )
+  })
+})

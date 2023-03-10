@@ -8,6 +8,7 @@
  */
 
 import is from '@sindresorhus/is'
+import { AssertionError } from 'node:assert'
 import type { AllowedEventTypes, BufferedEvent, BufferedEventsList, Constructor } from './types.js'
 
 /**
@@ -82,6 +83,83 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
     }
 
     return (this.#events.find((event) => event.event === finder) || null) as any
+  }
+
+  /**
+   * Assert a given event has been emitted
+   */
+  assertEmitted<Event extends keyof EventsList | Constructor<any>>(
+    finder: Event | ((event: BufferedEventsList<EventsList>) => boolean)
+  ): void {
+    const hasEvent = this.exists(finder)
+
+    if (!hasEvent) {
+      const isClass = is.class_(finder)
+      const message =
+        typeof finder === 'function' && !isClass
+          ? `Expected callback to find an emitted event`
+          : isClass
+          ? `Expected "${finder.name}" event to be emitted`
+          : `Expected "${String(finder)}" event to be emitted`
+
+      throw new AssertionError({
+        message: message,
+        expected: true,
+        actual: false,
+        operator: 'strictEqual',
+        stackStartFn: this.assertEmitted,
+      })
+    }
+  }
+
+  /**
+   * Assert a given event has been not been emitted
+   */
+  assertNotEmitted<Event extends keyof EventsList | Constructor<any>>(
+    finder: Event | ((event: BufferedEventsList<EventsList>) => boolean)
+  ): void {
+    const hasEvent = this.exists(finder)
+
+    if (hasEvent) {
+      const isClass = is.class_(finder)
+      const message =
+        typeof finder === 'function' && !isClass
+          ? `Expected callback to not find any event`
+          : isClass
+          ? `Expected "${finder.name}" event to be not emitted`
+          : `Expected "${String(finder)}" event to be not emitted`
+
+      throw new AssertionError({
+        message: message,
+        expected: false,
+        actual: true,
+        operator: 'strictEqual',
+        stackStartFn: this.assertNotEmitted,
+      })
+    }
+  }
+
+  /**
+   * Assert a given event has been not been emitted
+   */
+  assertNoneEmitted(): void {
+    const eventsSize = this.size()
+    if (eventsSize > 0) {
+      throw new AssertionError(
+        Object.assign(
+          {
+            message: `Expected zero events to be emitted. Instead received "${eventsSize}" event(s)`,
+            expected: 0,
+            actual: eventsSize,
+            operator: 'strictEqual',
+            stackStartFn: this.assertNoneEmitted,
+          },
+          {
+            showDiff: true,
+          }
+        )
+      )
+    }
   }
 
   /**
