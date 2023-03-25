@@ -5,9 +5,13 @@
   "main": "build/index.js",
   "type": "module",
   "files": [
+    "src",
+    "test_factories",
+    "index.ts",
     "build/src",
     "build/test_factories",
     "build/index.d.ts",
+    "build/index.d.ts.map",
     "build/index.js"
   ],
   "imports": {
