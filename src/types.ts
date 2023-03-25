@@ -10,12 +10,12 @@
 /**
  * Data types for event name
  */
-export type AllowedEventTypes = string | symbol | number | Constructor<any>
+export type AllowedEventTypes = string | symbol | number | Constructor
 
 /**
  * Class constructor type
  */
-export type Constructor<T> = new (...args: any[]) => T
+export type Constructor<T = unknown> = new (...args: any[]) => T
 
 /**
  * A function that lazily imports a middleware
@@ -69,7 +69,7 @@ export type ListenerClassWithHandleMethod<Data> = Constructor<{
  * The event listener defined as an inline callback, string
  * listener class reference or a lazily imported listener
  */
-export type Listener<Data, ListenerClass extends Constructor<any>> =
+export type Listener<Data, ListenerClass extends Constructor> =
   | ListenerFn<Data>
   | string
   | [LazyImport<ListenerClass> | ListenerClass, GetListenersMethods<ListenerClass, Data>?]

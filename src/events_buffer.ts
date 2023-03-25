@@ -44,7 +44,7 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
   /**
    * Find if an event was emitted
    */
-  exists<Event extends keyof EventsList | Constructor<any>>(
+  exists<Event extends keyof EventsList | Constructor>(
     finder: Event | ((event: BufferedEventsList<EventsList>) => boolean)
   ): boolean {
     return !!this.find(finder)
@@ -54,10 +54,7 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
    * Get selected events
    */
   filter(
-    finder:
-      | keyof EventsList
-      | Constructor<any>
-      | ((event: BufferedEventsList<EventsList>) => boolean)
+    finder: keyof EventsList | Constructor | ((event: BufferedEventsList<EventsList>) => boolean)
   ): BufferedEventsList<EventsList>[] {
     if (typeof finder === 'function' && !is.class_(finder)) {
       return this.#events.filter(finder)
@@ -69,7 +66,7 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
   /**
    * Find a specific event
    */
-  find<Event extends keyof EventsList | Constructor<any>>(
+  find<Event extends keyof EventsList | Constructor>(
     finder: Event | ((event: BufferedEventsList<EventsList>) => boolean)
   ):
     | (Event extends keyof EventsList
@@ -88,7 +85,7 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
   /**
    * Assert a given event has been emitted
    */
-  assertEmitted<Event extends keyof EventsList | Constructor<any>>(
+  assertEmitted<Event extends keyof EventsList | Constructor>(
     finder: Event | ((event: BufferedEventsList<EventsList>) => boolean)
   ): void {
     const hasEvent = this.exists(finder)

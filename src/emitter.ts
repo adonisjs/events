@@ -124,7 +124,7 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
    * Normalizes the event listener to a function that can be passed to
    * emittery.
    */
-  #normalizeEventListener(listener: Listener<any, Constructor<any>>): ListenerMethod<any> {
+  #normalizeEventListener(listener: Listener<any, Constructor>): ListenerMethod<any> {
     /**
      * Parse string based listener
      */
@@ -138,7 +138,7 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
      */
     if (Array.isArray(listener)) {
       const listenerModule = listener[0]
-      const method = (listener[1] as string) || 'handle'
+      const method = listener[1] || 'handle'
 
       /**
        * Class reference
@@ -162,7 +162,7 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
    */
   #resolveEventListener(
     event: AllowedEventTypes,
-    listener: Listener<any, Constructor<any>>
+    listener: Listener<any, Constructor>
   ): ListenerMethod<any> {
     const eventListeners = this.#getEventListeners(event)
     if (!eventListeners.has(listener)) {
@@ -200,17 +200,17 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
   /**
    * Listen for an event. The method returns the unsubscribe function.
    */
-  on<Event extends Constructor<any>, ListenerClass extends Constructor<any>>(
+  on<Event extends Constructor, ListenerClass extends Constructor>(
     event: Event,
     listener: Listener<InstanceType<Event>, ListenerClass>
   ): UnsubscribeFunction
-  on<Name extends keyof EventsList, ListenerClass extends Constructor<any>>(
+  on<Name extends keyof EventsList, ListenerClass extends Constructor>(
     event: Name,
     listener: Listener<EventsList[Name], ListenerClass>
   ): UnsubscribeFunction
   on<Event extends AllowedEventTypes>(
     event: Event,
-    listener: Listener<any, Constructor<any>>
+    listener: Listener<any, Constructor>
   ): UnsubscribeFunction {
     if (debug.enabled) {
       debug('registering event listener, event: %O, listener: %O', event, listener)
@@ -226,18 +226,15 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
   /**
    * Listen for an event only once
    */
-  once<Event extends Constructor<any>, ListenerClass extends Constructor<any>>(
+  once<Event extends Constructor, ListenerClass extends Constructor>(
     event: Event,
     listener: Listener<InstanceType<Event>, ListenerClass>
   ): void
-  once<Name extends keyof EventsList, ListenerClass extends Constructor<any>>(
+  once<Name extends keyof EventsList, ListenerClass extends Constructor>(
     event: Name,
     listener: Listener<EventsList[Name], ListenerClass>
   ): void
-  once<Event extends AllowedEventTypes>(
-    event: Event,
-    listener: Listener<any, Constructor<any>>
-  ): void {
+  once<Event extends AllowedEventTypes>(event: Event, listener: Listener<any, Constructor>): void {
     if (debug.enabled) {
       debug('registering one time event listener, event: %O, listener: %O', event, listener)
     }
