@@ -1,6 +1,6 @@
 {
   "name": "@adonisjs/events",
-  "version": "8.4.9-1",
+  "version": "8.4.9-2",
   "description": "An implementation of the event emitter built on top of emittery",
   "main": "build/index.js",
   "type": "module",
