@@ -271,6 +271,34 @@ test.group('Emitter | emit | with error handler', (group) => {
     emitter.on('new:user', [NewUser, 'sendEmail'])
     await emitter.emit('new:user', { id: 1 })
   }).waitForDone()
+
+  test('capture error using onError handler during emitSerial', async ({ assert }, done) => {
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const emitter = new Emitter(app)
+
+    emitter.onError((event, error) => {
+      assert.equal(event, 'new:user')
+      assert.equal(error.message, 'boom')
+      done()
+    })
+
+    emitter.on('new:user', () => {
+      throw new Error('boom')
+    })
+
+    await emitter.emitSerial('new:user', { id: 1 })
+  }).waitForDone()
+
+  test('throw error when no error listener is defined during emitSerial', async () => {
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const emitter = new Emitter(app)
+
+    emitter.on('new:user', () => {
+      throw new Error('boom')
+    })
+
+    await emitter.emitSerial('new:user', { id: 1 })
+  }).throws('boom')
 })
 
 test.group('Emitter | fake', () => {
@@ -287,6 +315,23 @@ test.group('Emitter | fake', () => {
     const events = emitter.fake(['new:user'])
 
     await emitter.emit('new:user', { id: 1 })
+    assert.deepEqual(stack, [])
+    assert.deepEqual(events.all(), [{ event: 'new:user', data: { id: 1 } }])
+  })
+
+  test('fake event with emitSerial', async ({ assert }) => {
+    const stack: any[] = []
+
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const emitter = new Emitter(app)
+
+    emitter.on('new:user', (data) => {
+      stack.push(data)
+    })
+
+    const events = emitter.fake(['new:user'])
+
+    await emitter.emitSerial('new:user', { id: 1 })
     assert.deepEqual(stack, [])
     assert.deepEqual(events.all(), [{ event: 'new:user', data: { id: 1 } }])
   })
