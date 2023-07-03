@@ -299,6 +299,42 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
   }
 
   /**
+   * Emit events serially. The event listeners will be called asynchronously
+   * in the same sequence as they are registered.
+   *
+   * You can await this method to wait for events listeners to finish
+   */
+  async emitSerial<Event extends Constructor<any>>(
+    event: Event,
+    data: InstanceType<Event>
+  ): Promise<void>
+  async emitSerial<Name extends keyof EventsList>(
+    event: Name,
+    data: EventsList[Name]
+  ): Promise<void>
+  async emitSerial<Event extends AllowedEventTypes>(event: Event, data: any): Promise<void> {
+    /**
+     * Entertain fakes if exists
+     */
+    if (this.#eventsToFake.has(event) || this.#eventsToFake.has('*')) {
+      debug('faking emit. event: %O, data: %O', event, data)
+      this.#eventsBuffer!.add(event, data)
+      return
+    }
+
+    try {
+      const normalizedEvent = this.#resolveEvent(event)
+      await this.#transport.emitSerial(normalizedEvent, data)
+    } catch (error) {
+      if (this.#errorHandler) {
+        this.#errorHandler(event, error, data)
+      } else {
+        throw error
+      }
+    }
+  }
+
+  /**
    * Remove a specific listener for an event
    */
   off(event: keyof EventsList | Constructor<any>, listener: Listener<any, Constructor<any>>): void {

@@ -9,6 +9,7 @@
 
 import { test } from '@japa/runner'
 import { fileURLToPath } from 'node:url'
+import { setTimeout } from 'node:timers/promises'
 import { Application } from '@adonisjs/application'
 
 import { Emitter } from '../../src/emitter.js'
@@ -146,6 +147,33 @@ test.group('Emitter | emit', (group) => {
 
     emitter.on('new:user', [NewUser, 'sendEmail'])
     await assert.rejects(() => emitter.emit('new:user', { id: 1 }), 'boom')
+  })
+
+  test('invoke listeners serially', async ({ assert }) => {
+    let stack: any[] = []
+
+    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const emitter = new Emitter(app)
+
+    emitter.on('new:user', async () => {
+      stack.push('1st listener')
+    })
+
+    emitter.on('new:user', async () => {
+      await setTimeout(300)
+      stack.push('2nd listener')
+    })
+
+    emitter.on('new:user', async () => {
+      stack.push('3rd listener')
+    })
+
+    await emitter.emit('new:user', {})
+    assert.deepEqual(stack, ['1st listener', '3rd listener', '2nd listener'])
+
+    stack = []
+    await emitter.emitSerial('new:user', {})
+    assert.deepEqual(stack, ['1st listener', '2nd listener', '3rd listener'])
   })
 })
 
