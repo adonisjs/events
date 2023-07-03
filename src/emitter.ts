@@ -129,7 +129,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
      * Parse string based listener
      */
     if (typeof listener === 'string') {
-      return moduleExpression(listener, this.#app.appRoot).toCallable(this.#app.container)
+      return moduleExpression(listener, this.#app.appRoot.toString()).toCallable(
+        this.#app.container
+      )
     }
 
     /**
