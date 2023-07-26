@@ -36,7 +36,10 @@ test.group('Base event', () => {
     const emitter = new Emitter(app)
 
     class UserRegistered extends BaseEvent {
-      constructor(public email: string, public name: string) {
+      constructor(
+        public email: string,
+        public name: string
+      ) {
         super()
       }
     }
@@ -57,7 +60,10 @@ test.group('Base event', () => {
     const emitter = new Emitter(app)
 
     class EntityRegistered extends BaseEvent {
-      constructor(public email: string, public name: string) {
+      constructor(
+        public email: string,
+        public name: string
+      ) {
         super()
       }
     }
@@ -84,7 +90,10 @@ test.group('Base event', () => {
     const emitter = new Emitter(app)
 
     class EntityRegistered extends BaseEvent {
-      constructor(public email: string, public name: string) {
+      constructor(
+        public email: string,
+        public name: string
+      ) {
         super()
       }
     }
