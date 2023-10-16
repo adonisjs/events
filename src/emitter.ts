@@ -102,7 +102,7 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
    * constructors are cached against a unique symbol.
    */
   #resolveEvent(event: AllowedEventTypes): string | symbol | number {
-    if (is.class_(event)) {
+    if (is.class(event)) {
       return this.#getEventClassSymbol(event)
     }
 
@@ -145,7 +145,7 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>> {
       /**
        * Class reference
        */
-      if (is.class_(listenerModule)) {
+      if (is.class(listenerModule)) {
         return moduleCaller(listenerModule, method).toCallable(this.#app.container)
       }
 
