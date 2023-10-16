@@ -56,7 +56,7 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
   filter(
     finder: keyof EventsList | Constructor | ((event: BufferedEventsList<EventsList>) => boolean)
   ): BufferedEventsList<EventsList>[] {
-    if (typeof finder === 'function' && !is.class_(finder)) {
+    if (typeof finder === 'function' && !is.class(finder)) {
       return this.#events.filter(finder)
     }
 
@@ -75,7 +75,7 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
         ? BufferedEvent<Event, A>
         : BufferedEventsList<EventsList>)
     | null {
-    if (typeof finder === 'function' && !is.class_(finder)) {
+    if (typeof finder === 'function' && !is.class(finder)) {
       return (this.#events.find(finder) || null) as any
     }
 
@@ -91,7 +91,7 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
     const hasEvent = this.exists(finder)
 
     if (!hasEvent) {
-      const isClass = is.class_(finder)
+      const isClass = is.class(finder)
       const message =
         typeof finder === 'function' && !isClass
           ? `Expected callback to find an emitted event`
@@ -118,7 +118,7 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
     const hasEvent = this.exists(finder)
 
     if (hasEvent) {
-      const isClass = is.class_(finder)
+      const isClass = is.class(finder)
       const message =
         typeof finder === 'function' && !isClass
           ? `Expected callback to not find any event`
