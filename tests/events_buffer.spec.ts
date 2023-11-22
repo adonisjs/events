@@ -29,6 +29,34 @@ test.group('Events buffer', () => {
     >()
   })
 
+  test('get emitted events size', ({ assert }) => {
+    const events = new EventsBuffer<{
+      'new:user': { id: number }
+      'resend:email': { email: string }
+    }>()
+    events.add('new:user', { id: 1 })
+    events.add('new:user', { id: 1 })
+    events.add('new:user', { id: 2 })
+    events.add('resend:email', { email: 'foo@bar.com' })
+
+    assert.equal(events.size(), 4)
+  })
+
+  test('assert zero events has been emitted', ({ assert }) => {
+    const events = new EventsBuffer<{
+      'new:user': { id: number }
+      'resend:email': { email: string }
+    }>()
+    assert.doesNotThrows(() => events.assertNoneEmitted())
+    events.add('new:user', { id: 1 })
+    assert.throws(
+      () => events.assertNoneEmitted(),
+      'Expected zero events to be emitted. Instead received "1" event'
+    )
+  })
+})
+
+test.group('Events buffer | find', () => {
   test('find event by name', ({ assert, expectTypeOf }) => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
@@ -46,16 +74,20 @@ test.group('Events buffer', () => {
     } | null>()
   })
 
-  test('find event by callback', ({ assert, expectTypeOf }) => {
+  test('find event using finder function', ({ assert, expectTypeOf }) => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
     }>()
     events.add('new:user', { id: 1 })
+    events.add('new:user', { id: 2 })
+    events.add('new:user', { id: 3 })
 
-    const event = events.find(({ event: eventName }) => eventName === 'new:user')
+    const event = events.find('new:user', ({ data }) => {
+      return data.id === 3
+    })
 
-    assert.deepEqual(event, { event: 'new:user', data: { id: 1 } })
+    assert.deepEqual(event, { event: 'new:user', data: { id: 3 } })
     expectTypeOf(event).toMatchTypeOf<
       | { event: 'new:user'; data: any }
       | { event: 'resend:email'; data: any }
@@ -83,48 +115,285 @@ test.group('Events buffer', () => {
     } | null>()
   })
 
-  test('filter events by name', ({ assert, expectTypeOf }) => {
+  test('find event by class constructor and finder function', ({ assert, expectTypeOf }) => {
+    const events = new EventsBuffer<{
+      'new:user': { id: number }
+      'resend:email': { email: string }
+    }>()
+
+    class UserRegistered {
+      constructor(public id: number) {}
+    }
+
+    const userRegisteredEvent = new UserRegistered(1)
+    const userRegisteredEvent1 = new UserRegistered(2)
+
+    events.add(UserRegistered, userRegisteredEvent)
+    events.add(UserRegistered, userRegisteredEvent1)
+
+    const event = events.find(UserRegistered, ({ data }) => data.id === 2)
+    assert.deepEqual(event, { event: UserRegistered, data: userRegisteredEvent1 })
+
+    expectTypeOf(event).toMatchTypeOf<{
+      event: typeof UserRegistered
+      data: UserRegistered
+    } | null>()
+  })
+})
+
+test.group('Events buffer | exist', () => {
+  test('check if event exists by name', ({ assert }) => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
     }>()
     events.add('new:user', { id: 1 })
 
-    const filteredEvents = events.filter('new:user')
-
-    assert.deepEqual(filteredEvents, [{ event: 'new:user', data: { id: 1 } }])
-    assert.deepEqual(events.filter('resend:email'), [])
-
-    expectTypeOf(filteredEvents).toMatchTypeOf<
-      (
-        | { event: 'new:user'; data: { id: number } }
-        | { event: 'resend:email'; data: { email: string } }
-        | { event: Constructor<any>; data: any }
-      )[]
-    >()
+    assert.isTrue(events.exists('new:user'))
   })
 
-  test('filter events by callback', ({ assert, expectTypeOf }) => {
+  test('check if event exists using finder function', ({ assert }) => {
+    const events = new EventsBuffer<{
+      'new:user': { id: number }
+      'resend:email': { email: string }
+    }>()
+    events.add('new:user', { id: 1 })
+    events.add('new:user', { id: 2 })
+    events.add('new:user', { id: 3 })
+
+    assert.isTrue(
+      events.exists('new:user', ({ data }) => {
+        return data.id === 3
+      })
+    )
+  })
+
+  test('check if event exists by class constructor', ({ assert }) => {
+    const events = new EventsBuffer<{
+      'new:user': { id: number }
+      'resend:email': { email: string }
+    }>()
+
+    class UserRegistered {}
+    const userRegisteredEvent = new UserRegistered()
+
+    events.add(UserRegistered, userRegisteredEvent)
+    assert.isTrue(events.exists(UserRegistered))
+  })
+
+  test('check if event exists by class constructor and finder function', ({
+    assert,
+    expectTypeOf,
+  }) => {
+    const events = new EventsBuffer<{
+      'new:user': { id: number }
+      'resend:email': { email: string }
+    }>()
+
+    class UserRegistered {
+      constructor(public id: number) {}
+    }
+
+    const userRegisteredEvent = new UserRegistered(1)
+    const userRegisteredEvent1 = new UserRegistered(2)
+
+    events.add(UserRegistered, userRegisteredEvent)
+    events.add(UserRegistered, userRegisteredEvent1)
+
+    assert.isTrue(
+      events.exists(UserRegistered, ({ data, event }) => {
+        expectTypeOf(data).toMatchTypeOf<UserRegistered>()
+        expectTypeOf(event).toMatchTypeOf<typeof UserRegistered>()
+        return data.id === 2
+      })
+    )
+  })
+})
+
+test.group('Events buffer | assertEmitted', () => {
+  test('assert an event was emitted', ({ assert }) => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
     }>()
     events.add('new:user', { id: 1 })
 
-    const filteredEvents = events.filter((event) => event.event === 'new:user')
-    assert.deepEqual(filteredEvents, [{ event: 'new:user', data: { id: 1 } }])
-    assert.deepEqual(events.filter('resend:email'), [])
-
-    expectTypeOf(filteredEvents).toMatchTypeOf<
-      (
-        | { event: 'new:user'; data: { id: number } }
-        | { event: 'resend:email'; data: { email: string } }
-        | { event: Constructor<any>; data: any }
-      )[]
-    >()
+    assert.doesNotThrows(() => events.assertEmitted('new:user'))
+    assert.throws(
+      () => events.assertEmitted('resend:email'),
+      'Expected "resend:email" event to be emitted'
+    )
   })
 
-  test('filter events by class constructor', ({ assert, expectTypeOf }) => {
+  test('assert an event was emitted using finder function', ({ assert }) => {
+    const events = new EventsBuffer<{
+      'new:user': { id: number }
+      'resend:email': { email: string }
+    }>()
+    events.add('new:user', { id: 1 })
+    events.add('new:user', { id: 2 })
+    events.add('new:user', { id: 3 })
+
+    assert.doesNotThrows(() => events.assertEmitted('new:user'))
+    assert.doesNotThrows(() => events.assertEmitted('new:user', ({ data }) => data.id === 3))
+    assert.throws(
+      () => events.assertEmitted('new:user', ({ data }) => data.id === 4),
+      'Expected "new:user" event to be emitted'
+    )
+    assert.throws(
+      () => events.assertEmitted('resend:email'),
+      'Expected "resend:email" event to be emitted'
+    )
+  })
+
+  test('assert a class based event as emitted', ({ assert }) => {
+    const events = new EventsBuffer<{
+      'new:user': { id: number }
+      'resend:email': { email: string }
+    }>()
+
+    class UserRegistered {}
+    class ResendEmail {}
+    const userRegisteredEvent = new UserRegistered()
+
+    events.add(UserRegistered, userRegisteredEvent)
+
+    assert.doesNotThrows(() => events.assertEmitted(UserRegistered))
+    assert.throws(
+      () => events.assertEmitted(ResendEmail),
+      'Expected "[class ResendEmail]" event to be emitted'
+    )
+  })
+
+  test('assert a class based event was emitted using finder function', ({ assert }) => {
+    const events = new EventsBuffer<{
+      'new:user': { id: number }
+      'resend:email': { email: string }
+    }>()
+
+    class ResendEmail {}
+    class UserRegistered {
+      constructor(public id: number) {}
+    }
+
+    const userRegisteredEvent = new UserRegistered(1)
+    const userRegisteredEvent1 = new UserRegistered(2)
+
+    events.add(UserRegistered, userRegisteredEvent)
+    events.add(UserRegistered, userRegisteredEvent1)
+
+    assert.doesNotThrows(() => events.assertEmitted(UserRegistered))
+    assert.doesNotThrows(() => events.assertEmitted(UserRegistered, ({ data }) => data.id === 2))
+    assert.throws(
+      () => events.assertEmitted(UserRegistered, ({ data }) => data.id === 3),
+      'Expected "[class UserRegistered]" event to be emitted'
+    )
+    assert.throws(
+      () => events.assertEmitted(ResendEmail),
+      'Expected "[class ResendEmail]" event to be emitted'
+    )
+  })
+})
+
+test.group('Events buffer | assertNotEmitted', () => {
+  test('assert an event was not emitted', ({ assert }) => {
+    const events = new EventsBuffer<{
+      'new:user': { id: number }
+      'resend:email': { email: string }
+    }>()
+    events.add('new:user', { id: 1 })
+
+    assert.throws(
+      () => events.assertNotEmitted('new:user'),
+      'Unexpected "new:user" event was emitted'
+    )
+    assert.doesNotThrows(() => events.assertNotEmitted('resend:email'))
+  })
+
+  test('assert an event was not emitted using finder function', ({ assert }) => {
+    const events = new EventsBuffer<{
+      'new:user': { id: number }
+      'resend:email': { email: string }
+    }>()
+    events.add('new:user', { id: 1 })
+    events.add('new:user', { id: 2 })
+    events.add('new:user', { id: 3 })
+
+    assert.throws(
+      () => events.assertNotEmitted('new:user'),
+      'Unexpected "new:user" event was emitted'
+    )
+    assert.doesNotThrows(() => events.assertNotEmitted('new:user', ({ data }) => data.id === 4))
+    assert.doesNotThrows(() => events.assertNotEmitted('resend:email'))
+  })
+
+  test('assert a class based event as not emitted', ({ assert }) => {
+    const events = new EventsBuffer<{
+      'new:user': { id: number }
+      'resend:email': { email: string }
+    }>()
+
+    class UserRegistered {}
+    class ResendEmail {}
+    const userRegisteredEvent = new UserRegistered()
+
+    events.add(UserRegistered, userRegisteredEvent)
+
+    assert.throws(
+      () => events.assertNotEmitted(UserRegistered),
+      'Unexpected "[class UserRegistered]" event was emitted'
+    )
+    assert.doesNotThrows(() => events.assertNotEmitted(ResendEmail))
+  })
+
+  test('assert a class based event was not emitted using finder function', ({ assert }) => {
+    const events = new EventsBuffer<{
+      'new:user': { id: number }
+      'resend:email': { email: string }
+    }>()
+
+    class ResendEmail {}
+    class UserRegistered {
+      constructor(public id: number) {}
+    }
+
+    const userRegisteredEvent = new UserRegistered(1)
+    const userRegisteredEvent1 = new UserRegistered(2)
+
+    events.add(UserRegistered, userRegisteredEvent)
+    events.add(UserRegistered, userRegisteredEvent1)
+
+    assert.throws(
+      () => events.assertNotEmitted(UserRegistered),
+      'Unexpected "[class UserRegistered]" event was emitted'
+    )
+    assert.doesNotThrows(
+      () => events.assertNotEmitted(UserRegistered, ({ data }) => data.id === 3),
+      'Expected "[class UserRegistered]" event to be emitted'
+    )
+    assert.doesNotThrows(
+      () => events.assertNotEmitted(ResendEmail),
+      'Expected "[class ResendEmail]" event to be emitted'
+    )
+  })
+})
+
+test.group('Events buffer | assertEmittedCount', () => {
+  test('assert emitted event count', ({ assert }) => {
+    const events = new EventsBuffer<{
+      'new:user': { id: number }
+      'resend:email': { email: string }
+    }>()
+    events.add('new:user', { id: 1 })
+
+    assert.doesNotThrows(() => events.assertEmittedCount('new:user', 1))
+    assert.throws(
+      () => events.assertEmittedCount('new:user', 2),
+      'Expected "new:user" event to be emitted "2" times, instead it was emitted "1" time'
+    )
+  })
+
+  test('assert emitted count of class based event', ({ assert }) => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
@@ -135,115 +404,10 @@ test.group('Events buffer', () => {
 
     events.add(UserRegistered, userRegisteredEvent)
 
-    const filteredEvents = events.filter(UserRegistered)
-    assert.deepEqual(filteredEvents, [{ event: UserRegistered, data: userRegisteredEvent }])
-    assert.deepEqual(events.filter('resend:email'), [])
-
-    expectTypeOf(filteredEvents).toMatchTypeOf<
-      (
-        | { event: 'new:user'; data: { id: number } }
-        | { event: 'resend:email'; data: { email: string } }
-        | { event: Constructor<any>; data: any }
-      )[]
-    >()
-  })
-
-  test('check if an event exists', ({ assert }) => {
-    const events = new EventsBuffer<{
-      'new:user': { id: number }
-      'resend:email': { email: string }
-    }>()
-    events.add('new:user', { id: 1 })
-
-    assert.isTrue(events.exists('new:user'))
-    assert.isTrue(events.exists((event) => event.event === 'new:user'))
-
-    assert.isFalse(events.exists('resend:email'))
-    assert.isFalse(events.exists((event) => event.event === 'resend:email'))
-  })
-
-  test('get size of events in buffer', ({ assert }) => {
-    const events = new EventsBuffer<{
-      'new:user': { id: number }
-      'resend:email': { email: string }
-    }>()
-    events.add('new:user', { id: 1 })
-
-    assert.equal(events.size(), 1)
-  })
-})
-
-test.group('Events buffer | assertions', () => {
-  test('assert event was emitted', ({ assert }) => {
-    const events = new EventsBuffer<any>()
-
-    class UserRegistered {}
-    class NewUser {}
-
-    events.add('new:user', { id: 1 })
-    events.add(NewUser, new NewUser())
-
-    assert.doesNotThrows(() => events.assertEmitted('new:user'))
-    assert.doesNotThrows(() =>
-      events.assertEmitted(({ event: eventName }) => eventName === 'new:user')
-    )
-    assert.doesNotThrows(() => events.assertEmitted(NewUser))
-
+    assert.doesNotThrows(() => events.assertEmittedCount(UserRegistered, 1))
     assert.throws(
-      () => events.assertEmitted('user:registered'),
-      'Expected "user:registered" event to be emitted'
-    )
-    assert.throws(
-      () => events.assertEmitted(({ event: eventName }) => eventName === 'user:registered'),
-      'Expected callback to find an emitted event'
-    )
-    assert.throws(
-      () => events.assertEmitted(UserRegistered),
-      'Expected "UserRegistered" event to be emitted'
-    )
-  })
-
-  test('assert event was not emitted', ({ assert }) => {
-    const events = new EventsBuffer<any>()
-
-    class UserRegistered {}
-    class NewUser {}
-
-    events.add('new:user', { id: 1 })
-    events.add(NewUser, new NewUser())
-
-    assert.throws(
-      () => events.assertNotEmitted('new:user'),
-      'Expected "new:user" event to be not emitted'
-    )
-    assert.throws(
-      () => events.assertNotEmitted(({ event: eventName }) => eventName === 'new:user'),
-      'Expected callback to not find any event'
-    )
-    assert.throws(
-      () => events.assertNotEmitted(NewUser),
-      'Expected "NewUser" event to be not emitted'
-    )
-
-    assert.doesNotThrows(() => events.assertNotEmitted('user:registered'))
-    assert.doesNotThrows(() =>
-      events.assertNotEmitted(({ event: eventName }) => eventName === 'user:registered')
-    )
-    assert.doesNotThrows(() => events.assertNotEmitted(UserRegistered))
-  })
-
-  test('assert no events where emitted', ({ assert }) => {
-    const events = new EventsBuffer<any>()
-
-    assert.doesNotThrows(() => events.assertNoneEmitted())
-
-    class NewUser {}
-    events.add('new:user', { id: 1 })
-    events.add(NewUser, new NewUser())
-
-    assert.throws(
-      () => events.assertNoneEmitted(),
-      'Expected zero events to be emitted. Instead received "2" event(s)'
+      () => events.assertEmittedCount(UserRegistered, 2),
+      'Expected "[class UserRegistered]" event to be emitted "2" times, instead it was emitted "1" time'
     )
   })
 })

@@ -10,6 +10,22 @@
 import is from '@sindresorhus/is'
 import { AssertionError } from 'node:assert'
 import type { AllowedEventTypes, BufferedEvent, BufferedEventsList, Constructor } from './types.js'
+import string from '@poppinss/utils/string'
+
+/**
+ * Callback function to narrow down an event from
+ * the events buffer list
+ */
+type EventFinderCallback<
+  EventsList extends Record<string | symbol | number, any>,
+  Event extends keyof EventsList | Constructor,
+> = (
+  event: Event extends keyof EventsList
+    ? BufferedEvent<Event, EventsList[Event]>
+    : Event extends Constructor<infer A>
+      ? BufferedEvent<Event, A>
+      : never
+) => boolean
 
 /**
  * Exposes API to filter, find events from the events buffer.
@@ -45,59 +61,50 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
    * Find if an event was emitted
    */
   exists<Event extends keyof EventsList | Constructor>(
-    finder: Event | ((event: BufferedEventsList<EventsList>) => boolean)
+    event: Event,
+    finder?: EventFinderCallback<EventsList, Event>
   ): boolean {
-    return !!this.find(finder)
-  }
-
-  /**
-   * Get selected events
-   */
-  filter(
-    finder: keyof EventsList | Constructor | ((event: BufferedEventsList<EventsList>) => boolean)
-  ): BufferedEventsList<EventsList>[] {
-    if (typeof finder === 'function' && !is.class(finder)) {
-      return this.#events.filter(finder)
-    }
-
-    return this.#events.filter((event) => event.event === finder)
+    return !!this.find(event, finder)
   }
 
   /**
    * Find a specific event
    */
   find<Event extends keyof EventsList | Constructor>(
-    finder: Event | ((event: BufferedEventsList<EventsList>) => boolean)
+    event: Event,
+    finder?: EventFinderCallback<EventsList, Event>
   ):
     | (Event extends keyof EventsList
         ? BufferedEvent<Event, EventsList[Event]>
         : Event extends Constructor<infer A>
           ? BufferedEvent<Event, A>
-          : BufferedEventsList<EventsList>)
+          : never)
     | null {
-    if (typeof finder === 'function' && !is.class(finder)) {
-      return (this.#events.find(finder) || null) as any
-    }
+    return (this.#events.find((bufferedEvent) => {
+      if (!finder) {
+        return bufferedEvent.event === event
+      }
 
-    return (this.#events.find((event) => event.event === finder) || null) as any
+      return (
+        bufferedEvent.event === event &&
+        finder(bufferedEvent as Parameters<EventFinderCallback<EventsList, Event>>[0])
+      )
+    }) || null) as any
   }
 
   /**
    * Assert a given event has been emitted
    */
   assertEmitted<Event extends keyof EventsList | Constructor>(
-    finder: Event | ((event: BufferedEventsList<EventsList>) => boolean)
+    event: Event,
+    finder?: EventFinderCallback<EventsList, Event>
   ): void {
-    const hasEvent = this.exists(finder)
+    const hasEvent = this.exists(event, finder)
 
     if (!hasEvent) {
-      const isClass = is.class(finder)
-      const message =
-        typeof finder === 'function' && !isClass
-          ? `Expected callback to find an emitted event`
-          : isClass
-            ? `Expected "${finder.name}" event to be emitted`
-            : `Expected "${String(finder)}" event to be emitted`
+      const message = is.class(event)
+        ? `Expected "[class ${event.name}]" event to be emitted`
+        : `Expected "${String(event)}" event to be emitted`
 
       throw new AssertionError({
         message: message,
@@ -110,21 +117,41 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
   }
 
   /**
+   * Assert number of times an event has been emitted
+   */
+  assertEmittedCount<Event extends keyof EventsList | Constructor>(
+    event: Event,
+    count: number
+  ): void {
+    const actual = this.all().filter((bufferedEvent) => bufferedEvent.event === event).length
+
+    if (actual !== count) {
+      const eventName = is.class(event) ? `[class ${event.name}]` : String(event)
+      throw new AssertionError({
+        message: `Expected "${eventName}" event to be emitted "${count}" ${string.pluralize(
+          'time',
+          count
+        )}, instead it was emitted "${actual}" ${string.pluralize('time', actual)}`,
+        actual,
+        expected: count,
+      })
+    }
+  }
+
+  /**
    * Assert a given event has been not been emitted
    */
   assertNotEmitted<Event extends keyof EventsList | Constructor<any>>(
-    finder: Event | ((event: BufferedEventsList<EventsList>) => boolean)
+    event: Event,
+    finder?: EventFinderCallback<EventsList, Event>
   ): void {
-    const hasEvent = this.exists(finder)
+    const hasEvent = this.exists(event, finder)
 
     if (hasEvent) {
-      const isClass = is.class(finder)
-      const message =
-        typeof finder === 'function' && !isClass
-          ? `Expected callback to not find any event`
-          : isClass
-            ? `Expected "${finder.name}" event to be not emitted`
-            : `Expected "${String(finder)}" event to be not emitted`
+      const isClass = is.class(event)
+      const message = isClass
+        ? `Unexpected "[class ${event.name}]" event was emitted`
+        : `Unexpected "${String(event)}" event was emitted`
 
       throw new AssertionError({
         message: message,
@@ -145,7 +172,10 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
       throw new AssertionError(
         Object.assign(
           {
-            message: `Expected zero events to be emitted. Instead received "${eventsSize}" event(s)`,
+            message: `Expected zero events to be emitted. Instead received "${eventsSize}" ${string.pluralize(
+              'event',
+              eventsSize
+            )}`,
             expected: 0,
             actual: eventsSize,
             operator: 'strictEqual',
