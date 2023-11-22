@@ -72,8 +72,8 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
     | (Event extends keyof EventsList
         ? BufferedEvent<Event, EventsList[Event]>
         : Event extends Constructor<infer A>
-        ? BufferedEvent<Event, A>
-        : BufferedEventsList<EventsList>)
+          ? BufferedEvent<Event, A>
+          : BufferedEventsList<EventsList>)
     | null {
     if (typeof finder === 'function' && !is.class(finder)) {
       return (this.#events.find(finder) || null) as any
@@ -96,8 +96,8 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
         typeof finder === 'function' && !isClass
           ? `Expected callback to find an emitted event`
           : isClass
-          ? `Expected "${finder.name}" event to be emitted`
-          : `Expected "${String(finder)}" event to be emitted`
+            ? `Expected "${finder.name}" event to be emitted`
+            : `Expected "${String(finder)}" event to be emitted`
 
       throw new AssertionError({
         message: message,
@@ -123,8 +123,8 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
         typeof finder === 'function' && !isClass
           ? `Expected callback to not find any event`
           : isClass
-          ? `Expected "${finder.name}" event to be not emitted`
-          : `Expected "${String(finder)}" event to be not emitted`
+            ? `Expected "${finder.name}" event to be not emitted`
+            : `Expected "${String(finder)}" event to be not emitted`
 
       throw new AssertionError({
         message: message,

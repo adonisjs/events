@@ -27,7 +27,7 @@ test.group('Emitter', () => {
     assert.isTrue(emitter.hasListeners(UserRegistered))
     assert.isFalse(emitter.hasListeners('resend:email'))
 
-    assert.deepEqual(new Array(...emitter.eventsListeners.keys()), ['new:user', UserRegistered])
+    assert.deepEqual([...emitter.eventsListeners.keys()], ['new:user', UserRegistered])
   })
 
   test('find if there are listeners for any event', async ({ assert }) => {
