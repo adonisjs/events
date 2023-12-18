@@ -73,3 +73,37 @@ export type Listener<Data, ListenerClass extends Constructor> =
   | ListenerFn<Data>
   | string
   | [LazyImport<ListenerClass> | ListenerClass, GetListenersMethods<ListenerClass, Data>?]
+
+/**
+ * The EmitterLike interface exposes a less strict API to accept
+ * emitter as an argument to emit events.
+ */
+export interface EmitterLike<EventsList extends Record<string | symbol | number, any>> {
+  /**
+   * Emit event. The event listeners will be called asynchronously
+   * in parallel.
+   *
+   * You can await this method to wait for events listeners to finish
+   */
+  emit<Event extends Constructor<any>>(event: Event, data: InstanceType<Event>): Promise<void>
+  emit<Name extends keyof EventsList>(event: Name, data: EventsList[Name]): Promise<void>
+
+  /**
+   * Emit events serially. The event listeners will be called asynchronously
+   * in the same sequence as they are registered.
+   *
+   * You can await this method to wait for events listeners to finish
+   */
+  emitSerial<Event extends Constructor<any>>(event: Event, data: InstanceType<Event>): Promise<void>
+  emitSerial<Name extends keyof EventsList>(event: Name, data: EventsList[Name]): Promise<void>
+
+  /**
+   * Find if an event has one or more listeners
+   */
+  listenerCount(event?: keyof EventsList | Constructor<any>): number
+
+  /**
+   * Get count of listeners for a given event or all the events
+   */
+  hasListeners(event?: keyof EventsList | Constructor<any>): boolean
+}
