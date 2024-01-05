@@ -8,9 +8,10 @@
  */
 
 import is from '@sindresorhus/is'
-import { AssertionError } from 'node:assert'
-import type { AllowedEventTypes, BufferedEvent, BufferedEventsList, Constructor } from './types.js'
 import string from '@poppinss/utils/string'
+import { AssertionError } from 'node:assert'
+
+import type { AllowedEventTypes, BufferedEvent, BufferedEventsList, Constructor } from './types.js'
 
 /**
  * Callback function to narrow down an event from

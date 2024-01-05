@@ -15,7 +15,7 @@ const BASE_URL = new URL('./app/', import.meta.url)
 
 test.group('Emitter', () => {
   test('find if there are listeners for a specific event', async ({ assert }) => {
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     class UserRegistered {}
@@ -31,7 +31,7 @@ test.group('Emitter', () => {
   })
 
   test('find if there are listeners for any event', async ({ assert }) => {
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     class UserRegistered {}
@@ -44,7 +44,7 @@ test.group('Emitter', () => {
   })
 
   test('get count of listeners for a specific event', async ({ assert }) => {
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     class UserRegistered {}
@@ -60,7 +60,7 @@ test.group('Emitter', () => {
   }).fails('Emittery has a bug')
 
   test('get count of listeners for any event', async ({ assert }) => {
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     class UserRegistered {}
@@ -74,7 +74,7 @@ test.group('Emitter', () => {
   })
 
   test('remove all listeners for a specific events', async ({ assert }) => {
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     function sendEmail() {}
@@ -107,7 +107,7 @@ test.group('Emitter', () => {
   })
 
   test('remove all listeners for all events', async ({ assert }) => {
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     function sendEmail() {}

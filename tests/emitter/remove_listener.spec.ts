@@ -16,7 +16,7 @@ type NewUserEvent = { id: number }
 
 test.group('Emitter | clearListener', () => {
   test('remove callback listener', async ({ assert }) => {
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter<{ 'new:user': NewUserEvent }>(app)
 
     function listener1() {
@@ -38,7 +38,7 @@ test.group('Emitter | clearListener', () => {
   })
 
   test('remove listener for a class based event', async ({ assert }) => {
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter<{ 'new:user': NewUserEvent }>(app)
 
     function listener1() {
@@ -62,7 +62,7 @@ test.group('Emitter | clearListener', () => {
   })
 
   test('remove magic string listener', async ({ assert }) => {
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter<{ 'new:user': NewUserEvent }>(app)
 
     function listener2() {}
@@ -81,7 +81,7 @@ test.group('Emitter | clearListener', () => {
   })
 
   test('remove lazy loaded listener', async ({ assert }) => {
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter<{ 'new:user': NewUserEvent }>(app)
     await app.init()
 
@@ -119,7 +119,7 @@ test.group('Emitter | clearListener', () => {
   })
 
   test('remove class reference listener', async ({ assert }) => {
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter<{ 'new:user': NewUserEvent }>(app)
     await app.init()
 
@@ -149,7 +149,7 @@ test.group('Emitter | clearListener', () => {
   })
 
   test('noop when removing unregistered listener', async ({ assert }) => {
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter<{ 'new:user': NewUserEvent }>(app)
 
     function listener1() {}
@@ -171,7 +171,7 @@ test.group('Emitter | clearListener', () => {
 test.group('Emitter | offAny', () => {
   test('remove any listener', async ({ assert }) => {
     const stack: any[] = []
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     function sendEmail() {}

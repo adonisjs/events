@@ -18,7 +18,7 @@ const BASE_URL = new URL('./app/', import.meta.url)
 test.group('Base event', () => {
   test('dispatch event using the event class', async ({ assert }) => {
     const stack: UserRegistered[] = []
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     class UserRegistered extends BaseEvent {}
@@ -32,7 +32,7 @@ test.group('Base event', () => {
 
   test('pass event arguments via dispatch method', async ({ assert }) => {
     const stack: UserRegistered[] = []
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     class UserRegistered extends BaseEvent {
@@ -56,7 +56,7 @@ test.group('Base event', () => {
     assert,
   }) => {
     const stack: UserRegistered[] = []
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     class EntityRegistered extends BaseEvent {
@@ -86,7 +86,7 @@ test.group('Base event', () => {
     assert,
   }) => {
     const stack: UserRegistered[] = []
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     class EntityRegistered extends BaseEvent {

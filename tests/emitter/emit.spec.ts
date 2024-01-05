@@ -28,7 +28,7 @@ test.group('Emitter | emit', (group) => {
   test('emit event multiple times', async ({ assert }) => {
     const stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     emitter.on('new:user', (data) => {
@@ -43,7 +43,7 @@ test.group('Emitter | emit', (group) => {
   test('emit event for class based events', async ({ assert }) => {
     const stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     class UserRegistered {
@@ -62,7 +62,7 @@ test.group('Emitter | emit', (group) => {
   test('validate emit types', async ({ assert, expectTypeOf }) => {
     const stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter<{ 'new:user': NewUserEvent }>(app)
 
     class UserRegistered {
@@ -85,7 +85,7 @@ test.group('Emitter | emit', (group) => {
   })
 
   test('raise exception when listener fails', async ({ assert }) => {
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     emitter.on('new:user', () => {
@@ -107,7 +107,12 @@ test.group('Emitter | emit', (group) => {
     `
     )
 
-    const app = new Application(fs.baseUrl, { environment: 'web', importer: () => {} })
+    const app = new Application(fs.baseUrl, {
+      environment: 'web',
+      importer(filePath) {
+        return import(filePath)
+      },
+    })
     const emitter = new Emitter(app)
     await app.init()
 
@@ -126,7 +131,7 @@ test.group('Emitter | emit', (group) => {
       }
     }
 
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
     await app.init()
 
@@ -141,7 +146,7 @@ test.group('Emitter | emit', (group) => {
       }
     }
 
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
     await app.init()
 
@@ -152,7 +157,7 @@ test.group('Emitter | emit', (group) => {
   test('invoke listeners serially', async ({ assert }) => {
     let stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     emitter.on('new:user', async () => {
@@ -184,7 +189,7 @@ test.group('Emitter | emit | with error handler', (group) => {
   })
 
   test('capture error using onError handler', async ({ assert }, done) => {
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     emitter.onError((event, error) => {
@@ -212,7 +217,12 @@ test.group('Emitter | emit | with error handler', (group) => {
     `
     )
 
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, {
+      environment: 'web',
+      importer(filePath) {
+        return import(filePath)
+      },
+    })
     const emitter = new Emitter(app)
     await app.init()
 
@@ -237,7 +247,7 @@ test.group('Emitter | emit | with error handler', (group) => {
       }
     }
 
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
     await app.init()
 
@@ -258,7 +268,7 @@ test.group('Emitter | emit | with error handler', (group) => {
       }
     }
 
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
     await app.init()
 
@@ -273,7 +283,7 @@ test.group('Emitter | emit | with error handler', (group) => {
   }).waitForDone()
 
   test('capture error using onError handler during emitSerial', async ({ assert }, done) => {
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     emitter.onError((event, error) => {
@@ -290,7 +300,7 @@ test.group('Emitter | emit | with error handler', (group) => {
   }).waitForDone()
 
   test('throw error when no error listener is defined during emitSerial', async () => {
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     emitter.on('new:user', () => {
@@ -305,7 +315,7 @@ test.group('Emitter | fake', () => {
   test('fake event', async ({ assert }) => {
     const stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     emitter.on('new:user', (data) => {
@@ -322,7 +332,7 @@ test.group('Emitter | fake', () => {
   test('fake event with emitSerial', async ({ assert }) => {
     const stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     emitter.on('new:user', (data) => {
@@ -339,7 +349,7 @@ test.group('Emitter | fake', () => {
   test('faking multiple times should drop old fakes', async ({ assert }) => {
     const stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     emitter.on('new:user', (data) => {
@@ -363,7 +373,7 @@ test.group('Emitter | fake', () => {
   test('fake all events', async ({ assert }) => {
     const stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     emitter.on('new:user', (data) => {
@@ -387,7 +397,7 @@ test.group('Emitter | fake', () => {
   test('do not invoke "onAny" listeners when all events are faked', async ({ assert }) => {
     const stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     emitter.onAny((data) => {
@@ -408,7 +418,7 @@ test.group('Emitter | fake', () => {
   test('invoke "onAny" listeners when some events are not faked', async ({ assert }) => {
     const stack: any[] = []
 
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new Emitter(app)
 
     emitter.onAny((name, data) => {

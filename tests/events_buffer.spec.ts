@@ -47,7 +47,7 @@ test.group('Events buffer', () => {
       'new:user': { id: number }
       'resend:email': { email: string }
     }>()
-    assert.doesNotThrows(() => events.assertNoneEmitted())
+    assert.doesNotThrow(() => events.assertNoneEmitted())
     events.add('new:user', { id: 1 })
     assert.throws(
       () => events.assertNoneEmitted(),
@@ -218,7 +218,7 @@ test.group('Events buffer | assertEmitted', () => {
     }>()
     events.add('new:user', { id: 1 })
 
-    assert.doesNotThrows(() => events.assertEmitted('new:user'))
+    assert.doesNotThrow(() => events.assertEmitted('new:user'))
     assert.throws(
       () => events.assertEmitted('resend:email'),
       'Expected "resend:email" event to be emitted'
@@ -234,8 +234,8 @@ test.group('Events buffer | assertEmitted', () => {
     events.add('new:user', { id: 2 })
     events.add('new:user', { id: 3 })
 
-    assert.doesNotThrows(() => events.assertEmitted('new:user'))
-    assert.doesNotThrows(() => events.assertEmitted('new:user', ({ data }) => data.id === 3))
+    assert.doesNotThrow(() => events.assertEmitted('new:user'))
+    assert.doesNotThrow(() => events.assertEmitted('new:user', ({ data }) => data.id === 3))
     assert.throws(
       () => events.assertEmitted('new:user', ({ data }) => data.id === 4),
       'Expected "new:user" event to be emitted'
@@ -258,7 +258,7 @@ test.group('Events buffer | assertEmitted', () => {
 
     events.add(UserRegistered, userRegisteredEvent)
 
-    assert.doesNotThrows(() => events.assertEmitted(UserRegistered))
+    assert.doesNotThrow(() => events.assertEmitted(UserRegistered))
     assert.throws(
       () => events.assertEmitted(ResendEmail),
       'Expected "[class ResendEmail]" event to be emitted'
@@ -282,8 +282,8 @@ test.group('Events buffer | assertEmitted', () => {
     events.add(UserRegistered, userRegisteredEvent)
     events.add(UserRegistered, userRegisteredEvent1)
 
-    assert.doesNotThrows(() => events.assertEmitted(UserRegistered))
-    assert.doesNotThrows(() => events.assertEmitted(UserRegistered, ({ data }) => data.id === 2))
+    assert.doesNotThrow(() => events.assertEmitted(UserRegistered))
+    assert.doesNotThrow(() => events.assertEmitted(UserRegistered, ({ data }) => data.id === 2))
     assert.throws(
       () => events.assertEmitted(UserRegistered, ({ data }) => data.id === 3),
       'Expected "[class UserRegistered]" event to be emitted'
@@ -307,7 +307,7 @@ test.group('Events buffer | assertNotEmitted', () => {
       () => events.assertNotEmitted('new:user'),
       'Unexpected "new:user" event was emitted'
     )
-    assert.doesNotThrows(() => events.assertNotEmitted('resend:email'))
+    assert.doesNotThrow(() => events.assertNotEmitted('resend:email'))
   })
 
   test('assert an event was not emitted using finder function', ({ assert }) => {
@@ -323,8 +323,8 @@ test.group('Events buffer | assertNotEmitted', () => {
       () => events.assertNotEmitted('new:user'),
       'Unexpected "new:user" event was emitted'
     )
-    assert.doesNotThrows(() => events.assertNotEmitted('new:user', ({ data }) => data.id === 4))
-    assert.doesNotThrows(() => events.assertNotEmitted('resend:email'))
+    assert.doesNotThrow(() => events.assertNotEmitted('new:user', ({ data }) => data.id === 4))
+    assert.doesNotThrow(() => events.assertNotEmitted('resend:email'))
   })
 
   test('assert a class based event as not emitted', ({ assert }) => {
@@ -343,7 +343,7 @@ test.group('Events buffer | assertNotEmitted', () => {
       () => events.assertNotEmitted(UserRegistered),
       'Unexpected "[class UserRegistered]" event was emitted'
     )
-    assert.doesNotThrows(() => events.assertNotEmitted(ResendEmail))
+    assert.doesNotThrow(() => events.assertNotEmitted(ResendEmail))
   })
 
   test('assert a class based event was not emitted using finder function', ({ assert }) => {
@@ -367,11 +367,11 @@ test.group('Events buffer | assertNotEmitted', () => {
       () => events.assertNotEmitted(UserRegistered),
       'Unexpected "[class UserRegistered]" event was emitted'
     )
-    assert.doesNotThrows(
+    assert.doesNotThrow(
       () => events.assertNotEmitted(UserRegistered, ({ data }) => data.id === 3),
       'Expected "[class UserRegistered]" event to be emitted'
     )
-    assert.doesNotThrows(
+    assert.doesNotThrow(
       () => events.assertNotEmitted(ResendEmail),
       'Expected "[class ResendEmail]" event to be emitted'
     )
@@ -386,7 +386,7 @@ test.group('Events buffer | assertEmittedCount', () => {
     }>()
     events.add('new:user', { id: 1 })
 
-    assert.doesNotThrows(() => events.assertEmittedCount('new:user', 1))
+    assert.doesNotThrow(() => events.assertEmittedCount('new:user', 1))
     assert.throws(
       () => events.assertEmittedCount('new:user', 2),
       'Expected "new:user" event to be emitted "2" times, instead it was emitted "1" time'
@@ -404,7 +404,7 @@ test.group('Events buffer | assertEmittedCount', () => {
 
     events.add(UserRegistered, userRegisteredEvent)
 
-    assert.doesNotThrows(() => events.assertEmittedCount(UserRegistered, 1))
+    assert.doesNotThrow(() => events.assertEmittedCount(UserRegistered, 1))
     assert.throws(
       () => events.assertEmittedCount(UserRegistered, 2),
       'Expected "[class UserRegistered]" event to be emitted "2" times, instead it was emitted "1" time'

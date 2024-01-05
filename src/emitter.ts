@@ -10,18 +10,18 @@
 import is from '@sindresorhus/is'
 import type { Application } from '@adonisjs/application'
 import Emittery, { type UnsubscribeFunction } from 'emittery'
-import { moduleExpression, moduleCaller, moduleImporter } from '@adonisjs/fold'
+import { moduleCaller, moduleImporter } from '@adonisjs/fold'
 
 import debug from './debug.js'
 import { EventsBuffer } from './events_buffer.js'
 import type {
   Listener,
   LazyImport,
+  EmitterLike,
   Constructor,
   ListenerMethod,
   AllowedEventTypes,
   ListenerClassWithHandleMethod,
-  EmitterLike,
 } from './types.js'
 
 /**
@@ -132,7 +132,10 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
      * Parse string based listener
      */
     if (typeof listener === 'string') {
-      return moduleExpression(listener, this.#app.appRoot.toString()).toCallable(
+      const parts = listener.split('.')
+      const method = parts.length === 1 ? 'handle' : parts.pop()!
+      const moduleRefId = parts.join('.')
+      return moduleImporter(() => this.#app.import(moduleRefId), method).toCallable(
         this.#app.container
       )
     }

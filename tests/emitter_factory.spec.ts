@@ -17,7 +17,7 @@ const BASE_URL = new URL('./app/', import.meta.url)
 
 test.group('Emitter factory', () => {
   test('create emitter instance using factory', ({ assert }) => {
-    const app = new Application(BASE_URL, { environment: 'web', importer: () => {} })
+    const app = new Application(BASE_URL, { environment: 'web' })
     const emitter = new EmitterFactory().create(app)
     assert.instanceOf(emitter, Emitter)
   })
