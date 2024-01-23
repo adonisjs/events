@@ -8,7 +8,7 @@
 AdonisJS events is an implementation of the event emitter built on top of [emittery](https://github.com/sindresorhus/emittery). Alongside defining event listeners as inline callbacks, you can also bind modules to events and define events as classes.
 
 ## Official Documentation
-The documentation is available on the [AdonisJS website](https://docs.adonisjs.com/guides/events)
+The documentation is available on the [AdonisJS website](https://docs.adonisjs.com/guides/emitter)
 
 ## Contributing
 One of the primary goals of AdonisJS is to have a vibrant community of users and contributors who believes in the principles of the framework.
