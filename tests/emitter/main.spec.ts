@@ -57,7 +57,7 @@ test.group('Emitter', () => {
     assert.equal(emitter.listenerCount('resend:email'), 0)
     assert.deepEqual(emitter.eventsListeners.get('new:user')?.size, 1)
     assert.deepEqual(emitter.eventsListeners.get(UserRegistered)?.size, 1)
-  }).fails('Emittery has a bug')
+  })
 
   test('get count of listeners for any event', async ({ assert }) => {
     const app = new Application(BASE_URL, { environment: 'web' })
