@@ -7,20 +7,12 @@
  * file that was distributed with this source code.
  */
 
+import { type LazyImport, type Constructor } from '@poppinss/utils/types'
+
 /**
  * Data types for event name
  */
-export type AllowedEventTypes = string | symbol | number | Constructor
-
-/**
- * Class constructor type
- */
-export type Constructor<T = unknown> = new (...args: any[]) => T
-
-/**
- * A function that lazily imports a middleware
- */
-export type LazyImport<DefaultExport> = () => Promise<{ default: DefaultExport }>
+export type AllowedEventTypes = string | symbol | number | Constructor<any>
 
 /**
  * Data structure for a buffered event
@@ -31,9 +23,7 @@ export type BufferedEvent<Event, Data> = { event: Event; data: Data }
  * Event list item inside bufferred items
  */
 export type BufferedEventsList<EventsList> =
-  | {
-      [Name in keyof EventsList]: BufferedEvent<Name, EventsList[Name]>
-    }[keyof EventsList]
+  | { [Name in keyof EventsList]: BufferedEvent<Name, EventsList[Name]> }[keyof EventsList]
   | BufferedEvent<Constructor<any>, any>
 
 /**
@@ -52,6 +42,7 @@ export type ListenerFn<Data> = (data: Data) => any | Promise<any>
  * Returns a union of methods from a listener that accepts
  * the event data as the first argument.
  */
+// eslint-disable-next-line @typescript-eslint/no-shadow
 export type GetListenersMethods<Listener extends Constructor<any>, Data> = {
   [K in keyof InstanceType<Listener>]: InstanceType<Listener>[K] extends ListenerMethod<Data>
     ? K
@@ -61,15 +52,13 @@ export type GetListenersMethods<Listener extends Constructor<any>, Data> = {
 /**
  * Representation of listener class with handle method
  */
-export type ListenerClassWithHandleMethod<Data> = Constructor<{
-  handle: ListenerMethod<Data>
-}>
+export type ListenerClassWithHandleMethod<Data> = Constructor<{ handle: ListenerMethod<Data> }>
 
 /**
  * The event listener defined as an inline callback, string
  * listener class reference or a lazily imported listener
  */
-export type Listener<Data, ListenerClass extends Constructor> =
+export type Listener<Data, ListenerClass extends Constructor<any>> =
   | ListenerFn<Data>
   | string
   | [LazyImport<ListenerClass> | ListenerClass, GetListenersMethods<ListenerClass, Data>?]

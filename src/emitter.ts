@@ -11,14 +11,13 @@ import is from '@sindresorhus/is'
 import type { Application } from '@adonisjs/application'
 import Emittery, { type UnsubscribeFunction } from 'emittery'
 import { moduleCaller, moduleImporter } from '@adonisjs/fold'
+import { type LazyImport, type Constructor } from '@poppinss/utils/types'
 
 import debug from './debug.js'
 import { EventsBuffer } from './events_buffer.js'
 import type {
   Listener,
-  LazyImport,
   EmitterLike,
-  Constructor,
   ListenerMethod,
   AllowedEventTypes,
   ListenerClassWithHandleMethod,
@@ -90,6 +89,13 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
   }
 
   /**
+   * Check if the value is a constructor and narrow down its types
+   */
+  #isConstructor(value: unknown): value is Constructor<any> {
+    return is.class(value)
+  }
+
+  /**
    * Returns the symbol for a class based event.
    */
   #getEventClassSymbol(event: Constructor<any>): symbol {
@@ -105,7 +111,7 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
    * constructors are cached against a unique symbol.
    */
   #resolveEvent(event: AllowedEventTypes): string | symbol | number {
-    if (is.class(event)) {
+    if (this.#isConstructor(event)) {
       return this.#getEventClassSymbol(event)
     }
 
@@ -127,7 +133,7 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
    * Normalizes the event listener to a function that can be passed to
    * emittery.
    */
-  #normalizeEventListener(listener: Listener<any, Constructor>): ListenerMethod<any> {
+  #normalizeEventListener(listener: Listener<any, Constructor<any>>): ListenerMethod<any> {
     /**
      * Parse string based listener
      */
@@ -151,7 +157,7 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
       /**
        * Class reference
        */
-      if (is.class(listenerModule)) {
+      if (this.#isConstructor(listenerModule)) {
         return moduleCaller(listenerModule, method).toCallable(this.#app.container)
       }
 
@@ -170,7 +176,7 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
    */
   #resolveEventListener(
     event: AllowedEventTypes,
-    listener: Listener<any, Constructor>
+    listener: Listener<any, Constructor<any>>
   ): ListenerMethod<any> {
     const eventListeners = this.#getEventListeners(event)
     if (!eventListeners.has(listener)) {
@@ -208,17 +214,17 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
   /**
    * Listen for an event. The method returns the unsubscribe function.
    */
-  on<Event extends Constructor, ListenerClass extends Constructor>(
+  on<Event extends Constructor<any>, ListenerClass extends Constructor<any>>(
     event: Event,
     listener: Listener<InstanceType<Event>, ListenerClass>
   ): UnsubscribeFunction
-  on<Name extends keyof EventsList, ListenerClass extends Constructor>(
+  on<Name extends keyof EventsList, ListenerClass extends Constructor<any>>(
     event: Name,
     listener: Listener<EventsList[Name], ListenerClass>
   ): UnsubscribeFunction
   on<Event extends AllowedEventTypes>(
     event: Event,
-    listener: Listener<any, Constructor>
+    listener: Listener<any, Constructor<any>>
   ): UnsubscribeFunction {
     if (debug.enabled) {
       debug('registering event listener, event: %O, listener: %O', event, listener)
@@ -234,12 +240,12 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
   /**
    * Listen for an event depending on a condition
    */
-  listenIf<Event extends Constructor, ListenerClass extends Constructor>(
+  listenIf<Event extends Constructor<any>, ListenerClass extends Constructor<any>>(
     condition: boolean | (() => boolean),
     event: Event,
     listener: Listener<InstanceType<Event>, ListenerClass>
   ): UnsubscribeFunction
-  listenIf<Name extends keyof EventsList, ListenerClass extends Constructor>(
+  listenIf<Name extends keyof EventsList, ListenerClass extends Constructor<any>>(
     condition: boolean | (() => boolean),
     event: Name,
     listener: Listener<EventsList[Name], ListenerClass>
@@ -247,7 +253,7 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
   listenIf<Event extends AllowedEventTypes>(
     condition: boolean | (() => boolean),
     event: Event,
-    listener: Listener<any, Constructor>
+    listener: Listener<any, Constructor<any>>
   ): UnsubscribeFunction {
     if (!condition || (typeof condition === 'function' && !condition())) {
       return () => {}
@@ -260,15 +266,18 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
   /**
    * Listen for an event only once
    */
-  once<Event extends Constructor, ListenerClass extends Constructor>(
+  once<Event extends Constructor<any>, ListenerClass extends Constructor<any>>(
     event: Event,
     listener: Listener<InstanceType<Event>, ListenerClass>
   ): void
-  once<Name extends keyof EventsList, ListenerClass extends Constructor>(
+  once<Name extends keyof EventsList, ListenerClass extends Constructor<any>>(
     event: Name,
     listener: Listener<EventsList[Name], ListenerClass>
   ): void
-  once<Event extends AllowedEventTypes>(event: Event, listener: Listener<any, Constructor>): void {
+  once<Event extends AllowedEventTypes>(
+    event: Event,
+    listener: Listener<any, Constructor<any>>
+  ): void {
     if (debug.enabled) {
       debug('registering one time event listener, event: %O, listener: %O', event, listener)
     }
