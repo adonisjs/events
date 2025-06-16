@@ -1,7 +1,6 @@
 name: Sync labels
 on:
   - workflow_dispatch
-  - push
 permissions:
   issues: write
 jobs:
