@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import type { Constructor } from '../src/types.js'
+import { type Constructor } from '@poppinss/utils/types'
 import { EventsBuffer } from '../src/events_buffer.js'
 
 test.group('Events buffer', () => {

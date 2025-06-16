@@ -76,7 +76,8 @@ test.group('Emitter | emit', (group) => {
       stack.push(data)
     })
 
-    expectTypeOf(emitter.emit).parameters.toEqualTypeOf<['new:user', NewUserEvent]>()
+    type EmitParams = Parameters<(typeof emitter)['emit']>
+    expectTypeOf<EmitParams>().toEqualTypeOf<['new:user', NewUserEvent]>()
 
     await emitter.emit('new:user', { id: 2 })
     await emitter.emit(UserRegistered, new UserRegistered('foo@bar.com'))

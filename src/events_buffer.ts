@@ -10,8 +10,9 @@
 import is from '@sindresorhus/is'
 import string from '@poppinss/utils/string'
 import { AssertionError } from 'node:assert'
+import { type Constructor } from '@poppinss/utils/types'
 
-import type { AllowedEventTypes, BufferedEvent, BufferedEventsList, Constructor } from './types.js'
+import type { AllowedEventTypes, BufferedEvent, BufferedEventsList } from './types.js'
 
 /**
  * Callback function to narrow down an event from
@@ -19,7 +20,7 @@ import type { AllowedEventTypes, BufferedEvent, BufferedEventsList, Constructor 
  */
 type EventFinderCallback<
   EventsList extends Record<string | symbol | number, any>,
-  Event extends keyof EventsList | Constructor,
+  Event extends keyof EventsList | Constructor<any>,
 > = (
   event: Event extends keyof EventsList
     ? BufferedEvent<Event, EventsList[Event]>
@@ -61,7 +62,7 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
   /**
    * Find if an event was emitted
    */
-  exists<Event extends keyof EventsList | Constructor>(
+  exists<Event extends keyof EventsList | Constructor<any>>(
     event: Event,
     finder?: EventFinderCallback<EventsList, Event>
   ): boolean {
@@ -71,7 +72,7 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
   /**
    * Find a specific event
    */
-  find<Event extends keyof EventsList | Constructor>(
+  find<Event extends keyof EventsList | Constructor<any>>(
     event: Event,
     finder?: EventFinderCallback<EventsList, Event>
   ):
@@ -96,7 +97,7 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
   /**
    * Assert a given event has been emitted
    */
-  assertEmitted<Event extends keyof EventsList | Constructor>(
+  assertEmitted<Event extends keyof EventsList | Constructor<any>>(
     event: Event,
     finder?: EventFinderCallback<EventsList, Event>
   ): void {
@@ -120,7 +121,7 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
   /**
    * Assert number of times an event has been emitted
    */
-  assertEmittedCount<Event extends keyof EventsList | Constructor>(
+  assertEmittedCount<Event extends keyof EventsList | Constructor<any>>(
     event: Event,
     count: number
   ): void {
