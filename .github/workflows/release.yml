@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
       - name: git config
         run: |
           git config user.name "${GITHUB_ACTOR}"
@@ -26,7 +26,7 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: npm install
-      - run: npm run release major -- --ci --preRelease=next
+      - run: npm run release -- --ci --preRelease=next
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
