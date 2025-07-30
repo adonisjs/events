@@ -22,6 +22,7 @@ import type {
   AllowedEventTypes,
   ListenerClassWithHandleMethod,
 } from './types.js'
+import { eventDispatch } from './tracing_channels.ts'
 
 /**
  * Event emitter is built on top of emittery with support class based
@@ -329,7 +330,16 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
 
     try {
       const normalizedEvent = this.#resolveEvent(event)
-      await this.#transport.emit(normalizedEvent, data)
+      await eventDispatch.tracePromise(
+        this.#transport.emit,
+        {
+          event,
+          data,
+        },
+        this.#transport,
+        normalizedEvent,
+        data
+      )
     } catch (error) {
       if (this.#errorHandler) {
         this.#errorHandler(event, error, data)
@@ -365,7 +375,16 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
 
     try {
       const normalizedEvent = this.#resolveEvent(event)
-      await this.#transport.emitSerial(normalizedEvent, data)
+      await eventDispatch.tracePromise(
+        this.#transport.emitSerial,
+        {
+          event,
+          data,
+        },
+        this.#transport,
+        normalizedEvent,
+        data
+      )
     } catch (error) {
       if (this.#errorHandler) {
         this.#errorHandler(event, error, data)

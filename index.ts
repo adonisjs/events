@@ -9,3 +9,4 @@
 
 export { Emitter } from './src/emitter.js'
 export { BaseEvent } from './src/base_event.js'
+export * as tracingChannels from './src/tracing_channels.ts'

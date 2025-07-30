@@ -96,3 +96,11 @@ export interface EmitterLike<EventsList extends Record<string | symbol | number,
    */
   hasListeners(event?: keyof EventsList | Constructor<any>): boolean
 }
+
+/**
+ * Data shared via the event.dispatch tracing channel
+ */
+export type EventDispatchData = {
+  event: AllowedEventTypes
+  data: unknown
+}
