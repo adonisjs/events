@@ -21,8 +21,8 @@ In order to ensure that the AdonisJS community is welcoming to all, please revie
 ## License
 AdonisJS events is open-sourced software licensed under the [MIT license](LICENSE.md).
 
-[gh-workflow-image]: https://img.shields.io/github/actions/workflow/status/adonisjs/events/test.yml?style=for-the-badge
-[gh-workflow-url]: https://github.com/adonisjs/events/actions/workflows/test.yml "Github action"
+[gh-workflow-image]: https://img.shields.io/github/actions/workflow/status/adonisjs/events/checks.yml?style=for-the-badge
+[gh-workflow-url]: https://github.com/adonisjs/events/actions/workflows/checks.yml "Github action"
 
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
 [typescript-url]:  "typescript"
