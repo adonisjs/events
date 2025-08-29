@@ -7,6 +7,6 @@
  * file that was distributed with this source code.
  */
 
-export { Emitter } from './src/emitter.js'
-export { BaseEvent } from './src/base_event.js'
+export { Emitter } from './src/emitter.ts'
+export { BaseEvent } from './src/base_event.ts'
 export * as tracingChannels from './src/tracing_channels.ts'

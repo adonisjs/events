@@ -8,7 +8,7 @@
  */
 
 import type { Application } from '@adonisjs/application'
-import { Emitter } from '../src/emitter.js'
+import { Emitter } from '../src/emitter.ts'
 
 /**
  * Emitter factory is used to create an instance of emitter

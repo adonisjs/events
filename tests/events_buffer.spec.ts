@@ -9,7 +9,7 @@
 
 import { test } from '@japa/runner'
 import { type Constructor } from '@poppinss/utils/types'
-import { EventsBuffer } from '../src/events_buffer.js'
+import { EventsBuffer } from '../src/events_buffer.ts'
 
 test.group('Events buffer', () => {
   test('get all events', ({ assert, expectTypeOf }) => {

@@ -10,7 +10,7 @@
 import { test } from '@japa/runner'
 import { Application } from '@adonisjs/application'
 
-import { Emitter } from '../../src/emitter.js'
+import { Emitter } from '../../src/emitter.ts'
 
 const BASE_URL = new URL('../app/', import.meta.url)
 

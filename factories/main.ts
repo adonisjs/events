@@ -7,4 +7,4 @@
  * file that was distributed with this source code.
  */
 
-export { EmitterFactory } from './emitter.js'
+export { EmitterFactory } from './emitter.ts'

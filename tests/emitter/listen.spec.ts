@@ -11,8 +11,8 @@ import { test } from '@japa/runner'
 import { fileURLToPath } from 'node:url'
 import { Application } from '@adonisjs/application'
 
-import { Emitter } from '../../src/emitter.js'
-import { BaseEvent } from '../../index.js'
+import { Emitter } from '../../src/emitter.ts'
+import { BaseEvent } from '../../index.ts'
 
 const BASE_URL = new URL('../app/', import.meta.url)
 const BASE_PATH = fileURLToPath(BASE_URL)

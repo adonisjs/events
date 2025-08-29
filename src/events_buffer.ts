@@ -12,7 +12,7 @@ import string from '@poppinss/utils/string'
 import { AssertionError } from 'node:assert'
 import { type Constructor } from '@poppinss/utils/types'
 
-import type { AllowedEventTypes, BufferedEvent, BufferedEventsList } from './types.js'
+import type { AllowedEventTypes, BufferedEvent, BufferedEventsList } from './types.ts'
 
 /**
  * Callback function to narrow down an event from

@@ -10,7 +10,7 @@
 import { test } from '@japa/runner'
 import { fileURLToPath } from 'node:url'
 
-import { Emitter } from '../../src/emitter.js'
+import { Emitter } from '../../src/emitter.ts'
 import { Application } from '@adonisjs/application'
 
 const BASE_URL = new URL('../app/', import.meta.url)

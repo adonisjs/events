@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url'
 import { setTimeout } from 'node:timers/promises'
 import { Application } from '@adonisjs/application'
 
-import { Emitter } from '../../src/emitter.js'
+import { Emitter } from '../../src/emitter.ts'
 
 const BASE_URL = new URL('../app/', import.meta.url)
 const BASE_PATH = fileURLToPath(BASE_URL)

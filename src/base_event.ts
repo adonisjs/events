@@ -8,7 +8,7 @@
  */
 
 import { RuntimeException } from '@poppinss/utils/exception'
-import type { Emitter } from './emitter.js'
+import type { Emitter } from './emitter.ts'
 
 /**
  * Base event adds ability to a class to act as an event. You can emit the

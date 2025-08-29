@@ -13,15 +13,15 @@ import Emittery, { type UnsubscribeFunction } from 'emittery'
 import { moduleCaller, moduleImporter } from '@adonisjs/fold'
 import { type LazyImport, type Constructor } from '@poppinss/utils/types'
 
-import debug from './debug.js'
-import { EventsBuffer } from './events_buffer.js'
+import debug from './debug.ts'
+import { EventsBuffer } from './events_buffer.ts'
 import type {
   Listener,
   EmitterLike,
   ListenerMethod,
   AllowedEventTypes,
   ListenerClassWithHandleMethod,
-} from './types.js'
+} from './types.ts'
 import { eventDispatch } from './tracing_channels.ts'
 
 /**
