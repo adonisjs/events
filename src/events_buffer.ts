@@ -40,6 +40,9 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
 
   /**
    * Track emitted event
+   *
+   * @param event - The event that was emitted
+   * @param data - The data passed with the event
    */
   add<Name extends AllowedEventTypes>(event: Name, data: any): void {
     this.#events.push({ event: event as any, data })
@@ -47,20 +50,28 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
 
   /**
    * Get all the emitted events
+   *
+   * @returns Array of all buffered events
    */
-  all() {
+  all(): BufferedEventsList<EventsList>[] {
     return this.#events
   }
 
   /**
    * Returns the size of captured events
+   *
+   * @returns The number of captured events
    */
-  size() {
+  size(): number {
     return this.#events.length
   }
 
   /**
    * Find if an event was emitted
+   *
+   * @param event - The event to check for
+   * @param finder - Optional callback to filter specific event instances
+   * @returns True if the event was emitted
    */
   exists<Event extends keyof EventsList | Constructor<any>>(
     event: Event,
@@ -71,6 +82,10 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
 
   /**
    * Find a specific event
+   *
+   * @param event - The event to find
+   * @param finder - Optional callback to filter specific event instances
+   * @returns The found event or null
    */
   find<Event extends keyof EventsList | Constructor<any>>(
     event: Event,
@@ -96,6 +111,10 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
 
   /**
    * Assert a given event has been emitted
+   *
+   * @param event - The event to assert was emitted
+   * @param finder - Optional callback to filter specific event instances
+   * @throws AssertionError if the event was not emitted
    */
   assertEmitted<Event extends keyof EventsList | Constructor<any>>(
     event: Event,
@@ -120,6 +139,10 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
 
   /**
    * Assert number of times an event has been emitted
+   *
+   * @param event - The event to check emission count for
+   * @param count - The expected number of emissions
+   * @throws AssertionError if the count doesn't match
    */
   assertEmittedCount<Event extends keyof EventsList | Constructor<any>>(
     event: Event,
@@ -142,6 +165,10 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
 
   /**
    * Assert a given event has been not been emitted
+   *
+   * @param event - The event to assert was not emitted
+   * @param finder - Optional callback to filter specific event instances
+   * @throws AssertionError if the event was emitted
    */
   assertNotEmitted<Event extends keyof EventsList | Constructor<any>>(
     event: Event,
@@ -166,7 +193,9 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
   }
 
   /**
-   * Assert a given event has been not been emitted
+   * Assert no events have been emitted
+   *
+   * @throws AssertionError if any events were emitted
    */
   assertNoneEmitted(): void {
     const eventsSize = this.size()
@@ -194,7 +223,7 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
   /**
    * Flush events collected within memory
    */
-  flush() {
+  flush(): void {
     this.#events = []
   }
 }

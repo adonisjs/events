@@ -80,17 +80,30 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
    *
    * The listeners map key is the original binding listener
    * and the value is a callback function.
+   *
+   * @returns The events listeners map
    */
-  get eventsListeners() {
+  get eventsListeners(): Map<
+    AllowedEventTypes,
+    Map<Listener<any, Constructor<any>>, ListenerMethod<any>>
+  > {
     return this.#eventsListeners
   }
 
+  /**
+   * Creates a new Emitter instance
+   *
+   * @param app - The AdonisJS application instance
+   */
   constructor(app: Application<any>) {
     this.#app = app
   }
 
   /**
    * Check if the value is a constructor and narrow down its types
+   *
+   * @param value - The value to check
+   * @returns True if the value is a constructor
    */
   #isConstructor(value: unknown): value is Constructor<any> {
     return is.class(value)
@@ -98,6 +111,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
 
   /**
    * Returns the symbol for a class based event.
+   *
+   * @param event - The event class constructor
+   * @returns The symbol for the event class
    */
   #getEventClassSymbol(event: Constructor<any>): symbol {
     if (!this.#eventsClassSymbols.has(event)) {
@@ -110,6 +126,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
   /**
    * Normalizes the event to emittery supported data types. The class
    * constructors are cached against a unique symbol.
+   *
+   * @param event - The event to resolve
+   * @returns The resolved event as string, symbol, or number
    */
   #resolveEvent(event: AllowedEventTypes): string | symbol | number {
     if (this.#isConstructor(event)) {
@@ -121,8 +140,13 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
 
   /**
    * Returns the event listeners map
+   *
+   * @param event - The event to get listeners for
+   * @returns The listeners map for the event
    */
-  #getEventListeners(event: AllowedEventTypes) {
+  #getEventListeners(
+    event: AllowedEventTypes
+  ): Map<Listener<any, Constructor<any>>, ListenerMethod<any>> {
     if (!this.#eventsListeners.has(event)) {
       this.#eventsListeners.set(event, new Map())
     }
@@ -133,6 +157,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
   /**
    * Normalizes the event listener to a function that can be passed to
    * emittery.
+   *
+   * @param listener - The listener to normalize
+   * @returns The normalized listener method
    */
   #normalizeEventListener(listener: Listener<any, Constructor<any>>): ListenerMethod<any> {
     /**
@@ -174,6 +201,10 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
   /**
    * Resolves the event listener either from the cache or normalizes
    * it and stores it inside the cache
+   *
+   * @param event - The event to resolve listener for
+   * @param listener - The listener to resolve
+   * @returns The resolved listener method
    */
   #resolveEventListener(
     event: AllowedEventTypes,
@@ -189,6 +220,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
 
   /**
    * Register a global error handler
+   *
+   * @param callback - The error handler callback
+   * @returns The emitter instance for method chaining
    */
   onError(
     callback: (event: keyof EventsList | Constructor<any>, error: any, data: any) => void
@@ -201,6 +235,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
    * Bind multiple listeners to listen for a single event. The listen
    * method is a convenience helper to be used with class based
    * events and listeners.
+   *
+   * @param event - The event class to listen for
+   * @param listeners - Array of listener classes with handle methods
    */
   listen<Event extends Constructor<any>>(
     event: Event,
@@ -208,12 +245,16 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
       | ListenerClassWithHandleMethod<InstanceType<Event>>
       | LazyImport<ListenerClassWithHandleMethod<InstanceType<Event>>>
     )[]
-  ) {
+  ): void {
     listeners.forEach((listener) => this.on(event, [listener, 'handle']))
   }
 
   /**
    * Listen for an event. The method returns the unsubscribe function.
+   *
+   * @param event - The event to listen for
+   * @param listener - The listener to register
+   * @returns The unsubscribe function
    */
   on<Event extends Constructor<any>, ListenerClass extends Constructor<any>>(
     event: Event,
@@ -240,6 +281,11 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
 
   /**
    * Listen for an event depending on a condition
+   *
+   * @param condition - The condition to check before listening
+   * @param event - The event to listen for
+   * @param listener - The listener to register
+   * @returns The unsubscribe function
    */
   listenIf<Event extends Constructor<any>, ListenerClass extends Constructor<any>>(
     condition: boolean | (() => boolean),
@@ -266,6 +312,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
 
   /**
    * Listen for an event only once
+   *
+   * @param event - The event to listen for
+   * @param listener - The listener to register
    */
   once<Event extends Constructor<any>, ListenerClass extends Constructor<any>>(
     event: Event,
@@ -303,6 +352,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
   /**
    * Attach a listener to listen for all the events. Wildcard listeners
    * can only be defined as inline callbacks.
+   *
+   * @param listener - The wildcard listener callback
+   * @returns The unsubscribe function
    */
   onAny(
     listener: (event: AllowedEventTypes, data: any) => any | Promise<any>
@@ -315,6 +367,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
    * in parallel.
    *
    * You can await this method to wait for events listeners to finish
+   *
+   * @param event - The event to emit
+   * @param data - The data to pass to listeners
    */
   async emit<Event extends Constructor<any>>(event: Event, data: InstanceType<Event>): Promise<void>
   async emit<Name extends keyof EventsList>(event: Name, data: EventsList[Name]): Promise<void>
@@ -356,6 +411,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
    * in the same sequence as they are registered.
    *
    * You can await this method to wait for events listeners to finish
+   *
+   * @param event - The event to emit
+   * @param data - The data to pass to listeners
    */
   async emitSerial<Event extends Constructor<any>>(
     event: Event,
@@ -400,6 +458,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
 
   /**
    * Remove a specific listener for an event
+   *
+   * @param event - The event to remove listener from
+   * @param listener - The listener to remove
    */
   off(event: keyof EventsList | Constructor<any>, listener: Listener<any, Constructor<any>>): void {
     if (debug.enabled) {
@@ -420,6 +481,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
 
   /**
    * Remove a specific listener listening for all the events
+   *
+   * @param listener - The wildcard listener to remove
+   * @returns The emitter instance for method chaining
    */
   offAny(
     listener: (event: keyof EventsList | Constructor<any>, data: any) => any | Promise<any>
@@ -432,6 +496,8 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
    * Remove a specific listener for an event
    *
    * @alias "off"
+   * @param event - The event to remove listener from
+   * @param listener - The listener to remove
    */
   clearListener(
     event: keyof EventsList | Constructor<any>,
@@ -442,8 +508,10 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
 
   /**
    * Clear all listeners for a specific event
+   *
+   * @param event - The event to clear listeners for
    */
-  clearListeners(event: keyof EventsList | Constructor<any>) {
+  clearListeners(event: keyof EventsList | Constructor<any>): void {
     debug('clearing all listeners for event %O', event)
     this.#transport.clearListeners(this.#resolveEvent(event))
     this.#eventsListeners.delete(event)
@@ -452,7 +520,7 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
   /**
    * Clear all listeners for all the events
    */
-  clearAllListeners() {
+  clearAllListeners(): void {
     debug('clearing all event listeners')
     this.#transport.clearListeners()
     this.#eventsListeners.clear()
@@ -460,6 +528,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
 
   /**
    * Get count of listeners for a given event or all the events
+   *
+   * @param event - The event to count listeners for (optional)
+   * @returns The number of listeners
    */
   listenerCount(event?: keyof EventsList | Constructor<any>): number {
     return this.#transport.listenerCount(event ? this.#resolveEvent(event) : undefined)
@@ -467,6 +538,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
 
   /**
    * Find if an event has one or more listeners
+   *
+   * @param event - The event to check listeners for (optional)
+   * @returns True if the event has listeners
    */
   hasListeners(event?: keyof EventsList | Constructor<any>): boolean {
     return this.listenerCount(event) > 0
@@ -481,6 +555,9 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
    *
    * Calling this method one than once drops the existing fakes and
    * creates new one.
+   *
+   * @param events - Array of events to fake (optional, defaults to all events)
+   * @returns The events buffer for assertions
    */
   fake(events?: (keyof EventsList | Constructor<any>)[]): EventsBuffer<EventsList> {
     this.restore()
@@ -500,7 +577,7 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
   /**
    * Restore fakes
    */
-  restore() {
+  restore(): void {
     debug('restoring existing fakes')
     this.#eventsToFake.clear()
     this.#eventsBuffer?.flush()
