@@ -332,10 +332,12 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
       const normalizedEvent = this.#resolveEvent(event)
       await eventDispatch.tracePromise(
         this.#transport.emit,
-        {
-          event,
-          data,
-        },
+        eventDispatch.hasSubscribers
+          ? {
+              event,
+              data,
+            }
+          : undefined,
         this.#transport,
         normalizedEvent,
         data
@@ -377,10 +379,12 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
       const normalizedEvent = this.#resolveEvent(event)
       await eventDispatch.tracePromise(
         this.#transport.emitSerial,
-        {
-          event,
-          data,
-        },
+        eventDispatch.hasSubscribers
+          ? {
+              event,
+              data,
+            }
+          : undefined,
         this.#transport,
         normalizedEvent,
         data
