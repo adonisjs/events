@@ -43,7 +43,10 @@ export class BaseEvent {
    * @param args - Constructor arguments for the event instance
    * @throws RuntimeException if no emitter is configured
    */
-  static async dispatch<T extends typeof BaseEvent>(this: T, ...args: ConstructorParameters<T>): Promise<void> {
+  static async dispatch<T extends typeof BaseEvent>(
+    this: T,
+    ...args: ConstructorParameters<T>
+  ): Promise<void> {
     if (!this.emitter) {
       throw new RuntimeException(
         `Cannot dispatch "${this.name}" event. Make sure to pass emitter to the "BaseEvent" class for dispatch method to work`
