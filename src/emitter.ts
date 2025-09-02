@@ -495,7 +495,6 @@ export class Emitter<EventsList extends Record<string | symbol | number, any>>
   /**
    * Remove a specific listener for an event
    *
-   * @alias "off"
    * @param event - The event to remove listener from
    * @param listener - The listener to remove
    */

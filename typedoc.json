@@ -1,0 +1,13 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "@adonisjs/events",
+  "includeVersion": true,
+  "excludeExternals": true,
+  "entryPoints": ["./index.ts", "./src/types.ts", "./factories/main.ts"],
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "readme": "none",
+  "gitRevision": "main",
+  "sort": ["source-order"]
+}
