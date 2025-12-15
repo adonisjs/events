@@ -28,9 +28,9 @@ import { eventDispatch } from './tracing_channels.ts'
  * Event emitter is built on top of emittery with support class based
  * events and listeners
  */
-export class Emitter<EventsList extends Record<string | symbol | number, any>>
-  implements EmitterLike<EventsList>
-{
+export class Emitter<
+  EventsList extends Record<string | symbol | number, any>,
+> implements EmitterLike<EventsList> {
   /**
    * Event classes to symbols mapping. We need symbols as emittery
    * does not support class based event names
