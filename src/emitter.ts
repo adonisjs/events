@@ -469,14 +469,33 @@ export class Emitter<
 
     const normalizedEvent = this.#resolveEvent(event)
     const listeners = this.#getEventListeners(event)
-    const normalizedListener = listeners.get(listener)
 
-    if (!normalizedListener) {
+    /**
+     * In case of an array, we need to pull the key that matches
+     * the both array properties vs the array itself, since that
+     * reference will always be different
+     */
+    if (Array.isArray(listener)) {
+      const eventListenersKeys = listeners.keys()
+      const matchingKey = eventListenersKeys.find((key) => {
+        if (Array.isArray(key)) {
+          return key[0] === listener[0] && key[1] === listener[1]
+        }
+        return false
+      })
+      const normalizedListener = matchingKey ? listeners.get(matchingKey) : undefined
+      if (normalizedListener && matchingKey) {
+        listeners.delete(matchingKey)
+        this.#transport.off(normalizedEvent, normalizedListener)
+      }
       return
     }
 
-    listeners.delete(listener)
-    this.#transport.off(normalizedEvent, normalizedListener)
+    const normalizedListener = listeners.get(listener)
+    if (normalizedListener) {
+      listeners.delete(listener)
+      this.#transport.off(normalizedEvent, normalizedListener)
+    }
   }
 
   /**

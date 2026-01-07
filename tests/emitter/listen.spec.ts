@@ -357,8 +357,40 @@ test.group('Emitter | listen | lazily loaded listener', () => {
      * Unsubscribe and emit
      */
     unsubscribe()
-    await emitter.emit('new:user', { id: 1 })
-    await emitter.emit('new:user', { id: 1 })
+    await emitter.emit('new:user', stack)
+    await emitter.emit('new:user', stack)
+
+    assert.deepEqual(stack, ['invoked'])
+    assert.equal(emitter.eventsListeners.get('new:user')?.size, 0)
+  })
+
+  test('unsubscribe when using lazily loaded listener via emitter.off', async ({ assert }) => {
+    const stack: any[] = []
+
+    const NewUserListener = async () => {
+      return {
+        default: class NewUser {
+          sendEmail(data: string[]) {
+            data.push('invoked')
+          }
+        },
+      }
+    }
+
+    const app = new Application(BASE_URL, { environment: 'web' })
+    const emitter = new Emitter(app)
+    await app.init()
+
+    emitter.on('new:user', [NewUserListener, 'sendEmail'])
+    await emitter.emit('new:user', stack)
+    assert.deepEqual(stack, ['invoked'])
+
+    /**
+     * Unsubscribe and emit
+     */
+    emitter.off('new:user', [NewUserListener, 'sendEmail'])
+    await emitter.emit('new:user', stack)
+    await emitter.emit('new:user', stack)
 
     assert.deepEqual(stack, ['invoked'])
     assert.equal(emitter.eventsListeners.get('new:user')?.size, 0)
