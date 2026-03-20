@@ -579,7 +579,7 @@ export class Emitter<
    */
   fake(events?: (keyof EventsList | Constructor<any>)[]): EventsBuffer<EventsList> {
     this.restore()
-    this.#eventsBuffer = new EventsBuffer<EventsList>()
+    this.#eventsBuffer = new EventsBuffer<EventsList>(() => this.restore())
 
     if (!events) {
       debug('faking all events')
