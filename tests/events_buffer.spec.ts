@@ -16,7 +16,7 @@ test.group('Events buffer', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
     events.add('new:user', { id: 1 })
 
     assert.deepEqual(events.all(), [{ event: 'new:user', data: { id: 1 } }])
@@ -33,7 +33,7 @@ test.group('Events buffer', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
     events.add('new:user', { id: 1 })
     events.add('new:user', { id: 1 })
     events.add('new:user', { id: 2 })
@@ -46,7 +46,7 @@ test.group('Events buffer', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
     assert.doesNotThrow(() => events.assertNoneEmitted())
     events.add('new:user', { id: 1 })
     assert.throws(
@@ -61,7 +61,7 @@ test.group('Events buffer | find', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
     events.add('new:user', { id: 1 })
 
     const event = events.find('new:user')
@@ -78,7 +78,7 @@ test.group('Events buffer | find', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
     events.add('new:user', { id: 1 })
     events.add('new:user', { id: 2 })
     events.add('new:user', { id: 3 })
@@ -100,7 +100,7 @@ test.group('Events buffer | find', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
 
     class UserRegistered {}
     const userRegisteredEvent = new UserRegistered()
@@ -119,7 +119,7 @@ test.group('Events buffer | find', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
 
     class UserRegistered {
       constructor(public id: number) {}
@@ -146,7 +146,7 @@ test.group('Events buffer | exist', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
     events.add('new:user', { id: 1 })
 
     assert.isTrue(events.exists('new:user'))
@@ -156,7 +156,7 @@ test.group('Events buffer | exist', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
     events.add('new:user', { id: 1 })
     events.add('new:user', { id: 2 })
     events.add('new:user', { id: 3 })
@@ -172,7 +172,7 @@ test.group('Events buffer | exist', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
 
     class UserRegistered {}
     const userRegisteredEvent = new UserRegistered()
@@ -188,7 +188,7 @@ test.group('Events buffer | exist', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
 
     class UserRegistered {
       constructor(public id: number) {}
@@ -215,7 +215,7 @@ test.group('Events buffer | assertEmitted', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
     events.add('new:user', { id: 1 })
 
     assert.doesNotThrow(() => events.assertEmitted('new:user'))
@@ -229,7 +229,7 @@ test.group('Events buffer | assertEmitted', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
     events.add('new:user', { id: 1 })
     events.add('new:user', { id: 2 })
     events.add('new:user', { id: 3 })
@@ -250,7 +250,7 @@ test.group('Events buffer | assertEmitted', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
 
     class UserRegistered {}
     class ResendEmail {}
@@ -269,7 +269,7 @@ test.group('Events buffer | assertEmitted', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
 
     class ResendEmail {}
     class UserRegistered {
@@ -300,7 +300,7 @@ test.group('Events buffer | assertNotEmitted', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
     events.add('new:user', { id: 1 })
 
     assert.throws(
@@ -314,7 +314,7 @@ test.group('Events buffer | assertNotEmitted', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
     events.add('new:user', { id: 1 })
     events.add('new:user', { id: 2 })
     events.add('new:user', { id: 3 })
@@ -331,7 +331,7 @@ test.group('Events buffer | assertNotEmitted', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
 
     class UserRegistered {}
     class ResendEmail {}
@@ -350,7 +350,7 @@ test.group('Events buffer | assertNotEmitted', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
 
     class ResendEmail {}
     class UserRegistered {
@@ -383,7 +383,7 @@ test.group('Events buffer | assertEmittedCount', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
     events.add('new:user', { id: 1 })
 
     assert.doesNotThrow(() => events.assertEmittedCount('new:user', 1))
@@ -397,7 +397,7 @@ test.group('Events buffer | assertEmittedCount', () => {
     const events = new EventsBuffer<{
       'new:user': { id: number }
       'resend:email': { email: string }
-    }>()
+    }>(() => {})
 
     class UserRegistered {}
     const userRegisteredEvent = new UserRegistered()

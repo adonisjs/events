@@ -39,6 +39,16 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
   #events: BufferedEventsList<EventsList>[] = []
 
   /**
+   * Function to call when disposing the buffer to restore
+   * the emitter to its original state
+   */
+  #restoreFn: () => void
+
+  constructor(restoreFn: () => void) {
+    this.#restoreFn = restoreFn
+  }
+
+  /**
    * Track emitted event
    *
    * @param event - The event that was emitted
@@ -225,5 +235,9 @@ export class EventsBuffer<EventsList extends Record<string | symbol | number, an
    */
   flush(): void {
     this.#events = []
+  }
+
+  [Symbol.dispose](): void {
+    this.#restoreFn()
   }
 }

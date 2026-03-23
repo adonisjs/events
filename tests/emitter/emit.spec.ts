@@ -433,4 +433,25 @@ test.group('Emitter | fake', () => {
     assert.deepEqual(stack, [{ name: 'new:user', data: { id: 1 } }])
     assert.deepEqual(events.all(), [{ event: 'resend:email', data: { email: 'foo@bar.com' } }])
   })
+
+  test('restore fakes using Symbol.dispose', async ({ assert }) => {
+    const stack: any[] = []
+
+    const app = new Application(BASE_URL, { environment: 'web' })
+    const emitter = new Emitter<{ 'new:user': { id: number } }>(app)
+
+    emitter.on('new:user', (data) => {
+      stack.push(data)
+    })
+
+    {
+      using events = emitter.fake(['new:user'])
+      await emitter.emit('new:user', { id: 1 })
+      assert.deepEqual(stack, [])
+      assert.deepEqual(events.all(), [{ event: 'new:user', data: { id: 1 } }])
+    }
+
+    await emitter.emit('new:user', { id: 2 })
+    assert.deepEqual(stack, [{ id: 2 }])
+  })
 })
