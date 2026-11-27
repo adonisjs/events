@@ -13,7 +13,5 @@ import { type EventDispatchData } from './types.ts'
 /**
  * Traces event.emit method calls
  */
-export const eventDispatch = diagnostics_channel.tracingChannel<
-  'adonisjs.event.dispatch',
-  EventDispatchData
->('adonisjs.event.dispatch')
+export const eventDispatch =
+  diagnostics_channel.tracingChannel<EventDispatchData>('adonisjs.event.dispatch')
